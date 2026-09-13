@@ -69,6 +69,8 @@ async function main() {
         isFeatured: prod.isFeatured,
         isNew: prod.isNew,
         sku: prod.sku,
+        hasSizeGuide: prod.hasSizeGuide !== undefined ? prod.hasSizeGuide : true,
+        badgeText: prod.badgeText || null,
       })
       .onConflictDoUpdate({
         target: schema.products.id,
@@ -87,6 +89,8 @@ async function main() {
           isFeatured: prod.isFeatured,
           isNew: prod.isNew,
           sku: prod.sku,
+          hasSizeGuide: prod.hasSizeGuide !== undefined ? prod.hasSizeGuide : true,
+          badgeText: prod.badgeText || null,
         },
       });
 

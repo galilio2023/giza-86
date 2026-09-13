@@ -10,6 +10,7 @@ import { useProductVariantSelection } from "@/hooks/useProductVariantSelection";
 import { Button } from "@/components/ui/button";
 import { PriceTag } from "@/components/ui/price-tag";
 import { StockBadge } from "@/components/ui/stock-badge";
+import { isAccessoryProduct } from "@/lib/domain/variants";
 import { toast } from "sonner";
 
 interface ProductCardProps {
@@ -96,11 +97,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
 
         {/* Dynamic / Egyptian Cotton Badge */}
         {(() => {
-          const isAccessory =
-            product.categorySlug?.includes("accessories") ||
-            product.categoryName?.includes("إكسسوار") ||
-            product.categoryName?.includes("شنط") ||
-            product.categoryName?.includes("حقائب");
+          const isAccessory = isAccessoryProduct(product);
 
           const effectiveBadge =
             product.badgeText !== undefined && product.badgeText !== null && product.badgeText !== ""

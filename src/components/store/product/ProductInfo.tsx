@@ -4,6 +4,7 @@ import { Share2, Star, Sparkles } from "lucide-react";
 import { ProductItem, ProductColor } from "@/types";
 import { PriceTag } from "@/components/ui/price-tag";
 import { StockBadge } from "@/components/ui/stock-badge";
+import { isAccessoryProduct } from "@/lib/domain/variants";
 
 interface ProductInfoProps {
   product: ProductItem;
@@ -81,12 +82,7 @@ export function ProductInfo({
 
       {/* Editorial Fabric & Fit Spec Gauge */}
       {(() => {
-        const isAccessory =
-          product.categorySlug?.includes("accessories") ||
-          product.categoryName?.includes("إكسسوار") ||
-          product.categoryName?.includes("شنط") ||
-          product.categoryName?.includes("حقائب") ||
-          (product.hasSizeGuide === false && (product.sizes?.includes("مقاس موحد") || product.sizes?.includes("One Size")));
+        const isAccessory = isAccessoryProduct(product);
 
         return (
           <div className="p-4 rounded-2xl bg-neutral-50/80 border border-neutral-200/80 space-y-3">

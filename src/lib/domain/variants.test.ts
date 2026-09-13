@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { findMatchingVariant, getEffectivePrice, getEffectiveStock } from "./variants";
+import { findMatchingVariant, getEffectivePrice, getEffectiveStock, isAccessoryProduct } from "./variants";
 
 describe("Domain Product Variants Logic", () => {
   const mockVariants = [
@@ -64,6 +64,44 @@ describe("Domain Product Variants Logic", () => {
     it("should never return negative stock", () => {
       const stock = getEffectiveStock({ stock: -5 }, undefined);
       assert.strictEqual(stock, 0);
+    });
+  });
+
+  describe("isAccessoryProduct", () => {
+    it("should identify accessories by categorySlug containing accessories or bags", () => {
+      assert.strictEqual(isAccessoryProduct({ categorySlug: "accessories" }), true);
+      assert.strictEqual(isAccessoryProduct({ categorySlug: "bags-and-wallets" }), true);
+      assert.strictEqual(isAccessoryProduct({ categorySlug: "hair-clips" }), true);
+    });
+
+    it("should identify accessories by categoryName containing Arabic keywords", () => {
+      assert.strictEqual(isAccessoryProduct({ categoryName: "إكسسوارات وشنط" }), true);
+      assert.strictEqual(isAccessoryProduct({ categoryName: "شنط يد كاجوال" }), true);
+      assert.strictEqual(isAccessoryProduct({ categoryName: "حقائب ظهر" }), true);
+      assert.strictEqual(isAccessoryProduct({ categoryName: "توك شعر" }), true);
+    });
+
+    it("should identify accessories when hasSizeGuide is false and sizes has One Size", () => {
+      assert.strictEqual(
+        isAccessoryProduct({ hasSizeGuide: false, sizes: ["مقاس موحد"] }),
+        true
+      );
+      assert.strictEqual(
+        isAccessoryProduct({ hasSizeGuide: false, sizes: ["One Size"] }),
+        true
+      );
+    });
+
+    it("should return false for regular apparel products", () => {
+      assert.strictEqual(
+        isAccessoryProduct({
+          categorySlug: "oversized-tshirts",
+          categoryName: "أوفر سايز وتي شيرتات",
+          hasSizeGuide: true,
+          sizes: ["S", "M", "L"],
+        }),
+        false
+      );
     });
   });
 });
