@@ -131,7 +131,7 @@ export function OrderDetailModal({
               <select
                 value={modalStatus}
                 onChange={(e) => setModalStatus(e.target.value as OrderItem["orderStatus"])}
-                className="w-full bg-white border border-neutral-300 font-bold p-2 rounded-xl text-base sm:text-xs"
+                className="w-full bg-white border border-neutral-300 font-bold p-2 rounded-xl text-base lg:text-sm"
               >
                 <option value="new">طلب جديد</option>
                 <option value="confirmed">تم التأكيد</option>
@@ -147,7 +147,7 @@ export function OrderDetailModal({
               <select
                 value={modalPayment}
                 onChange={(e) => setModalPayment(e.target.value as OrderItem["paymentStatus"])}
-                className="w-full bg-white border border-neutral-300 font-bold p-2 rounded-xl text-base sm:text-xs"
+                className="w-full bg-white border border-neutral-300 font-bold p-2 rounded-xl text-base lg:text-sm"
               >
                 <option value="pending">قيد الانتظار (Pending)</option>
                 <option value="paid">تم التأكيد والدفع بنجاح (Paid)</option>
@@ -162,7 +162,7 @@ export function OrderDetailModal({
                 value={modalTracking}
                 onChange={(e) => setModalTracking(e.target.value)}
                 placeholder="مثال: BOSTA-98214"
-                className="w-full bg-white border border-neutral-300 font-mono text-left p-2 rounded-xl text-base sm:text-xs"
+                className="w-full bg-white border border-neutral-300 font-mono text-left p-2 rounded-xl text-base lg:text-sm"
               />
             </div>
           </div>
@@ -173,7 +173,7 @@ export function OrderDetailModal({
               size="md"
               disabled={updating}
               onClick={() => onUpdate(order.id, modalStatus, modalPayment, modalTracking)}
-              className="gap-2 min-h-[42px] w-full sm:w-auto justify-center"
+              className="gap-2 min-h-[44px] w-full sm:w-auto justify-center"
             >
               <Save className="w-3.5 h-3.5" />
               <span>{updating ? "جاري الحفظ..." : "حفظ تحديثات الطلب في قاعدة البيانات"}</span>

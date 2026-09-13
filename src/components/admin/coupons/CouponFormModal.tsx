@@ -59,7 +59,7 @@ function CouponFormContent({
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="مثال: SUMMER30"
-          className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono uppercase text-base sm:text-xs"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono uppercase text-base lg:text-sm"
         />
       </div>
 
@@ -69,7 +69,7 @@ function CouponFormContent({
           <select
             value={discountType}
             onChange={(e) => setDiscountType(e.target.value as "percentage" | "fixed")}
-            className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white font-bold text-base sm:text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white font-bold text-base lg:text-sm"
           >
             <option value="percentage">نسبة مئوية (%)</option>
             <option value="fixed">مبلغ ثابت (ج.م)</option>
@@ -84,7 +84,7 @@ function CouponFormContent({
             value={discountValue}
             onChange={(e) => setDiscountValue(e.target.value)}
             placeholder={discountType === "percentage" ? "20" : "100"}
-            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-base sm:text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-base lg:text-sm"
           />
         </div>
       </div>
@@ -98,7 +98,7 @@ function CouponFormContent({
           value={minOrderValue}
           onChange={(e) => setMinOrderValue(e.target.value)}
           placeholder="500"
-          className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-base sm:text-xs"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-base lg:text-sm"
         />
       </div>
 

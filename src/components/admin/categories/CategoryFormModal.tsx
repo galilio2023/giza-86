@@ -60,7 +60,7 @@ function CategoryFormContent({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="مثلاً: تيشيرتات أوفر سايز، هوديز شتوي..."
-          className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 text-base lg:text-sm"
         />
       </div>
 
@@ -72,7 +72,7 @@ function CategoryFormContent({
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
             placeholder="oversized-tees"
-            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-left text-base sm:text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-left text-base lg:text-sm"
           />
         </div>
 
@@ -82,7 +82,7 @@ function CategoryFormContent({
             type="number"
             value={displayOrder}
             onChange={(e) => setDisplayOrder(e.target.value)}
-            className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 text-base lg:text-sm"
           />
         </div>
       </div>
@@ -94,7 +94,7 @@ function CategoryFormContent({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="وصف مختصر للقسم..."
-          className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 text-base lg:text-sm"
         />
       </div>
 
@@ -105,7 +105,7 @@ function CategoryFormContent({
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
           placeholder="https://images.unsplash.com/..."
-          className="w-full p-2.5 rounded-xl border border-neutral-200 text-left font-mono text-base sm:text-xs"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 text-left font-mono text-base lg:text-sm"
         />
       </div>
 

@@ -40,7 +40,7 @@ export function ShippingSettingsTab({
               value={freeShippingThreshold}
               onChange={(e) => setFreeShippingThreshold(e.target.value)}
               placeholder={String(STORE_DEFAULTS.freeShippingThreshold)}
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-base sm:text-xs font-mono bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-base lg:text-sm font-mono bg-neutral-50 focus:bg-white transition"
             />
             <p className="text-[11px] text-neutral-500">
               إذا وصل إجمالي سلة المشتريات لهذا الرقم، يصبح الشحن 0 ج.م مجاناً للعميل.
@@ -57,7 +57,7 @@ export function ShippingSettingsTab({
               value={estimatedDeliveryDays}
               onChange={(e) => setEstimatedDeliveryDays(e.target.value)}
               placeholder="1 - 3 أيام عمل لجميع المحافظات"
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-base sm:text-xs bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-base lg:text-sm bg-neutral-50 focus:bg-white transition"
             />
           </div>
         </div>
@@ -94,7 +94,7 @@ export function ShippingSettingsTab({
                     type="number"
                     value={currentRate}
                     onChange={(e) => onRateChange(gov.name, Number(e.target.value))}
-                    className="w-24 p-1.5 rounded-lg border border-neutral-300 text-left font-bold text-base sm:text-xs bg-white"
+                    className="w-24 p-1.5 rounded-lg border border-neutral-300 text-left font-bold text-base lg:text-sm bg-white"
                   />
                   <span className="text-neutral-500 font-bold">ج.م</span>
                 </div>

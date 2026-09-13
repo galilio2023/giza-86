@@ -84,7 +84,7 @@ export function ProductColorManager({
               <select
                 value={c.imageUrl || ""}
                 onChange={(e) => handleUpdateColorImage(c.hex, e.target.value)}
-                className="text-base sm:text-[11px] p-1.5 rounded-lg border border-neutral-200 bg-neutral-50 text-neutral-700 max-w-[130px] truncate"
+                className="text-base lg:text-xs p-1.5 rounded-lg border border-neutral-200 bg-neutral-50 text-neutral-700 max-w-[130px] truncate"
                 title="اختر الصورة المربوطة بهذا اللون"
               >
                 <option value="">بدون ربط صورة</option>
@@ -115,7 +115,7 @@ export function ProductColorManager({
             value={newColorName}
             onChange={(e) => setNewColorName(e.target.value)}
             placeholder="اسم اللون الجديد (مثلاً: كحلي، بيج...)"
-            className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs bg-white"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 text-base lg:text-sm bg-white"
           />
         </div>
         <div className="sm:col-span-2 flex items-center gap-1.5">
@@ -131,7 +131,7 @@ export function ProductColorManager({
           <select
             value={newColorImage}
             onChange={(e) => setNewColorImage(e.target.value)}
-            className="w-full h-10 p-2 rounded-xl border border-neutral-200 text-base sm:text-xs bg-white"
+            className="w-full h-10 p-2 rounded-xl border border-neutral-200 text-base lg:text-sm bg-white"
           >
             <option value="">ربط بصورة من المعرض (اختياري)</option>
             {availableImages.map((img, i) => (

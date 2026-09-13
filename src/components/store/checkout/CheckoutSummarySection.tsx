@@ -77,7 +77,7 @@ export function CheckoutSummarySection({
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
               placeholder="أدخل كود الخصم (مثل: EGYPT20)"
-              className="w-full px-3 py-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs font-mono uppercase"
+              className="w-full px-3 py-2.5 rounded-xl border border-neutral-200 text-base lg:text-sm font-mono uppercase"
             />
           </div>
           <Button
@@ -87,7 +87,7 @@ export function CheckoutSummarySection({
             onClick={handleApplyCoupon}
             isLoading={couponLoading}
             disabled={couponLoading || !couponCode.trim()}
-            className="min-h-[42px] px-4 font-bold"
+            className="min-h-[44px] px-4 font-bold"
           >
             {couponLoading ? "تفعيل..." : "تطبيق"}
           </Button>

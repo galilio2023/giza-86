@@ -263,10 +263,15 @@ export class DrizzleProductRepository implements IProductRepository {
       .where(inArray(products.id, ids));
 
     // Bulk-fetch all variants for these products in a single query
-    const allVariantRows = await db
-      .select()
-      .from(productVariants)
-      .where(inArray(productVariants.productId, ids));
+    let allVariantRows: (typeof productVariants.$inferSelect)[] = [];
+    try {
+      allVariantRows = await db
+        .select()
+        .from(productVariants)
+        .where(inArray(productVariants.productId, ids));
+    } catch (vErr) {
+      console.warn("Notice: could not query variants table for products:", ids, vErr);
+    }
 
     const variantsByProduct = new Map<number, typeof allVariantRows>();
     for (const v of allVariantRows) {

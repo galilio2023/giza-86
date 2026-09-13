@@ -44,7 +44,7 @@ export function ProductVariantMatrix({
             min="0"
             value={bulkStock}
             onChange={(e) => onBulkStockChange(e.target.value)}
-            className="w-16 p-1 text-center bg-white border border-neutral-300 rounded-lg text-base sm:text-xs font-mono font-bold"
+            className="w-16 p-1 text-center bg-white border border-neutral-300 rounded-lg text-base lg:text-xs font-mono font-bold"
             placeholder="10"
           />
           <button
@@ -94,7 +94,7 @@ export function ProductVariantMatrix({
                       type="text"
                       value={v.sku || ""}
                       onChange={(e) => onVariantSkuChange(idx, e.target.value)}
-                      className="w-full max-w-[180px] p-1 text-base sm:text-xs border border-neutral-200 rounded font-mono uppercase text-left"
+                      className="w-full max-w-[180px] p-1 text-base lg:text-xs border border-neutral-200 rounded font-mono uppercase text-left"
                     />
                   </td>
                   <td className="p-2.5">
@@ -103,7 +103,7 @@ export function ProductVariantMatrix({
                       min="0"
                       value={v.stock}
                       onChange={(e) => onVariantStockChange(idx, Number(e.target.value))}
-                      className="w-20 p-1 text-base sm:text-xs border border-neutral-300 rounded font-mono font-bold text-center"
+                      className="w-20 p-1 text-base lg:text-xs border border-neutral-300 rounded font-mono font-bold text-center"
                     />
                   </td>
                 </tr>
