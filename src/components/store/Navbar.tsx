@@ -46,22 +46,22 @@ export function Navbar({ settings, categories }: NavbarProps = {}) {
       {/* Main Streamlined Navbar - Single Unified Sleek Row */}
       <div className="bg-white/95 backdrop-blur-md border-b border-neutral-200/80 shadow-xs relative">
         <div className="layout-container">
-          <div className="flex items-center justify-between h-14 sm:h-16 gap-3 sm:gap-6">
-            {/* Right (Start): Mobile Menu (Mobile only) + Brand Logo */}
-            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-3 sm:gap-4 xl:gap-6">
+            {/* Right (Start in RTL): Mobile Menu (Mobile only) + Brand Logo */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-max">
               <NavbarMobileMenu navLinks={navLinks} />
 
-              <BrandLogo name={settings?.storeName} logoUrl={settings?.logoUrl} />
+              <BrandLogo name={settings?.storeName} logoUrl={settings?.logoUrl} showSubtext={false} />
             </div>
 
-            {/* Center: Desktop Navigation Links (Unified in single sleek row) */}
-            <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 px-2">
-              <NavbarLinks navLinks={navLinks} />
+            {/* Center: Desktop Navigation Links (Unified, elegant, non-overlapping) */}
+            <div className="hidden lg:flex items-center justify-center flex-1 min-w-0 px-2 xl:px-4">
+              <NavbarLinks categories={categories} />
             </div>
 
-            {/* Left (End): Search Bar (Large Desktop) & Actions (Wishlist + Cart) */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <div className="hidden xl:block">
+            {/* Left (End in RTL): Search Bar (Desktop) & Actions (Wishlist + Cart) */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-max">
+              <div className="hidden lg:block">
                 <NavbarSearch />
               </div>
               <NavbarActions />

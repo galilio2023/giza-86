@@ -56,7 +56,7 @@ export function BrandLogo({
         </span>
       )}
       {showSubtext && (
-        <span className="hidden xl:inline-block text-[10px] tracking-wider text-neutral-400 uppercase font-semibold border-r border-neutral-200 pr-2 mr-1 whitespace-nowrap">
+        <span className="hidden 2xl:inline-block text-[10px] tracking-wider text-neutral-400 uppercase font-semibold border-s border-neutral-200 ps-2 ms-1 whitespace-nowrap">
           Egyptian Cotton
         </span>
       )}

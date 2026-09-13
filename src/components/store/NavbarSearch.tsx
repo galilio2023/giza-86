@@ -16,7 +16,7 @@ export function NavbarSearch() {
   };
 
   return (
-    <form onSubmit={handleSearchSubmit} className="relative w-44 xl:w-56">
+    <form onSubmit={handleSearchSubmit} className="relative w-36 lg:w-40 xl:w-52">
       <input
         type="text"
         value={searchQuery}
