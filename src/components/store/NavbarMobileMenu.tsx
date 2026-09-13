@@ -59,7 +59,7 @@ export function NavbarMobileMenu({ navLinks }: NavbarMobileMenuProps) {
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="p-1.5 rounded-xl text-neutral-800 hover:bg-neutral-100 focus:outline-none transition cursor-pointer"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 rounded-xl text-neutral-800 hover:bg-neutral-100 focus:outline-none transition cursor-pointer"
           aria-label="القائمة"
         >
           {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -86,7 +86,7 @@ export function NavbarMobileMenu({ navLinks }: NavbarMobileMenuProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="ابحث عن الملابس والمقاسات..."
-                className="w-full pr-10 pl-4 py-2.5 bg-neutral-100 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full pr-10 pl-4 py-2.5 bg-neutral-100 border border-neutral-200 rounded-xl text-base text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </form>
 

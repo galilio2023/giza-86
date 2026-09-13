@@ -86,7 +86,37 @@ export function CheckoutClient({ settings }: CheckoutClientProps = {}) {
     },
   });
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <div className="layout-container py-8 sm:py-12 animate-pulse">
+        <div className="mb-8 border-b border-neutral-200 pb-4">
+          <div className="h-4 bg-neutral-100 rounded w-40 mb-2" />
+          <div className="h-8 bg-neutral-200 rounded w-64" />
+          <div className="h-4 bg-neutral-100 rounded w-80 mt-2" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-7 space-y-6">
+            <div className="bg-white rounded-2xl border border-neutral-200 p-6 space-y-4">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="space-y-2">
+                  <div className="h-4 bg-neutral-100 rounded w-24" />
+                  <div className="h-10 bg-neutral-100 rounded-xl w-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="lg:col-span-5">
+            <div className="bg-white rounded-2xl border border-neutral-200 p-6 space-y-4">
+              <div className="h-6 bg-neutral-200 rounded w-1/2" />
+              <div className="h-4 bg-neutral-100 rounded w-full" />
+              <div className="h-4 bg-neutral-100 rounded w-3/4" />
+              <div className="h-12 bg-neutral-200 rounded-xl w-full mt-4" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Master Kill Switch: Check if store is currently accepting orders
   if (settings?.isAcceptingOrders === false) {

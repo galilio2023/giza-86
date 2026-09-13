@@ -434,7 +434,7 @@ body.scroll-locked {
 }
 
 /* Prevent annoying auto-zoom on iOS Safari when tapping inputs (triggers if font-size < 16px) */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1024px) {
   input[type="text"],
   input[type="number"],
   input[type="email"],

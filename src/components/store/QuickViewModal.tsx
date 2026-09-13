@@ -50,7 +50,7 @@ export function QuickViewModal({ product, onClose, whatsappNumber }: QuickViewMo
 
   return (
     <Dialog open={!!product} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl p-0 overflow-hidden rounded-3xl border border-neutral-200">
+      <DialogContent className="w-[95vw] sm:w-full max-w-3xl p-0 max-h-[90vh] overflow-y-auto rounded-3xl border border-neutral-200">
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Images Gallery */}
           <div className="p-6 bg-neutral-50 flex flex-col items-center justify-center">

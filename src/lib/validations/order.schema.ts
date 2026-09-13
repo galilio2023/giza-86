@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { normalizeEgyptianPhone, isValidEgyptianPhone } from "@/lib/egypt-constants";
+import { normalizeEgyptianPhone, isValidEgyptianPhone, EGYPTIAN_GOVERNORATES } from "@/lib/egypt-constants";
+
+const VALID_GOVERNORATE_NAMES = EGYPTIAN_GOVERNORATES.map((g) => g.name);
+const VALID_GOVERNORATE_IDS = EGYPTIAN_GOVERNORATES.map((g) => g.id);
 
 export const createOrderSchema = z.object({
   customerName: z
@@ -24,7 +27,11 @@ export const createOrderSchema = z.object({
     .string()
     .trim()
     .min(2, "يرجى اختيار المحافظة")
-    .max(50, "اسم المحافظة غير صالح"),
+    .max(50, "اسم المحافظة غير صالح")
+    .refine(
+      (val) => VALID_GOVERNORATE_NAMES.includes(val) || VALID_GOVERNORATE_IDS.includes(val.toLowerCase()),
+      "المحافظة المدخلة غير صالحة. يرجى اختيار محافظة مصرية من القائمة."
+    ),
   city: z
     .string()
     .trim()
@@ -83,7 +90,10 @@ export const checkoutFormSchema = z.object({
     })
     .optional()
     .or(z.literal("")),
-  governorate: z.string().trim().min(2, "يرجى اختيار المحافظة"),
+  governorate: z.string().trim().min(2, "يرجى اختيار المحافظة").refine(
+    (val) => VALID_GOVERNORATE_NAMES.includes(val) || VALID_GOVERNORATE_IDS.includes(val.toLowerCase()),
+    "المحافظة المدخلة غير صالحة. يرجى اختيار محافظة مصرية من القائمة."
+  ),
   city: z.string().trim().min(2, "يرجى كتابة اسم المنطقة أو المدينة أو المركز"),
   address: z
     .string()

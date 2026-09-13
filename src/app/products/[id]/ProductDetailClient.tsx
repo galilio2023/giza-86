@@ -76,7 +76,7 @@ export function ProductDetailClient({ product, relatedProductsSlot, settings }: 
 
   return (
     <>
-      <div className="layout-container py-8 sm:py-12">
+      <div className="layout-container pt-8 pb-28 sm:py-12">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-xs text-neutral-500 mb-8 overflow-x-auto">
           <Link href="/" className="hover:text-neutral-900">

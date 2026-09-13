@@ -135,7 +135,7 @@ export function AdminShellClient({
               </div>
               <button
                 onClick={handleSignOut}
-                className="text-neutral-400 hover:text-rose-400 p-1.5 transition"
+                className="text-neutral-400 hover:text-rose-400 p-2 min-h-[38px] min-w-[38px] flex items-center justify-center rounded-lg hover:bg-neutral-800 transition cursor-pointer"
                 title="تسجيل الخروج"
               >
                 <LogOut className="w-4 h-4" />
@@ -171,7 +171,8 @@ export function AdminShellClient({
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 rounded-lg text-neutral-600 hover:bg-neutral-100 shrink-0"
+              className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center p-2 rounded-xl text-neutral-600 hover:bg-neutral-100 shrink-0 cursor-pointer"
+              aria-label="فتح القائمة الجانبية"
             >
               <Menu className="w-5 h-5" />
             </button>

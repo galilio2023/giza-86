@@ -21,7 +21,7 @@ const SIZE_GUIDE_ROWS = [
 export function ProductSizeGuideModal({ open, onOpenChange }: ProductSizeGuideModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg space-y-4">
+      <DialogContent className="w-[95vw] sm:w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center gap-2">
             <Ruler className="w-5 h-5 text-amber-600" />

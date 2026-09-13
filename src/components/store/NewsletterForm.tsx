@@ -57,7 +57,7 @@ export function NewsletterForm() {
             required
             disabled={isPending}
             placeholder="أدخل بريدك الإلكتروني أو رقم الواتساب..."
-            className="w-full bg-card border border-border rounded-xl px-3.5 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 shadow-2xs"
+            className="w-full bg-card border border-border rounded-xl px-3.5 py-2.5 text-base lg:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-50 shadow-2xs"
           />
         </div>
         <SubmitButton />

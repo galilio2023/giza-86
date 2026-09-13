@@ -151,7 +151,7 @@ export function CheckoutPaymentSection({
                     value={transferRef}
                     onChange={(e) => setTransferRef(e.target.value)}
                     placeholder="اكتب رقم العملية أو اسم صاحب الحساب المحول منه (اختياري للتأكيد)"
-                    className="w-full p-2.5 rounded-lg border border-neutral-200 text-xs"
+                    className="w-full p-2.5 rounded-lg border border-neutral-200 text-base lg:text-sm"
                   />
                 </div>
               </div>
@@ -228,7 +228,7 @@ export function CheckoutPaymentSection({
                       if (formErrors.vodafoneSenderPhone) clearError("vodafoneSenderPhone");
                     }}
                     placeholder="010XXXXXXXX"
-                    className={`w-full p-2.5 rounded-lg border text-xs text-left focus:outline-none ${
+                    className={`w-full p-2.5 rounded-lg border text-base lg:text-sm text-left focus:outline-none ${
                       formErrors.vodafoneSenderPhone
                         ? "border-rose-400 bg-rose-50/40 focus:ring-2 focus:ring-rose-500"
                         : "border-neutral-200 focus:ring-2 focus:ring-red-400"

@@ -32,7 +32,40 @@ export function CartClient({ settings }: CartClientProps = {}) {
 
   const freeShippingThreshold = settings?.freeShippingThreshold ?? 1200;
 
-  if (!mounted) return null;
+  if (!mounted) {
+    return (
+      <div className="layout-container py-8 sm:py-12 animate-pulse">
+        <div className="flex items-center justify-between pb-6 border-b border-neutral-200">
+          <div>
+            <div className="h-8 bg-neutral-200 rounded w-40" />
+            <div className="h-4 bg-neutral-100 rounded w-28 mt-2" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-8">
+          <div className="lg:col-span-8 space-y-4">
+            {[1, 2].map((i) => (
+              <div key={i} className="bg-white rounded-2xl border border-neutral-200 p-4 flex gap-4">
+                <div className="w-24 h-24 bg-neutral-100 rounded-xl shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-5 bg-neutral-200 rounded w-3/4" />
+                  <div className="h-4 bg-neutral-100 rounded w-1/2" />
+                  <div className="h-4 bg-neutral-100 rounded w-1/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="lg:col-span-4">
+            <div className="bg-white rounded-2xl border border-neutral-200 p-6 space-y-4">
+              <div className="h-6 bg-neutral-200 rounded w-1/2" />
+              <div className="h-4 bg-neutral-100 rounded w-full" />
+              <div className="h-4 bg-neutral-100 rounded w-3/4" />
+              <div className="h-12 bg-neutral-200 rounded-xl w-full mt-4" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const subtotal = getSubtotal();
 

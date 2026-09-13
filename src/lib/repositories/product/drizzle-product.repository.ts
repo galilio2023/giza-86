@@ -228,6 +228,112 @@ export class DrizzleProductRepository implements IProductRepository {
     };
   }
 
+  /**
+   * Bulk fetch products by numeric IDs in a single query.
+   * Eliminates N+1 queries during checkout product validation.
+   */
+  async findByIds(ids: number[]): Promise<ProductItem[]> {
+    if (ids.length === 0) return [];
+
+    const rows = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        slug: products.slug,
+        description: products.description,
+        fabricDetails: products.fabricDetails,
+        price: products.price,
+        salePrice: products.salePrice,
+        stock: products.stock,
+        categoryId: products.categoryId,
+        categoryName: categories.name,
+        categorySlug: categories.slug,
+        sizes: products.sizes,
+        colors: products.colors,
+        images: products.images,
+        isFeatured: products.isFeatured,
+        isNew: products.isNew,
+        sku: products.sku,
+        hasSizeGuide: products.hasSizeGuide,
+        badgeText: products.badgeText,
+        createdAt: products.createdAt,
+      })
+      .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id))
+      .where(inArray(products.id, ids));
+
+    // Bulk-fetch all variants for these products in a single query
+    let allVariantRows: (typeof productVariants.$inferSelect)[] = [];
+    try {
+      allVariantRows = await db
+        .select()
+        .from(productVariants)
+        .where(inArray(productVariants.productId, ids));
+    } catch (vErr) {
+      console.warn("Notice: could not query variants table for products:", ids, vErr);
+    }
+
+    const variantsByProduct = new Map<number, typeof allVariantRows>();
+    for (const v of allVariantRows) {
+      const existing = variantsByProduct.get(v.productId) || [];
+      existing.push(v);
+      variantsByProduct.set(v.productId, existing);
+    }
+
+    return rows.map((r) => {
+      const vRows = variantsByProduct.get(r.id) || [];
+      let variants: ProductVariantItem[] = vRows.map((v) => ({
+        id: v.id,
+        productId: v.productId,
+        size: v.size,
+        colorName: v.colorName,
+        colorHex: v.colorHex,
+        sku: v.sku,
+        stock: v.stock,
+        price: v.price ? Number(v.price) : undefined,
+        imageUrl: v.imageUrl ?? undefined,
+        createdAt: v.createdAt?.toISOString(),
+        updatedAt: v.updatedAt?.toISOString(),
+      }));
+
+      if (variants.length === 0 && r.sizes && r.colors) {
+        variants = buildProductVariants(
+          r.id,
+          r.sku || `SKU-${r.id}`,
+          r.sizes as string[],
+          r.colors as { name: string; hex: string; imageUrl?: string }[],
+          r.salePrice ? Number(r.salePrice) : Number(r.price)
+        );
+      }
+
+      return {
+        id: r.id,
+        name: r.name,
+        slug: r.slug,
+        description: r.description,
+        fabricDetails: r.fabricDetails ?? undefined,
+        price: Number(r.price),
+        salePrice: r.salePrice ? Number(r.salePrice) : undefined,
+        stock: r.stock,
+        categoryId: r.categoryId ?? 1,
+        categoryName: r.categoryName ?? undefined,
+        categorySlug: r.categorySlug ?? undefined,
+        sizes: (r.sizes as string[]) || ["S", "M", "L", "XL", "2XL"],
+        colors: (r.colors as { name: string; hex: string }[]) || [],
+        images: (r.images as string[]) || [],
+        isFeatured: r.isFeatured ?? false,
+        isNew: r.isNew ?? false,
+        sku: r.sku ?? undefined,
+        hasSizeGuide: r.hasSizeGuide !== null && r.hasSizeGuide !== undefined
+          ? Boolean(r.hasSizeGuide)
+          : (Array.isArray(r.sizes) && (r.sizes as string[]).some((s) => ["S", "M", "L", "XL", "2XL", "3XL"].includes(String(s).trim().toUpperCase()))),
+        badgeText: r.badgeText || undefined,
+        variants,
+        createdAt: r.createdAt?.toISOString(),
+      };
+    });
+  }
+
   async getRelated(categoryId: number, currentProductId: number, limit = 4): Promise<ProductItem[]> {
     const rows = await db
       .select({

@@ -28,7 +28,17 @@ const getBaseURL = () => {
 
 export const auth = betterAuth({
   baseURL: getBaseURL(),
-  secret: process.env.BETTER_AUTH_SECRET || "giza86-egypt-secret-key-2026-super-secure-token-neon",
+  secret: (() => {
+    if (process.env.BETTER_AUTH_SECRET) return process.env.BETTER_AUTH_SECRET;
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "[GIZA 86 FATAL] BETTER_AUTH_SECRET environment variable is required in production. " +
+        "Generate one with: openssl rand -base64 32"
+      );
+    }
+    // Dev-only fallback — never used in production
+    return "dev-only-insecure-secret-do-not-use-in-production";
+  })(),
   trustedOrigins: [
     "https://giza-86.vercel.app",
     "https://*.vercel.app",

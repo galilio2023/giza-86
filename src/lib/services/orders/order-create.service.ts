@@ -52,14 +52,13 @@ export async function createOrder(data: CreateOrderInput): Promise<OrderItem> {
     }
   }
 
-  // 5. Query Products & Variants via Repository
+  // 5. Query Products & Variants via Repository (single bulk query)
   const productRepo = getProductRepository();
   const uniqueProductIds = Array.from(new Set(consolidatedItems.map((i) => i.productId)));
-  const productsList = await Promise.all(uniqueProductIds.map((id) => productRepo.findById(id)));
+  const productsList = await productRepo.findByIds(uniqueProductIds);
   const productMap = new Map<number, NonNullable<(typeof productsList)[0]>>();
-  for (let i = 0; i < uniqueProductIds.length; i++) {
-    const p = productsList[i];
-    if (p) productMap.set(uniqueProductIds[i], p);
+  for (const p of productsList) {
+    if (p) productMap.set(p.id, p);
   }
 
   // 6. Inventory & Stock Validation

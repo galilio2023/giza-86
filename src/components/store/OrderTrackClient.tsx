@@ -120,7 +120,7 @@ export function OrderTrackClient({ settings }: OrderTrackClientProps = {}) {
                 onChange={(e) => setOrderNumber(e.target.value)}
                 placeholder="EG-2026-..."
                 dir="ltr"
-                className="w-full px-4 py-3 rounded-xl border border-neutral-300 text-sm font-mono focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-neutral-300 text-base lg:text-sm font-mono focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition"
                 required
               />
             </div>
@@ -135,7 +135,7 @@ export function OrderTrackClient({ settings }: OrderTrackClientProps = {}) {
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="010xxxxxxxx"
                 dir="ltr"
-                className="w-full px-4 py-3 rounded-xl border border-neutral-300 text-sm font-mono focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-neutral-300 text-base lg:text-sm font-mono focus:border-amber-500 focus:ring-1 focus:ring-amber-500 outline-none transition"
                 required
               />
             </div>
