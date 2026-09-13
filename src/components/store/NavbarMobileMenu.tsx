@@ -74,20 +74,20 @@ export function NavbarMobileMenu({ navLinks }: NavbarMobileMenuProps) {
           />
           <div className="lg:hidden absolute top-full inset-x-0 z-50 border-b border-neutral-200 bg-white/98 backdrop-blur-md px-5 pt-4 pb-6 space-y-4 shadow-2xl max-h-[calc(100dvh-5.5rem)] overflow-y-auto animate-in slide-in-from-top-2 duration-200">
             <form onSubmit={handleSearchSubmit} className="relative w-full">
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-neutral-500 hover:text-neutral-900 transition z-10"
+                aria-label="بحث"
+              >
+                <Search className="w-4 h-4" />
+              </button>
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="ابحث عن الملابس والمقاسات..."
-                className="w-full pl-10 pr-4 py-2.5 bg-neutral-100 border border-neutral-200 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full pr-10 pl-4 py-2.5 bg-neutral-100 border border-neutral-200 rounded-xl text-sm text-neutral-900 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
-              <button
-                type="submit"
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1 text-neutral-500"
-                aria-label="بحث"
-              >
-                <Search className="w-4 h-4" />
-              </button>
             </form>
 
             <div className="flex flex-col space-y-1">

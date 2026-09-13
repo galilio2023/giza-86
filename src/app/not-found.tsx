@@ -24,18 +24,19 @@ export default function NotFound() {
         {/* Quick Search Redirect */}
         <div className="w-full max-w-md">
           <form action="/products" method="GET" className="relative w-full">
+            <button
+              type="submit"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-amber-600 transition z-10"
+              aria-label="بحث"
+            >
+              <Search className="w-4 h-4" />
+            </button>
             <input
               type="text"
               name="q"
               placeholder="ابحث عن تيشيرت، هودي، قميص..."
-              className="w-full pl-10 pr-4 py-3 rounded-2xl border border-neutral-200 bg-white text-xs shadow-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
+              className="w-full pr-10 pl-4 py-3 rounded-2xl border border-neutral-200 bg-white text-xs placeholder:text-neutral-400 shadow-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"
             />
-            <button
-              type="submit"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-amber-600"
-            >
-              <Search className="w-4 h-4" />
-            </button>
           </form>
         </div>
 
