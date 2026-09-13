@@ -87,7 +87,7 @@ export function ProductGeneralInfo({
     "إكسسوار حصري ✨",
     "جلد طبيعي 💼",
     "صناعة يدوية 🧵",
-    "بدون شارة",
+    "افتراضي (شارة القسم)",
   ];
 
   const MATERIAL_PRESETS = [
@@ -217,9 +217,9 @@ export function ProductGeneralInfo({
             <button
               type="button"
               key={badge}
-              onClick={() => onBadgeTextChange(badge === "بدون شارة" ? "" : badge)}
+              onClick={() => onBadgeTextChange(badge === "افتراضي (شارة القسم)" ? "" : badge)}
               className={`text-[10px] px-2 py-0.5 rounded-md border transition font-bold ${
-                (badge === "بدون شارة" && !badgeText) || badgeText === badge
+                (badge === "افتراضي (شارة القسم)" && !badgeText) || badgeText === badge
                   ? "bg-amber-500 text-neutral-950 border-amber-600"
                   : "bg-neutral-50 text-neutral-700 border-neutral-200 hover:bg-neutral-100"
               }`}

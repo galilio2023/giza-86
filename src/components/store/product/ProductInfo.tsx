@@ -86,7 +86,7 @@ export function ProductInfo({
           product.categoryName?.includes("إكسسوار") ||
           product.categoryName?.includes("شنط") ||
           product.categoryName?.includes("حقائب") ||
-          (!product.hasSizeGuide && (product.sizes?.includes("مقاس موحد") || product.sizes?.includes("One Size")));
+          (product.hasSizeGuide === false && (product.sizes?.includes("مقاس موحد") || product.sizes?.includes("One Size")));
 
         return (
           <div className="p-4 rounded-2xl bg-neutral-50/80 border border-neutral-200/80 space-y-3">
@@ -106,7 +106,9 @@ export function ProductInfo({
                   <div className="space-y-1">
                     <span className="text-neutral-500 block font-medium">نوع المقاس:</span>
                     <span className="font-black text-neutral-950 block">
-                      {product.sizes?.length === 1 ? product.sizes[0] : "مقاس موحد يناسب الجميع"}
+                      {product.sizes && product.sizes.length > 0
+                        ? product.sizes.join("، ")
+                        : "لا ينطبق"}
                     </span>
                   </div>
                   <div className="space-y-1">

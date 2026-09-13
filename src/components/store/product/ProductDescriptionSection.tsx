@@ -14,7 +14,7 @@ export function ProductDescriptionSection({
     product.categoryName?.includes("إكسسوار") ||
     product.categoryName?.includes("شنط") ||
     product.categoryName?.includes("حقائب") ||
-    (!product.hasSizeGuide && (product.sizes?.includes("مقاس موحد") || product.sizes?.includes("One Size")));
+    (product.hasSizeGuide === false && (product.sizes?.includes("مقاس موحد") || product.sizes?.includes("One Size")));
 
   return (
     <div className="mt-16 bg-white rounded-3xl p-6 sm:p-10 border border-neutral-200/80 space-y-6">

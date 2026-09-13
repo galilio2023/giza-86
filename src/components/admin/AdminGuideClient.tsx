@@ -15,10 +15,8 @@ import {
   Truck,
   PhoneCall,
   Sparkles,
-  Printer,
   ShieldCheck,
   AlertCircle,
-  HelpCircle,
   ArrowLeft,
   Store,
   ExternalLink,
@@ -26,9 +24,8 @@ import {
   Flame,
   Check,
   CreditCard,
-  Ruler,
   Lightbulb,
-  Copy
+  type LucideIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
@@ -37,8 +34,9 @@ interface SectionItem {
   id: string;
   title: string;
   subtitle: string;
-  icon: any;
+  icon: LucideIcon;
   category: "basics" | "catalog" | "orders" | "settings";
+  keywords?: string[];
   content: React.ReactNode;
 }
 
@@ -55,13 +53,11 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
   });
 
   const toggleChecklist = (id: string) => {
-    setChecklist((prev) => {
-      const next = { ...prev, [id]: !prev[id] };
-      if (next[id]) {
-        toast.success("تم إنجاز المهمة بنجاح ✓");
-      }
-      return next;
-    });
+    const willComplete = !checklist[id];
+    setChecklist((prev) => ({ ...prev, [id]: !prev[id] }));
+    if (willComplete) {
+      toast.success("تم إنجاز المهمة بنجاح ✓");
+    }
   };
 
   const sections: SectionItem[] = useMemo(
@@ -72,6 +68,7 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
         subtitle: "كيف تفتح لوحة الإدارة يومياً وتدير العمليات في 5 دقائق",
         icon: Clock,
         category: "basics",
+        keywords: ["روتين", "صباح", "تأكيد", "بوليصة", "شحن", "واتساب", "تجهيز", "فواتير", "مهام"],
         content: (
           <div className="space-y-4 text-xs leading-relaxed text-neutral-700">
             <p className="text-sm font-semibold text-neutral-900">
@@ -124,11 +121,12 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
       },
 
       {
-        id: "categories-guide",
-        title: "2. إدارة الأقسام والتصنيفات (ملابس وإكسسوارات)",
+        id: "categories-setup",
+        title: "2. إدارة الأقسام والكاتالوج (Categories)",
         subtitle: "كيف تنشئ قسماً جديداً وتنظمه في القوائم والصفحة الرئيسية",
         icon: Layers,
         category: "catalog",
+        keywords: ["أقسام", "تصنيفات", "إكسسوارات", "ملابس", "شنط", "حقائب", "سلاسل", "ترتيب", "slug"],
         content: (
           <div className="space-y-4 text-xs leading-relaxed text-neutral-700">
             <p>
@@ -188,6 +186,7 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
         subtitle: "كيف تضبط المقاسات، الألوان، شارات المنتجات، ودليل المقاسات بدقة",
         icon: Shirt,
         category: "catalog",
+        keywords: ["منتجات", "مقاسات", "مقاس موحد", "one size", "شارات", "جدول مقاسات", "ألوان", "مخزون", "باركود", "sku"],
         content: (
           <div className="space-y-4 text-xs leading-relaxed text-neutral-700">
             <p>
@@ -271,6 +270,7 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
         subtitle: "من لحظة نقر العميل على 'تأكيد الطلب' وحتى تحصيل الأموال من المندوب",
         icon: ShoppingBag,
         category: "orders",
+        keywords: ["طلبات", "شحن", "بوليصة", "فاتورة", "تأكيد", "توصيل", "حالات", "تتبع", "بوالص", "طابعة", "طباعة"],
         content: (
           <div className="space-y-4 text-xs leading-relaxed text-neutral-700">
             <p>
@@ -298,7 +298,7 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
                 <div>
                   <strong className="text-neutral-900 block">تم التأكيد مع العميل بنجاح</strong>
                   <span className="text-[11px] text-neutral-600">
-                    حول الحالة إلى "مؤكد". هذا يخبر فريق التجهيز بأن الطلب جاهز للتعبئة والتغليف.
+                    حول الحالة إلى &quot;مؤكد&quot;. هذا يخبر فريق التجهيز بأن الطلب جاهز للتعبئة والتغليف.
                   </span>
                 </div>
               </div>
@@ -359,6 +359,7 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
         subtitle: "كيف تضبط تكلفة التوصيل لكل محافظة وتفعل عروض الشحن المجاني",
         icon: Truck,
         category: "settings",
+        keywords: ["شحن", "محافظات", "أسعار الشحن", "القاهرة", "الجيزة", "الإسكندرية", "الصعيد", "شحن مجاني", "delivery", "shipping"],
         content: (
           <div className="space-y-4 text-xs leading-relaxed text-neutral-700">
             <p>
@@ -415,6 +416,7 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
         subtitle: "كيف تطلق حملات تخفيض وتفعل شريط الإعلانات أعلى الموقع",
         icon: Tag,
         category: "catalog",
+        keywords: ["كوبونات", "خصم", "عروض", "بروموكود", "بانر", "شريط إعلاني", "promo code", "تخفيضات"],
         content: (
           <div className="space-y-4 text-xs leading-relaxed text-neutral-700">
             <p>
@@ -475,6 +477,7 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
         subtitle: "ضبط الدفع عند الاستلام، إنستاباي InstaPay، فودافون كاش، وواتساب المتجر",
         icon: Settings,
         category: "settings",
+        keywords: ["دفع", "كاش", "عند الاستلام", "cod", "انستاباي", "instapay", "فودافون كاش", "فيزا", "ميزة", "مرتجع", "بنوك"],
         content: (
           <div className="space-y-4 text-xs leading-relaxed text-neutral-700">
             <p>
@@ -547,11 +550,13 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
   );
 
   const filteredSections = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
     return sections.filter((s) => {
       const matchesSearch =
-        !searchQuery.trim() ||
-        s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.subtitle.toLowerCase().includes(searchQuery.toLowerCase());
+        !q ||
+        s.title.toLowerCase().includes(q) ||
+        s.subtitle.toLowerCase().includes(q) ||
+        s.keywords?.some((k) => k.toLowerCase().includes(q));
 
       const matchesTab = activeTab === "all" || s.category === activeTab;
 
@@ -736,7 +741,7 @@ export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string
           <div className="text-center py-12 bg-white rounded-3xl border border-neutral-200 p-6 space-y-3">
             <AlertCircle className="w-8 h-8 text-neutral-400 mx-auto" />
             <h4 className="font-bold text-neutral-900 text-sm">لم يتم العثور على نتائج مطابقة لبحثك</h4>
-            <p className="text-neutral-500 text-xs">جرب البحث بكلمات أخرى مثل: "مقاس"، "شحن"، "بوليصة"، "كوبون"، أو "منتج".</p>
+            <p className="text-neutral-500 text-xs">جرب البحث بكلمات أخرى مثل: &quot;مقاس&quot;، &quot;شحن&quot;، &quot;بوليصة&quot;، &quot;كوبون&quot;، أو &quot;منتج&quot;.</p>
             <button
               type="button"
               onClick={() => {
