@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Edit3, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { Edit3, Trash2, ExternalLink } from "lucide-react";
 import { ProductItem } from "@/types";
 import { formatEGP } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
@@ -113,6 +114,15 @@ export function ProductTable({
                 </td>
                 <td className="p-4">
                   <div className="flex items-center gap-2">
+                    <Link
+                      href={`/products/${encodeURIComponent(p.slug || String(p.id))}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1.5 text-neutral-600 hover:text-amber-700 hover:bg-neutral-100 rounded-lg transition cursor-pointer inline-flex items-center justify-center"
+                      title="معاينة في المتجر"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </Link>
                     <button
                       onClick={() => onEdit(p)}
                       className="p-1.5 text-neutral-600 hover:text-amber-700 hover:bg-neutral-100 rounded-lg transition cursor-pointer"

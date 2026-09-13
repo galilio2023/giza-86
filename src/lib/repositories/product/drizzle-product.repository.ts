@@ -1,7 +1,7 @@
 import { ProductItem, ProductVariantItem } from "@/types";
 import { db, dbPool } from "@/db";
 import { products, categories, productVariants } from "@/db/schema";
-import { eq, ne, desc, asc, and, sql, lte, inArray } from "drizzle-orm";
+import { eq, ne, desc, asc, and, or, sql, lte, inArray } from "drizzle-orm";
 import { buildProductVariants } from "@/db/seed-data";
 import { IProductRepository, GetProductsOptions, ProductsPageResult } from "./product.interface";
 import { buildProductConditions } from "./product.conditions";
@@ -111,8 +111,24 @@ export class DrizzleProductRepository implements IProductRepository {
   }
 
   async findById(idOrSlug: string | number): Promise<ProductItem | null> {
-    const id = Number(idOrSlug);
-    const condition = !isNaN(id) ? eq(products.id, id) : eq(products.slug, String(idOrSlug));
+    const raw = String(idOrSlug).trim();
+    let decoded = raw;
+    try {
+      decoded = decodeURIComponent(raw);
+    } catch {
+      // ignore malformed URI components
+    }
+
+    const numId = Number(raw);
+    const isNum = !isNaN(numId) && Number.isInteger(numId) && numId > 0 && String(numId) === raw;
+
+    const slugCandidates = Array.from(new Set([raw, decoded])).filter(Boolean);
+
+    const condition = isNum
+      ? or(eq(products.id, numId), inArray(products.slug, slugCandidates))
+      : slugCandidates.length > 1
+      ? inArray(products.slug, slugCandidates)
+      : eq(products.slug, slugCandidates[0] || raw);
 
     const rows = await db
       .select({

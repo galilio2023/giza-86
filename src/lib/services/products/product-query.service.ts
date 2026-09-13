@@ -40,7 +40,15 @@ const getCachedProductsWithCount = unstable_cache(
 );
 
 const getCachedProductById = unstable_cache(
-  async (idOrSlug: string) => getProductRepository().findById(idOrSlug),
+  async (idOrSlug: string) => {
+    let decoded = idOrSlug;
+    try {
+      decoded = decodeURIComponent(idOrSlug);
+    } catch {
+      // ignore
+    }
+    return getProductRepository().findById(decoded);
+  },
   ["store-product-detail"],
   {
     revalidate: 3600,
@@ -112,7 +120,14 @@ export async function getAdminProductsWithCount(options?: GetProductsOptions): P
 export const getProductById = cache(async function getProductById(
   idOrSlug: string | number
 ): Promise<ProductItem | null> {
-  return getCachedProductById(String(idOrSlug));
+  const raw = String(idOrSlug).trim();
+  let decoded = raw;
+  try {
+    decoded = decodeURIComponent(raw);
+  } catch {
+    // ignore
+  }
+  return getCachedProductById(decoded);
 });
 
 export const getProductBySlugOrId = getProductById;

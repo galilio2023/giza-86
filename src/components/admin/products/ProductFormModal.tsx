@@ -53,13 +53,9 @@ function ProductFormContent({
     editingProduct?.categoryId || categories[0]?.id || 1
   );
   const [images, setImages] = useState<string[]>(
-    editingProduct
-      ? editingProduct.images.length > 0
-        ? editingProduct.images
-        : ["https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800"]
-      : [
-          "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&auto=format&fit=crop&q=80",
-        ]
+    editingProduct?.images && editingProduct.images.length > 0
+      ? editingProduct.images
+      : []
   );
   const [isFeatured, setIsFeatured] = useState(Boolean(editingProduct?.isFeatured));
   const [isNew, setIsNew] = useState(editingProduct ? Boolean(editingProduct.isNew) : true);

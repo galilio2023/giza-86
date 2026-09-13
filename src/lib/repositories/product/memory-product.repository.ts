@@ -10,7 +10,14 @@ export class MemoryProductRepository implements IProductRepository {
       list = list.filter((p) => p.categoryId === options.categoryId);
     }
     if (options?.categorySlug) {
-      const cat = memoryCategories.find((c) => c.slug === options.categorySlug);
+      const rawCat = options.categorySlug.trim();
+      let decodedCat = rawCat;
+      try {
+        decodedCat = decodeURIComponent(rawCat);
+      } catch {
+        // ignore
+      }
+      const cat = memoryCategories.find((c) => c.slug === rawCat || c.slug === decodedCat);
       if (cat) list = list.filter((p) => p.categoryId === cat.id);
     }
     if (options?.featured) {
@@ -82,15 +89,33 @@ export class MemoryProductRepository implements IProductRepository {
   }
 
   async findById(idOrSlug: string | number): Promise<ProductItem | null> {
-    const id = Number(idOrSlug);
-    if (!isNaN(id)) {
-      const found = memoryProducts.find((p) => p.id === id);
-      if (found) return found;
+    const raw = String(idOrSlug).trim();
+    let decoded = raw;
+    try {
+      decoded = decodeURIComponent(raw);
+    } catch {
+      // ignore
     }
-    const foundBySlug = memoryProducts.find((p) => p.slug === idOrSlug);
-    if (foundBySlug) return foundBySlug;
+    const id = Number(raw);
+    const isNum = !isNaN(id) && Number.isInteger(id) && id > 0 && String(id) === raw;
 
-    const seedFound = INITIAL_PRODUCTS.find((p) => (!isNaN(id) && p.id === id) || p.slug === idOrSlug);
+    const matches = (p: { id: number; slug: string }) => {
+      if (isNum && p.id === id) return true;
+      if (p.slug === raw || p.slug === decoded) return true;
+      return false;
+    };
+
+    const found = memoryProducts.find(matches);
+    if (found) {
+      const cat = memoryCategories.find((c) => c.id === found.categoryId);
+      return {
+        ...found,
+        categoryName: cat?.name,
+        categorySlug: cat?.slug,
+      };
+    }
+
+    const seedFound = INITIAL_PRODUCTS.find(matches);
     if (!seedFound) return null;
 
     const cat = memoryCategories.find((c) => c.id === seedFound.categoryId);

@@ -1,8 +1,9 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { getProductBySlugOrId, updateProduct, deleteProduct } from "@/lib/data-service";
 import { updateProductSchema } from "@/lib/validations/product.schema";
 import { withAdminAuth, withErrorHandler } from "@/lib/api-handler";
+import { slugify } from "@/lib/utils";
 
 export const GET = withErrorHandler(
   async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
@@ -29,6 +30,7 @@ export const PATCH = withAdminAuth(
 
     const updated = await updateProduct(numId, {
       ...validated,
+      slug: validated.slug ? slugify(validated.slug) : undefined,
       salePrice: validated.salePrice === null ? 0 : validated.salePrice,
       fabricDetails: validated.fabricDetails === null ? "" : validated.fabricDetails,
       sku: validated.sku === null ? "" : validated.sku,
@@ -44,6 +46,7 @@ export const PATCH = withAdminAuth(
     revalidatePath(`/products/${id}`);
     if (updated.slug) {
       revalidatePath(`/products/${updated.slug}`);
+      revalidatePath(`/products/${encodeURIComponent(updated.slug)}`);
     }
     return NextResponse.json(updated);
   },

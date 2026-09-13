@@ -25,8 +25,14 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
+  let decodedId = id;
+  try {
+    decodedId = decodeURIComponent(id);
+  } catch {
+    // ignore malformed URI
+  }
   const [product, settings] = await Promise.all([
-    getProductBySlugOrId(id),
+    getProductBySlugOrId(decodedId),
     getStoreSettings().catch(() => null),
   ]);
   const brandName = settings?.storeName || STORE_DEFAULTS.storeName;
@@ -68,8 +74,14 @@ export default async function ProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  let decodedId = id;
+  try {
+    decodedId = decodeURIComponent(id);
+  } catch {
+    // ignore malformed URI
+  }
   const [product, settings] = await Promise.all([
-    getProductBySlugOrId(id),
+    getProductBySlugOrId(decodedId),
     getStoreSettings(),
   ]);
 
@@ -95,7 +107,7 @@ export default async function ProductPage({
     material: "100% Egyptian Cotton - خيوط قطن مصري جيزة 86",
     offers: {
       "@type": "Offer",
-      url: `${baseUrl}/products/${product.slug || product.id}`,
+      url: `${baseUrl}/products/${encodeURIComponent(product.slug || String(product.id))}`,
       priceCurrency: "EGP",
       price: product.salePrice || product.price,
       availability:
