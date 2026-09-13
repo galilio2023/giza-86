@@ -59,23 +59,23 @@ export function OrderDetailModal({
 
   return (
     <Dialog open={Boolean(order)} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-3xl p-6 sm:p-8 rounded-3xl space-y-6 max-h-[92vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] sm:w-full max-w-3xl p-4 sm:p-8 rounded-3xl space-y-6 max-h-[92vh] overflow-y-auto">
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4">
           <div>
             <span className="text-xs font-mono font-bold text-amber-700">
               {order.orderNumber}
             </span>
-            <DialogTitle className="text-xl font-black text-neutral-900">
+            <DialogTitle className="text-lg sm:text-xl font-black text-neutral-900">
               تفاصيل بوليصة الطلب والشحنة
             </DialogTitle>
           </div>
-          <div className="flex items-center gap-2 pl-8">
+          <div className="flex items-center gap-2">
             <Button
               variant="secondary"
               size="sm"
               onClick={handlePrint}
-              className="gap-1.5"
+              className="gap-1.5 min-h-[40px] px-3.5 w-full sm:w-auto"
             >
               <Printer className="w-4 h-4" />
               <span>طباعة البوليصة (AWB)</span>
@@ -88,7 +88,7 @@ export function OrderDetailModal({
           <div className="flex items-center gap-3">
             <a
               href={`tel:${order.customerPhone}`}
-              className="flex items-center gap-2 bg-neutral-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-neutral-800 transition"
+              className="flex items-center gap-2 bg-neutral-900 text-white px-4 py-2.5 rounded-xl text-xs font-bold hover:bg-neutral-800 transition min-h-[40px]"
             >
               <Phone className="w-3.5 h-3.5 text-amber-400" />
               <span>اتصال بالعميل</span>
@@ -103,7 +103,7 @@ export function OrderDetailModal({
               )}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-neutral-950 text-white border border-[#c59b27]/80 hover:border-amber-400 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 group shadow-xs cursor-pointer"
+              className="flex items-center gap-2 bg-neutral-950 text-white border border-[#c59b27]/80 hover:border-amber-400 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 group shadow-xs cursor-pointer min-h-[40px]"
             >
               <WhatsAppIcon className="w-4 h-4 transition-transform group-hover:scale-110" />
               <span className="group-hover:text-amber-300 transition-colors">مراسلة واتساب</span>
@@ -131,7 +131,7 @@ export function OrderDetailModal({
               <select
                 value={modalStatus}
                 onChange={(e) => setModalStatus(e.target.value as OrderItem["orderStatus"])}
-                className="w-full bg-white border border-neutral-300 font-bold p-2 rounded-xl"
+                className="w-full bg-white border border-neutral-300 font-bold p-2 rounded-xl text-base sm:text-xs"
               >
                 <option value="new">طلب جديد</option>
                 <option value="confirmed">تم التأكيد</option>
@@ -147,7 +147,7 @@ export function OrderDetailModal({
               <select
                 value={modalPayment}
                 onChange={(e) => setModalPayment(e.target.value as OrderItem["paymentStatus"])}
-                className="w-full bg-white border border-neutral-300 font-bold p-2 rounded-xl"
+                className="w-full bg-white border border-neutral-300 font-bold p-2 rounded-xl text-base sm:text-xs"
               >
                 <option value="pending">قيد الانتظار (Pending)</option>
                 <option value="paid">تم التأكيد والدفع بنجاح (Paid)</option>
@@ -162,7 +162,7 @@ export function OrderDetailModal({
                 value={modalTracking}
                 onChange={(e) => setModalTracking(e.target.value)}
                 placeholder="مثال: BOSTA-98214"
-                className="w-full bg-white border border-neutral-300 font-mono text-left p-2 rounded-xl"
+                className="w-full bg-white border border-neutral-300 font-mono text-left p-2 rounded-xl text-base sm:text-xs"
               />
             </div>
           </div>
@@ -170,10 +170,10 @@ export function OrderDetailModal({
           <div className="flex justify-end pt-2">
             <Button
               variant="primary"
-              size="sm"
+              size="md"
               disabled={updating}
               onClick={() => onUpdate(order.id, modalStatus, modalPayment, modalTracking)}
-              className="gap-2"
+              className="gap-2 min-h-[42px] w-full sm:w-auto justify-center"
             >
               <Save className="w-3.5 h-3.5" />
               <span>{updating ? "جاري الحفظ..." : "حفظ تحديثات الطلب في قاعدة البيانات"}</span>

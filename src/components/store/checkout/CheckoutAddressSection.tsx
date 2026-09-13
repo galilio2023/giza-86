@@ -84,7 +84,7 @@ export function CheckoutAddressSection({
                 if (formErrors.fullName) clearError("fullName");
               }}
               placeholder="مثال: أحمد محمد مصطفى"
-              className={`w-full px-4 py-3 rounded-xl border text-sm transition focus:outline-none ${
+              className={`w-full px-4 py-3 rounded-xl border text-base sm:text-sm transition focus:outline-none ${
                 formErrors.fullName
                   ? "border-rose-400 bg-rose-50/30 focus:ring-2 focus:ring-rose-500"
                   : "border-neutral-200 focus:ring-2 focus:ring-amber-500"
@@ -114,7 +114,7 @@ export function CheckoutAddressSection({
                   if (formErrors.phone) clearError("phone");
                 }}
                 placeholder="01012345678"
-                className={`w-full px-4 py-3 rounded-xl border text-sm text-left transition focus:outline-none ${
+                className={`w-full px-4 py-3 rounded-xl border text-base sm:text-sm text-left transition focus:outline-none ${
                   formErrors.phone || (phone && !isValidEgyptianPhone(phone))
                     ? "border-rose-400 bg-rose-50/40 focus:ring-2 focus:ring-rose-500"
                     : "border-neutral-200 focus:ring-2 focus:ring-amber-500"
@@ -142,7 +142,7 @@ export function CheckoutAddressSection({
                 value={alternatePhone}
                 onChange={(e) => setAlternatePhone(e.target.value)}
                 placeholder="01298765432"
-                className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm text-left focus:ring-2 focus:ring-amber-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-base sm:text-sm text-left focus:ring-2 focus:ring-amber-500 focus:outline-none"
               />
             </div>
           </div>
@@ -167,7 +167,7 @@ export function CheckoutAddressSection({
               <select
                 value={selectedGovernorate}
                 onChange={(e) => setSelectedGovernorate(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white cursor-pointer"
+                className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-base sm:text-sm font-semibold focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white cursor-pointer"
               >
                 {EGYPTIAN_GOVERNORATES.map((gov) => (
                   <option key={gov.id} value={gov.name}>
@@ -191,7 +191,7 @@ export function CheckoutAddressSection({
                   if (formErrors.city) clearError("city");
                 }}
                 placeholder="مثال: المعادي الجديدة، سموحة، أكتوبر، حي الجامعة..."
-                className={`w-full px-4 py-3 rounded-xl border text-sm transition focus:outline-none ${
+                className={`w-full px-4 py-3 rounded-xl border text-base sm:text-sm transition focus:outline-none ${
                   formErrors.city
                     ? "border-rose-400 bg-rose-50/30 focus:ring-2 focus:ring-rose-500"
                     : "border-neutral-200 focus:ring-2 focus:ring-amber-500"
@@ -225,7 +225,7 @@ export function CheckoutAddressSection({
                 if (formErrors.address) clearError("address");
               }}
               placeholder="اسم الشارع، رقم العقار، رقم الدور، رقم الشقة، وأقرب علامة مميزة..."
-              className={`w-full px-4 py-3 rounded-xl border text-sm transition leading-relaxed focus:outline-none ${
+              className={`w-full px-4 py-3 rounded-xl border text-base sm:text-sm transition leading-relaxed focus:outline-none ${
                 formErrors.address
                   ? "border-rose-400 bg-rose-50/30 focus:ring-2 focus:ring-rose-500"
                   : "border-neutral-200 focus:ring-2 focus:ring-amber-500"
@@ -248,7 +248,7 @@ export function CheckoutAddressSection({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="مثال: الاتصال قبل الوصول بنصف ساعة..."
-              className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
+              className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-base sm:text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
             />
           </div>
         </div>

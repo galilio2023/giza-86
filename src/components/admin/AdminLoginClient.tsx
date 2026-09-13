@@ -107,7 +107,7 @@ export function AdminLoginClient({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@giza86.com"
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-200 text-xs text-left focus:ring-2 focus:ring-amber-500 focus:outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs text-left focus:ring-2 focus:ring-amber-500 focus:outline-none"
             />
           </div>
         </div>
@@ -123,7 +123,7 @@ export function AdminLoginClient({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-200 text-xs text-left focus:ring-2 focus:ring-amber-500 focus:outline-none"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs text-left focus:ring-2 focus:ring-amber-500 focus:outline-none"
             />
           </div>
         </div>

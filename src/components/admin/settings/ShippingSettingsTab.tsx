@@ -40,7 +40,7 @@ export function ShippingSettingsTab({
               value={freeShippingThreshold}
               onChange={(e) => setFreeShippingThreshold(e.target.value)}
               placeholder={String(STORE_DEFAULTS.freeShippingThreshold)}
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-xs font-mono bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-base sm:text-xs font-mono bg-neutral-50 focus:bg-white transition"
             />
             <p className="text-[11px] text-neutral-500">
               إذا وصل إجمالي سلة المشتريات لهذا الرقم، يصبح الشحن 0 ج.م مجاناً للعميل.
@@ -57,32 +57,30 @@ export function ShippingSettingsTab({
               value={estimatedDeliveryDays}
               onChange={(e) => setEstimatedDeliveryDays(e.target.value)}
               placeholder="1 - 3 أيام عمل لجميع المحافظات"
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-xs bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-base sm:text-xs bg-neutral-50 focus:bg-white transition"
             />
           </div>
         </div>
       </Card>
 
-      {/* 27 Governorates Rates */}
+      {/* 27 Governorates Custom Rates */}
       <Card variant="modern" padding="lg" className="space-y-4">
-        <div className="flex items-center justify-between border-b pb-3">
-          <h3 className="text-base font-black text-neutral-900 flex items-center gap-2">
-            <Compass className="w-5 h-5 text-amber-600" />
-            <span>أسعار الشحن المخصصة لكافة الـ 27 محافظة مصرية</span>
-          </h3>
+        <div>
+          <h2 className="text-base font-black text-neutral-900 flex items-center gap-2">
+            <span>تسعير الشحن المخصص لـ 27 محافظة مصرية</span>
+          </h2>
+          <p className="text-xs text-neutral-500 mt-1 leading-relaxed">
+            يمكنك تخصيص سعر شحن لكل محافظة على حدة. الأسعار هنا تحل محل الأسعار الافتراضية للنظام فور الحفظ.
+          </p>
         </div>
 
-        <p className="text-xs text-neutral-500">
-          يتم احتساب هذه القيمة تلقائياً وفورياً عند اختيار العميل لمحافظته في صفحة إتمام الطلب (Checkout).
-        </p>
-
-        <div className="max-h-[600px] overflow-y-auto divide-y divide-neutral-100 pr-2 border rounded-2xl p-2 bg-neutral-50/50">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 bg-neutral-50 p-3 rounded-2xl border border-neutral-200">
           {EGYPTIAN_GOVERNORATES.map((gov) => {
             const currentRate = governoratesRates[gov.name] ?? gov.rate;
             return (
               <div
                 key={gov.id}
-                className="py-2.5 px-3 flex items-center justify-between gap-4 text-xs hover:bg-white rounded-xl transition"
+                className="p-3 bg-white rounded-xl border border-neutral-200 flex items-center justify-between gap-2 text-xs"
               >
                 <div>
                   <span className="font-bold text-neutral-900 block">{gov.name}</span>
@@ -96,7 +94,7 @@ export function ShippingSettingsTab({
                     type="number"
                     value={currentRate}
                     onChange={(e) => onRateChange(gov.name, Number(e.target.value))}
-                    className="w-24 p-1.5 rounded-lg border border-neutral-300 text-left font-bold text-xs bg-white"
+                    className="w-24 p-1.5 rounded-lg border border-neutral-300 text-left font-bold text-base sm:text-xs bg-white"
                   />
                   <span className="text-neutral-500 font-bold">ج.م</span>
                 </div>

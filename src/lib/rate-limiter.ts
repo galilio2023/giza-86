@@ -153,15 +153,26 @@ export async function checkRateLimit(
 
 /**
  * Extracts a client IP from Next.js / Vercel request headers.
+ *
+ * Security: Prioritizes `x-real-ip` (set by trusted reverse proxies like Vercel/Nginx)
+ * over `x-forwarded-for`. When using `x-forwarded-for`, takes the **rightmost** IP
+ * which is the one appended by the last trusted proxy, preventing client-side spoofing
+ * of the leftmost entries.
  */
 export function getClientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const ips = forwarded.split(",");
-    if (ips[0]?.trim()) return ips[0].trim();
-  }
+  // 1. Prefer x-real-ip — set by the trusted reverse proxy (Vercel, Nginx, etc.)
+  //    and cannot be spoofed by the client.
   const realIp = request.headers.get("x-real-ip");
   if (realIp?.trim()) return realIp.trim();
+
+  // 2. Fallback to x-forwarded-for — use the RIGHTMOST IP to avoid spoofing.
+  //    The rightmost entry is appended by the last proxy the request passed through.
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const ips = forwarded.split(",").map((ip) => ip.trim()).filter(Boolean);
+    if (ips.length > 0) return ips[ips.length - 1];
+  }
+
   return "127.0.0.1";
 }
 

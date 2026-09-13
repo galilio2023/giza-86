@@ -242,14 +242,15 @@ function ProductFormContent({
         onVariantSkuChange={handleVariantSkuChange}
       />
 
-      {/* Actions */}
-      <div className="flex justify-end gap-3 pt-4 border-t border-neutral-100">
+      {/* Sticky Bottom Actions */}
+      <div className="sticky bottom-0 -mx-4 sm:-mx-8 -mb-4 sm:-mb-8 p-4 sm:p-6 bg-white/95 backdrop-blur-xs border-t border-neutral-200 flex justify-end gap-3 z-20 shadow-md mt-6 rounded-b-3xl">
         <Button
           type="button"
           variant="ghost"
           size="sm"
           onClick={onClose}
           disabled={saving}
+          className="min-h-[40px] px-4"
         >
           إلغاء
         </Button>
@@ -258,6 +259,7 @@ function ProductFormContent({
           variant="primary"
           size="md"
           isLoading={saving}
+          className="min-h-[40px] px-5"
         >
           {saving ? "جاري الحفظ..." : editingProduct ? "تحديث المنتج" : "حفظ وإضافة للمتجر"}
         </Button>
@@ -275,7 +277,7 @@ export function ProductFormModal({
 }: ProductFormModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl p-6 sm:p-8 rounded-3xl max-h-[92vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] sm:w-full max-w-4xl p-4 sm:p-8 rounded-3xl max-h-[92vh] overflow-y-auto">
         <DialogHeader className="border-b pb-3 mb-4">
           <DialogTitle className="text-lg font-black text-neutral-900">
             {editingProduct ? `تعديل بيانات المنتج (${editingProduct.name})` : "إضافة منتج جديد للمتجر"}

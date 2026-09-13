@@ -69,14 +69,14 @@ export function CategoryGrid({
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => onEdit(cat)}
-                  className="p-1.5 text-neutral-600 hover:text-amber-700 hover:bg-neutral-100 rounded-lg transition"
+                  className="min-h-[38px] min-w-[38px] flex items-center justify-center p-2 text-neutral-600 hover:text-amber-700 hover:bg-neutral-100 rounded-xl transition border border-neutral-200 cursor-pointer"
                   title="تعديل القسم"
                 >
                   <Edit3 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => onDelete(cat)}
-                  className="p-1.5 text-neutral-400 hover:text-rose-600 hover:bg-neutral-100 rounded-lg transition"
+                  className="min-h-[38px] min-w-[38px] flex items-center justify-center p-2 text-neutral-400 hover:text-rose-600 hover:bg-neutral-100 rounded-xl transition border border-neutral-200 cursor-pointer"
                   title="حذف القسم"
                 >
                   <Trash2 className="w-4 h-4" />

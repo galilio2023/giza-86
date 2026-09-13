@@ -44,7 +44,7 @@ export function ProductVariantMatrix({
             min="0"
             value={bulkStock}
             onChange={(e) => onBulkStockChange(e.target.value)}
-            className="w-16 p-1 text-center bg-white border border-neutral-300 rounded-lg text-xs font-mono font-bold"
+            className="w-16 p-1 text-center bg-white border border-neutral-300 rounded-lg text-base sm:text-xs font-mono font-bold"
             placeholder="10"
           />
           <button
@@ -62,8 +62,8 @@ export function ProductVariantMatrix({
           يرجى اختيار مقاس واحد ولون واحد على الأقل لإنشاء مصفوفة المخزون
         </div>
       ) : (
-        <div className="max-h-56 overflow-y-auto rounded-xl border border-neutral-200 bg-white">
-          <table className="w-full text-right text-xs">
+        <div className="max-h-56 overflow-y-auto overflow-x-auto rounded-xl border border-neutral-200 bg-white">
+          <table className="w-full text-right text-xs min-w-[360px]">
             <thead className="bg-neutral-100/75 text-neutral-700 text-[11px] sticky top-0 font-bold z-10">
               <tr>
                 <th className="p-2.5">اللون</th>
@@ -94,7 +94,7 @@ export function ProductVariantMatrix({
                       type="text"
                       value={v.sku || ""}
                       onChange={(e) => onVariantSkuChange(idx, e.target.value)}
-                      className="w-full max-w-[180px] p-1 text-xs border border-neutral-200 rounded font-mono uppercase text-left"
+                      className="w-full max-w-[180px] p-1 text-base sm:text-xs border border-neutral-200 rounded font-mono uppercase text-left"
                     />
                   </td>
                   <td className="p-2.5">
@@ -103,7 +103,7 @@ export function ProductVariantMatrix({
                       min="0"
                       value={v.stock}
                       onChange={(e) => onVariantStockChange(idx, Number(e.target.value))}
-                      className="w-20 p-1 text-xs border border-neutral-300 rounded font-mono font-bold text-center"
+                      className="w-20 p-1 text-base sm:text-xs border border-neutral-300 rounded font-mono font-bold text-center"
                     />
                   </td>
                 </tr>

@@ -108,7 +108,7 @@ export function ProductGeneralInfo({
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             placeholder="مثال: تيشيرت أوفر سايز، حقيبة يد كاجوال، توكة شعر حرير..."
-            className="w-full p-2.5 rounded-xl border border-neutral-200 text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs"
           />
         </div>
 
@@ -117,7 +117,7 @@ export function ProductGeneralInfo({
           <select
             value={categoryId}
             onChange={(e) => onCategoryChange(Number(e.target.value))}
-            className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-xs font-bold"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-base sm:text-xs font-bold"
           >
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
@@ -136,7 +136,7 @@ export function ProductGeneralInfo({
             value={slug}
             onChange={(e) => onSlugChange(e.target.value)}
             placeholder="product-slug-giza86"
-            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-left text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-left text-base sm:text-xs"
           />
         </div>
 
@@ -147,7 +147,7 @@ export function ProductGeneralInfo({
             value={sku}
             onChange={(e) => onSkuChange(e.target.value)}
             placeholder="SKU-8492"
-            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-left uppercase text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-left uppercase text-base sm:text-xs"
           />
         </div>
       </div>
@@ -159,7 +159,7 @@ export function ProductGeneralInfo({
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
           placeholder="وصف تفصيلي للقصة والستايل أو مواصفات الإكسسوار..."
-          className="w-full p-2.5 rounded-xl border border-neutral-200 text-xs"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs"
         />
       </div>
 
@@ -173,7 +173,7 @@ export function ProductGeneralInfo({
           value={fabricDetails}
           onChange={(e) => onFabricDetailsChange(e.target.value)}
           placeholder="مثال: قطن مصري 100%، جلد طبيعي، أكريليك متين..."
-          className="w-full p-2.5 rounded-xl border border-neutral-200 text-xs"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs"
         />
         <div className="flex flex-wrap gap-1.5 pt-0.5">
           <span className="text-[10px] text-neutral-500 font-medium self-center ml-1">اقتراحات سريعة:</span>
@@ -209,7 +209,7 @@ export function ProductGeneralInfo({
           value={badgeText}
           onChange={(e) => onBadgeTextChange(e.target.value)}
           placeholder="اترك فارغاً للاعتماد على شارة القسم، أو اكتب شارة مخصصة مثل: قطن جيزة 86 🇪🇬 أو إكسسوار حصري ✨"
-          className="w-full p-2.5 rounded-xl border border-neutral-200 text-xs font-bold"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs font-bold"
         />
         <div className="flex flex-wrap gap-1.5 pt-0.5">
           <span className="text-[10px] text-neutral-500 font-medium self-center ml-1">شارات مقترحة:</span>
@@ -239,7 +239,7 @@ export function ProductGeneralInfo({
             value={price}
             onChange={(e) => onPriceChange(e.target.value)}
             placeholder="490"
-            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-base sm:text-xs"
           />
         </div>
 
@@ -250,7 +250,7 @@ export function ProductGeneralInfo({
             value={salePrice}
             onChange={(e) => onSalePriceChange(e.target.value)}
             placeholder="380"
-            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-base sm:text-xs"
           />
         </div>
 
@@ -263,7 +263,7 @@ export function ProductGeneralInfo({
             readOnly
             value={totalStock}
             placeholder="0"
-            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono bg-neutral-100/70 text-neutral-800 font-bold cursor-not-allowed text-xs"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 bg-neutral-100 font-mono text-base sm:text-xs text-neutral-500 font-bold cursor-not-allowed"
           />
           <span className="text-[10px] text-neutral-400 block mt-0.5">
             مجموع كميات المتغيرات بالأسفل
@@ -334,12 +334,12 @@ export function ProductGeneralInfo({
               }
             }}
             placeholder="إضافة مقاس مخصص (مثال: Free Size، 4XL، 35 سم)..."
-            className="p-1.5 px-3 rounded-lg border border-neutral-200 text-xs flex-1"
+            className="p-1.5 px-3 rounded-lg border border-neutral-200 text-base sm:text-xs flex-1 min-h-[38px]"
           />
           <button
             type="button"
             onClick={handleAddCustom}
-            className="px-3 py-1.5 rounded-lg bg-neutral-900 text-white font-bold text-xs hover:bg-neutral-800 transition"
+            className="px-3 py-1.5 rounded-lg bg-neutral-900 text-white font-bold text-xs hover:bg-neutral-800 transition min-h-[38px]"
           >
             + إضافة
           </button>

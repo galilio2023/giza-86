@@ -43,7 +43,91 @@ export function OrderTable({
 
   return (
     <Card variant="modern" padding="none" className="overflow-hidden">
-      <div className="overflow-x-auto">
+      {/* Mobile Card View (screens < md) */}
+      <div className="md:hidden divide-y divide-neutral-100">
+        {orders.map((order) => (
+          <div key={order.id} className="p-4 space-y-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <span className="font-mono font-bold text-amber-700 text-xs block">
+                  {order.orderNumber}
+                </span>
+                <span className="font-bold text-neutral-900 text-sm block mt-0.5">
+                  {order.customerName}
+                </span>
+                <span className="text-xs font-mono text-neutral-500 block mt-0.5" dir="ltr">
+                  {order.customerPhone}
+                </span>
+              </div>
+              <div className="text-left">
+                <span className="font-black text-neutral-900 text-sm block">
+                  {formatEGP(order.total)}
+                </span>
+                <span className="text-[11px] text-neutral-500 font-bold block mt-0.5">
+                  {order.governorate}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-neutral-100">
+              <div className="flex items-center gap-1.5">
+                <PaymentStatusBadge status={order.paymentStatus} />
+                <span className="text-[11px] text-neutral-500 font-medium">
+                  {getPaymentMethodName(order.paymentMethod, true)}
+                </span>
+              </div>
+              <span className="text-[11px] font-bold bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">
+                {order.items.reduce((sum, item) => sum + item.quantity, 0)} قطع
+              </span>
+            </div>
+
+            {/* Mobile Actions & Status Control */}
+            <div className="flex items-center justify-between gap-2 pt-1">
+              <select
+                value={order.orderStatus}
+                onChange={(e) =>
+                  onStatusUpdate(
+                    order.id,
+                    e.target.value as OrderItem["orderStatus"],
+                    undefined,
+                    undefined
+                  )
+                }
+                className={`text-base sm:text-xs font-bold rounded-xl border px-3 py-2 transition cursor-pointer flex-1 ${
+                  order.orderStatus === "delivered"
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                    : order.orderStatus === "cancelled" || order.orderStatus === "returned"
+                    ? "bg-rose-50 text-rose-800 border-rose-200"
+                    : order.orderStatus === "shipped"
+                    ? "bg-purple-50 text-purple-800 border-purple-200"
+                    : order.orderStatus === "processing"
+                    ? "bg-blue-50 text-blue-800 border-blue-200"
+                    : "bg-amber-50 text-amber-800 border-amber-200"
+                }`}
+              >
+                {Object.entries(ORDER_STATUSES).map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value.label}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                onClick={() => onOpenDetail(order)}
+                className="min-h-[40px] px-3.5 py-2 text-xs font-bold text-neutral-800 bg-neutral-100 hover:bg-neutral-200 rounded-xl transition cursor-pointer inline-flex items-center gap-1.5 border border-neutral-200"
+                title="عرض تفاصيل الطلب"
+                type="button"
+              >
+                <Eye className="w-4 h-4 text-neutral-600" />
+                <span>تفاصيل</span>
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop Table View (screens >= md) */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-xs text-right border-collapse">
           <thead>
             <tr className="bg-neutral-50/70 border-b border-neutral-200 text-neutral-500">
@@ -133,7 +217,7 @@ export function OrderTable({
                   <td className="p-4">
                     <button
                       onClick={() => onOpenDetail(order)}
-                      className="p-1.5 text-neutral-600 hover:text-amber-700 hover:bg-neutral-100 rounded-lg transition cursor-pointer"
+                      className="min-h-[36px] min-w-[36px] p-2 text-neutral-600 hover:text-amber-700 hover:bg-neutral-100 rounded-lg transition cursor-pointer inline-flex items-center justify-center"
                       title="عرض كامل تفاصيل الطلب"
                       type="button"
                     >

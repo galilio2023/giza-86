@@ -26,6 +26,7 @@ export interface IProductRepository {
   findMany(options?: GetProductsOptions): Promise<ProductItem[]>;
   findWithCount(options?: GetProductsOptions): Promise<ProductsPageResult>;
   findById(idOrSlug: string | number): Promise<ProductItem | null>;
+  findByIds(ids: number[]): Promise<ProductItem[]>;
   getRelated(categoryId: number, currentProductId: number, limit?: number): Promise<ProductItem[]>;
   getLowStock(threshold?: number, limit?: number): Promise<ProductItem[]>;
   create(data: Omit<ProductItem, "id" | "createdAt" | "updatedAt">): Promise<ProductItem>;

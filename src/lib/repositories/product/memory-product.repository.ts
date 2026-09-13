@@ -135,6 +135,16 @@ export class MemoryProductRepository implements IProductRepository {
     };
   }
 
+  async findByIds(ids: number[]): Promise<ProductItem[]> {
+    if (ids.length === 0) return [];
+    const results: ProductItem[] = [];
+    for (const id of ids) {
+      const found = await this.findById(id);
+      if (found) results.push(found);
+    }
+    return results;
+  }
+
   async getRelated(categoryId: number, currentProductId: number, limit = 4): Promise<ProductItem[]> {
     return memoryProducts
       .filter((p) => p.categoryId === categoryId && p.id !== currentProductId)

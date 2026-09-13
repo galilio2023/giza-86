@@ -59,17 +59,17 @@ function CouponFormContent({
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="مثال: SUMMER30"
-          className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono uppercase"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono uppercase text-base sm:text-xs"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block font-bold text-neutral-800 mb-1">نوع الخصم</label>
           <select
             value={discountType}
             onChange={(e) => setDiscountType(e.target.value as "percentage" | "fixed")}
-            className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white font-bold"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white font-bold text-base sm:text-xs"
           >
             <option value="percentage">نسبة مئوية (%)</option>
             <option value="fixed">مبلغ ثابت (ج.م)</option>
@@ -84,7 +84,7 @@ function CouponFormContent({
             value={discountValue}
             onChange={(e) => setDiscountValue(e.target.value)}
             placeholder={discountType === "percentage" ? "20" : "100"}
-            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-base sm:text-xs"
           />
         </div>
       </div>
@@ -98,7 +98,7 @@ function CouponFormContent({
           value={minOrderValue}
           onChange={(e) => setMinOrderValue(e.target.value)}
           placeholder="500"
-          className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-base sm:text-xs"
         />
       </div>
 
@@ -133,7 +133,7 @@ export function CouponFormModal({
 }: CouponFormModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-lg font-black text-neutral-900">
             {editingCoupon ? `تعديل كوبون الخصم (${editingCoupon.code})` : "إنشاء كوبون خصم جديد"}

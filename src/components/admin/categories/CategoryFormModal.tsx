@@ -60,11 +60,11 @@ function CategoryFormContent({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="مثلاً: تيشيرتات أوفر سايز، هوديز شتوي..."
-          className="w-full p-2.5 rounded-xl border border-neutral-200"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block font-bold text-neutral-800 mb-1">الرابط المخصص (Slug)</label>
           <input
@@ -72,7 +72,7 @@ function CategoryFormContent({
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
             placeholder="oversized-tees"
-            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-left"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-left text-base sm:text-xs"
           />
         </div>
 
@@ -82,7 +82,7 @@ function CategoryFormContent({
             type="number"
             value={displayOrder}
             onChange={(e) => setDisplayOrder(e.target.value)}
-            className="w-full p-2.5 rounded-xl border border-neutral-200"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs"
           />
         </div>
       </div>
@@ -94,7 +94,7 @@ function CategoryFormContent({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="وصف مختصر للقسم..."
-          className="w-full p-2.5 rounded-xl border border-neutral-200"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 text-base sm:text-xs"
         />
       </div>
 
@@ -105,7 +105,7 @@ function CategoryFormContent({
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
           placeholder="https://images.unsplash.com/..."
-          className="w-full p-2.5 rounded-xl border border-neutral-200 text-left font-mono"
+          className="w-full p-2.5 rounded-xl border border-neutral-200 text-left font-mono text-base sm:text-xs"
         />
       </div>
 
@@ -141,7 +141,7 @@ export function CategoryFormModal({
 }: CategoryFormModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {editingCategory ? `تعديل قسم: ${editingCategory.name}` : "إضافة قسم جديد"}
