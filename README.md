@@ -264,7 +264,7 @@ pnpm db:push
 pnpm db:seed
 
 # Create an initial Administrator account for the CMS
-pnpm admin:create --email=admin@modanil.com --password=YourStrongPassword2026!
+pnpm admin:create --email=admin@modanil.com --password="${ADMIN_PASSWORD:?Set a unique ADMIN_PASSWORD before running}"
 ```
 
 ---
