@@ -70,7 +70,7 @@ export const POST = withErrorHandler(async (request: Request) => {
     })),
   });
 
-  revalidateTag("products", "default");
+  revalidateTag("products", { expire: 0 });
   revalidatePath("/");
   revalidatePath("/products");
   revalidatePath("/admin/orders");

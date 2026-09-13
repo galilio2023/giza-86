@@ -210,7 +210,7 @@ export function resolveStoreSettings(settings?: Partial<StoreSettingsItem> | nul
       typeof settings?.freeShippingThreshold === "number"
         ? settings.freeShippingThreshold
         : STORE_DEFAULTS.freeShippingThreshold,
-    bannerNotice: settings?.bannerNotice || STORE_DEFAULTS.bannerNotice,
+    bannerNotice: settings?.bannerNotice ?? STORE_DEFAULTS.bannerNotice,
     isBannerActive: settings?.isBannerActive ?? STORE_DEFAULTS.isBannerActive,
     isAcceptingOrders: settings?.isAcceptingOrders ?? true,
     isMaintenanceMode: settings?.isMaintenanceMode ?? false,

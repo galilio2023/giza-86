@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { getOrderById, updateOrderStatus } from "@/lib/data-service";
 import { withAdminAuth } from "@/lib/api-handler";
@@ -52,7 +52,7 @@ export const PATCH = withAdminAuth(
     }
 
     // Synchronize catalog cache when order status transitions impact product inventory
-    revalidateTag("products", "default");
+    revalidateTag("products", { expire: 0 });
     revalidatePath("/");
     revalidatePath("/products");
     revalidatePath(`/order-success/${updated.orderNumber}`);

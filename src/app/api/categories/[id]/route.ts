@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { updateCategory, deleteCategory, getCategoryById } from "@/lib/data-service";
 import { updateCategorySchema } from "@/lib/validations";
@@ -36,7 +36,7 @@ export const PATCH = withAdminAuth(
       return NextResponse.json({ error: "القسم غير موجود", code: "NOT_FOUND" }, { status: 404 });
     }
 
-    revalidateTag("categories", "default");
+    revalidateTag("categories", { expire: 0 });
     revalidatePath("/");
     revalidatePath("/products");
     return NextResponse.json(updated);
@@ -59,7 +59,7 @@ export const DELETE = withAdminAuth(
     if (!deleted) {
       return NextResponse.json({ error: "القسم غير موجود", code: "NOT_FOUND" }, { status: 404 });
     }
-    revalidateTag("categories", "default");
+    revalidateTag("categories", { expire: 0 });
     revalidatePath("/");
     revalidatePath("/products");
     return NextResponse.json({ success: true });

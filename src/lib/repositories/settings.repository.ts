@@ -248,7 +248,7 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
       instapayPhone: s.instapayPhone || STORE_DEFAULTS.phone,
       vodafoneCashPhone: s.vodafoneCashPhone || STORE_DEFAULTS.vodafoneCashPhone,
       freeShippingThreshold: Number(s.freeShippingThreshold || STORE_DEFAULTS.freeShippingThreshold),
-      bannerNotice: s.bannerNotice || STORE_DEFAULTS.bannerNotice,
+      bannerNotice: s.bannerNotice ?? STORE_DEFAULTS.bannerNotice,
       isBannerActive: s.isBannerActive ?? true,
       isAcceptingOrders: s.isAcceptingOrders ?? true,
       isMaintenanceMode: s.isMaintenanceMode ?? false,
