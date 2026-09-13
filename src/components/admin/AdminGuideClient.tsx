@@ -213,7 +213,7 @@ export function AdminGuideClient({ storeName = "MODANIL" }: { storeName?: string
                     • في خانة مواصفات الخامة، اختر اقتراحاً مثل: <strong>قطن مصري 100% فاخر معالج</strong>.
                   </li>
                   <li>
-                    • شارة المنتج: يمكنك تركها لتعرض تلقائياً <strong>قطن جيزة 86 🇪🇬</strong>.
+                    • شارة المنتج: يمكنك تركها لتعرض تلقائياً <strong>قطن مصري فاخر 🇪🇬</strong>.
                   </li>
                 </ul>
               </div>

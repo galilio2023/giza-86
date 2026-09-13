@@ -103,7 +103,7 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             product.badgeText !== undefined && product.badgeText !== null && product.badgeText !== ""
               ? product.badgeText
               : product.fabricDetails?.includes("قطن") || (!isAccessory && product.fabricDetails)
-              ? "قطن جيزة 86 🇪🇬"
+              ? "قطن مصري فاخر 🇪🇬"
               : undefined;
 
           if (!effectiveBadge) return null;

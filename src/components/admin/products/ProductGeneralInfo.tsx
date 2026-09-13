@@ -83,7 +83,7 @@ export function ProductGeneralInfo({
   };
 
   const BADGE_PRESETS = [
-    "قطن جيزة 86 🇪🇬",
+    "قطن مصري فاخر 🇪🇬",
     "إكسسوار حصري ✨",
     "جلد طبيعي 💼",
     "صناعة يدوية 🧵",

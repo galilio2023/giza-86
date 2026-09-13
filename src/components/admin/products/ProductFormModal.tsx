@@ -88,7 +88,7 @@ function ProductFormContent({
       if (!badgeText) setBadgeText("إكسسوار حصري ✨");
     } else {
       setHasSizeGuide(true);
-      if (badgeText === "إكسسوار حصري ✨") setBadgeText("قطن جيزة 86 🇪🇬");
+      if (badgeText === "إكسسوار حصري ✨") setBadgeText("قطن مصري فاخر 🇪🇬");
     }
   };
 

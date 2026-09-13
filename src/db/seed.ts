@@ -3,7 +3,7 @@ dotenv.config({ path: ".env.local" });
 
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import * as schema from "./schema";
 import { 
   INITIAL_CATEGORIES, 
@@ -258,11 +258,45 @@ async function main() {
   }
 
   console.log("Seeding default administrator account...");
-  try {
-    const adminEmail = process.env.ADMIN_EMAIL?.trim() || "admin@modanil.com";
-    const adminPass = process.env.ADMIN_PASSWORD || "ModanilAdmin2026!";
-    const adminId = "admin-modanil-system";
+  const adminPass = process.env.ADMIN_PASSWORD?.trim();
+  if (!adminPass) {
+    console.error(
+      "[SEED FATAL ERROR]: The ADMIN_PASSWORD environment variable is missing or empty.\n" +
+      "To securely seed the administrator account, set ADMIN_PASSWORD in your environment or .env.local file.\n" +
+      "Example: ADMIN_PASSWORD=\"YourSecurePassword123!\""
+    );
+    process.exit(1);
+  }
 
+  const adminEmail = process.env.ADMIN_EMAIL?.trim() || "admin@modanil.com";
+  const adminId = "admin-modanil-system";
+
+  try {
+    // 1. Clean up legacy administrator account (admin-giza86-system / admin@giza86.com) if present
+    const legacyAdminEmail = "admin@giza86.com";
+    const legacyAdminId = "admin-giza86-system";
+
+    if (adminEmail.toLowerCase() !== legacyAdminEmail.toLowerCase()) {
+      try {
+        const legacyUsers = await db
+          .select({ id: schema.user.id })
+          .from(schema.user)
+          .where(or(eq(schema.user.id, legacyAdminId), eq(schema.user.email, legacyAdminEmail)));
+
+        for (const lu of legacyUsers) {
+          await db.delete(schema.account).where(eq(schema.account.userId, lu.id));
+          await db.delete(schema.session).where(eq(schema.session.userId, lu.id));
+          await db.delete(schema.user).where(eq(schema.user.id, lu.id));
+        }
+        if (legacyUsers.length > 0) {
+          console.log("Cleaned up legacy administrator account (admin@giza86.com).");
+        }
+      } catch (cleanErr) {
+        console.warn("Notice: Legacy admin cleanup warning (safe to ignore if already cleaned):", cleanErr);
+      }
+    }
+
+    // 2. Setup or update the current administrator account
     const [existingUser] = await db
       .select({ id: schema.user.id })
       .from(schema.user)
@@ -324,7 +358,7 @@ async function main() {
     console.warn("Notice: Sequence sync warning (can be normal if tables use custom sequence):", seqErr);
   }
 
-  console.log("Database seeded and updated successfully with GIZA 86 Egyptian clothes catalog!");
+  console.log("Database seeded and updated successfully with MODANIL Egyptian clothes catalog!");
   process.exit(0);
 }
 
