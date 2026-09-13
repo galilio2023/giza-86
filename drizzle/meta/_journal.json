@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789067306872,
+      "tag": "0000_clever_roulette",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789067310000,
+      "tag": "0001_add_btree_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789067320000,
+      "tag": "0002_add_backend_optimizations",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789071360937,
+      "tag": "0003_add_btree_and_constraints",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789091383422,
+      "tag": "0004_tense_ravenous",
+      "breakpoints": true
+    }
+  ]
+}

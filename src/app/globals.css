@@ -1,26 +1,454 @@
 @import "tailwindcss";
 
 :root {
+  /* Core Foundation - Modern Luxury Crisp Studio & Deep Obsidian */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #09090b;
+
+  /* Cards & Elevated Surfaces */
+  --card: #ffffff;
+  --card-foreground: #09090b;
+
+  /* Primary Accent - Sharp Editorial Obsidian */
+  --primary: #09090b;
+  --primary-foreground: #ffffff;
+
+  /* Secondary Surfaces - Crisp Neutral Studio Pearl */
+  --secondary: #f4f4f6;
+  --secondary-foreground: #09090b;
+
+  /* Muted / Neutral Backgrounds - Clean Soft Studio Gray */
+  --muted: #f8f9fa;
+  --muted-foreground: #71717a;
+
+  /* Accent & Sheen - Regal Egyptian Metallic Gold */
+  --accent: #c59b27;
+  --accent-foreground: #ffffff;
+
+  /* Borders & Dividers - Ultra-clean subtle hairline */
+  --border: #e4e4e7;
+  --ring: #09090b;
+
+  /* Top Announcement Banner - Editorial Onyx with Warm Gold */
+  --banner-bg: #09090b;
+  --banner-fg: #f4f4f5;
+  --banner-border: #18181b;
+
+  /* Modern Clean Luxury Store Footer */
+  --footer-bg: #f8fafc;
+  --footer-fg: #09090b;
+  --footer-muted: #64748b;
+  --footer-card-bg: #ffffff;
+  --footer-border: #e2e8f0;
+  --footer-badge-bg: #ffffff;
+  --footer-badge-border: #e2e8f0;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+
+  --color-banner-bg: var(--banner-bg);
+  --color-banner-fg: var(--banner-fg);
+  --color-banner-border: var(--banner-border);
+  --color-footer-bg: var(--footer-bg);
+  --color-footer-fg: var(--footer-fg);
+  --color-footer-muted: var(--footer-muted);
+  --color-footer-card-bg: var(--footer-card-bg);
+  --color-footer-border: var(--footer-border);
+  --color-footer-badge-bg: var(--footer-badge-bg);
+  --color-footer-badge-border: var(--footer-badge-border);
+
+  --breakpoint-xs: 28rem;
+  --font-arabic: var(--font-cairo), 'Cairo', sans-serif;
+  --font-sans: var(--font-cairo), 'Cairo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
-  background: var(--background);
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-cairo), 'Cairo', sans-serif;
+  direction: rtl;
+  text-align: start;
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d8 #f4f4f5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
+
+/* Bulletproof Scroll Lock for Modals & Drawers (Radix + Custom) */
+html:has(body[data-scroll-locked]),
+html.scroll-locked {
+  overflow: hidden !important;
+}
+
+body[data-scroll-locked],
+body.scroll-locked {
+  overflow: hidden !important;
+  overscroll-behavior: contain;
+}
+
+/* Hide scrollbar utility for carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Luxury 3D Fashion Cards */
+.modern-card {
+  background: var(--card);
+  border-radius: 1.5rem;
+  border: 1px solid var(--border);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.03),
+    0 8px 24px -4px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.modern-card:hover {
+  transform: translateY(-4px) scale(1.005);
+  border-color: #a1a1aa;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.05),
+    0 20px 40px -8px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Category Card with 3D tactile lift */
+.category-card {
+  background: #f4f4f6;
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  box-shadow: 0 4px 16px -4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  border-color: #d4af37;
+  box-shadow: 0 16px 32px -6px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(212, 175, 55, 0.25);
+}
+
+/* Active Segmented Filter Pill */
+.filter-tab-active {
+  background: #09090b;
+  color: #ffffff;
+  border: 1px solid #09090b;
+  box-shadow: 0 2px 8px -1px rgba(0, 0, 0, 0.2);
+}
+
+/* Glassmorphic Luxury Cards with Specular Sheen */
+.glass-glow-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(228, 228, 231, 0.8);
+  box-shadow: 
+    0 10px 30px -5px rgba(0, 0, 0, 0.04),
+    0 0 0 1px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  transition: all 0.35s ease;
+}
+
+.glass-glow-card:hover {
+  box-shadow: 
+    0 20px 40px -8px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(212, 175, 55, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* 3D Tactile Buttons */
+.btn-3d-gold {
+  background: linear-gradient(180deg, #dfba73 0%, #c59b27 50%, #9e7514 100%);
+  color: #09090b;
+  font-weight: 800;
+  border: 1px solid #8e6810;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 4px 14px -2px rgba(197, 155, 39, 0.35);
+  transition: all 0.15s ease-in-out;
+}
+.btn-3d-gold:hover {
+  background: linear-gradient(180deg, #e7c885 0%, #d4af37 50%, #b8860b 100%);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px -2px rgba(197, 155, 39, 0.45);
+  transform: translateY(-1px);
+}
+.btn-3d-gold:active {
+  transform: translateY(1px);
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.2),
+    0 2px 6px 0 rgba(197, 155, 39, 0.2);
+}
+
+.btn-3d-primary {
+  background: linear-gradient(180deg, #18181b 0%, #09090b 100%);
+  color: #ffffff;
+  border: 1px solid #27272a;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 4px 12px -2px rgba(0, 0, 0, 0.2);
+  transition: all 0.15s ease-in-out;
+}
+.btn-3d-primary:hover {
+  background: linear-gradient(180deg, #27272a 0%, #18181b 100%);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 6px 16px -2px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+}
+.btn-3d-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-3d-secondary {
+  background: #ffffff;
+  color: #09090b;
+  border: 1px solid #e4e4e7;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease-in-out;
+}
+.btn-3d-secondary:hover {
+  background: #f8fafc;
+  border-color: #d4af37;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 4px 12px -2px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+.btn-3d-secondary:active {
+  transform: translateY(1px);
+}
+
+/* Warm Announcement Bar */
+.top-announcement-bar {
+  background: var(--banner-bg);
+  color: var(--banner-fg);
+  border-bottom: 1px solid var(--banner-border);
+}
+
+/* Warm Store Footer */
+.store-footer {
+  background: var(--footer-bg);
+  color: var(--footer-fg);
+  border-top: 1px solid var(--footer-border);
+}
+
+.store-footer-card {
+  background: var(--footer-card-bg);
+  border: 1px solid var(--footer-border);
+  box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.store-footer-badge {
+  background: var(--footer-badge-bg);
+  color: var(--foreground);
+  border: 1px solid var(--footer-badge-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+/* Luxury Brand Text Gradients */
+.text-gradient-gold {
+  color: #c59b27;
+  background: linear-gradient(135deg, #dfba73 0%, #c59b27 50%, #9e7514 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-dark {
+  color: var(--foreground);
+  background: linear-gradient(135deg, #09090b 0%, #3f3f46 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Compound Layout & Section Utilities */
+.layout-container {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  box-sizing: border-box;
+}
+@media (min-width: 640px) {
+  .layout-container {
+    padding-inline: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .layout-container {
+    padding-inline: 2rem;
+  }
+}
+
+.section-spacing {
+  padding-block: 3.5rem;
+}
+@media (min-width: 640px) {
+  .section-spacing {
+    padding-block: 5rem;
+  }
+}
+
+/* Centralized Overlays & Layout */
+.hero-canvas-warm {
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+}
+
+.hero-radial-glow {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.07), transparent 45%),
+    radial-gradient(circle at 20% 80%, rgba(244, 244, 245, 0.7), transparent 50%);
+  pointer-events: none;
+}
+
+.image-scrim-dark {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(to top, rgba(9, 9, 11, 0.75) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.section-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #c59b27;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 900;
+  color: var(--foreground);
+  margin-top: 0.25rem;
+}
+@media (min-width: 640px) {
+  .section-heading {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+}
+
+.mobile-nav-bar {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(228, 228, 231, 0.8);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f4f4f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+/* Micro-interaction Animations */
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translate3d(0, 0px, 0);
+  }
+  50% {
+    transform: translate3d(0, -6px, 0);
+  }
+}
+
+.animate-float-gentle {
+  will-change: transform;
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-gentle,
+  .modern-card,
+  .glass-glow-card {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Safe Area Inset Support for Modern Mobile Devices (iOS Dynamic Island & Home Indicator) */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.mb-safe {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Prevent annoying auto-zoom on iOS Safari when tapping inputs (triggers if font-size < 16px) */
+@media screen and (max-width: 767px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="url"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch action optimization to eliminate 300ms tap delay on mobile devices */
+button, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
