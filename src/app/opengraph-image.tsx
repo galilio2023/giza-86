@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "GIZA 86 | Luxury Egyptian Cotton Apparel";
+export const alt = "MODANIL | Luxury Egyptian Cotton Apparel";
 export const size = {
   width: 1200,
   height: 630,
@@ -51,7 +51,7 @@ export default function Image() {
               letterSpacing: "2px",
             }}
           >
-            giza86.com
+            modanil.com
           </div>
         </div>
 
@@ -66,7 +66,7 @@ export default function Image() {
                 letterSpacing: "-2px",
               }}
             >
-              GIZA 86
+              MODANIL
             </span>
             <span
               style={{

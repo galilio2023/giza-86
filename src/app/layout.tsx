@@ -31,10 +31,19 @@ export async function generateMetadata(): Promise<Metadata> {
   const keywords = settings?.seoKeywords ? settings.seoKeywords.split(",").map((k) => k.trim()) : [brandName, "قطن مصري", "ملابس كاجوال", "أوفر سايز", "هوديز", "إنستاباي", "فودافون كاش", "متجر مصري"];
 
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://giza86.com"),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://modanil.com"),
     title,
     description,
     keywords,
+    icons: {
+      icon: [
+        { url: "/icon.svg", type: "image/svg+xml" },
+        { url: "/favicon.ico", sizes: "any" },
+      ],
+      apple: [
+        { url: "/images/apple-touch-icon.png", sizes: "192x192", type: "image/png" },
+      ],
+    },
   };
 }
 

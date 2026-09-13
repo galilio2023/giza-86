@@ -4,18 +4,27 @@ import { Sparkles, ArrowLeft, Truck, Banknote, ShieldCheck, Flame } from "lucide
 import { Button } from "@/components/ui/button";
 import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 import { HeroLookbook } from "@/components/store/HeroLookbook";
-import { StoreSettingsItem } from "@/types";
+import { CategoryItem, ProductItem, StoreSettingsItem } from "@/types";
 
 interface HomeHeroProps {
   storeName?: string;
   settings?: Partial<StoreSettingsItem>;
+  categories?: CategoryItem[];
+  heroProducts?: ProductItem[];
 }
 
-export function HomeHero({ storeName, settings }: HomeHeroProps = {}) {
-  const currentBrand = settings?.storeName || storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName;
-  const heroBadge = settings?.heroBadge || STORE_DEFAULTS.heroBadge;
+export function HomeHero({
+  storeName,
+  settings,
+  categories = [],
+  heroProducts = [],
+}: HomeHeroProps = {}) {
+  const rawBrand = settings?.storeName || storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName;
+  const currentBrand = (rawBrand && rawBrand !== "GIZA 86") ? rawBrand : "MODANIL";
+  const rawBadge = settings?.heroBadge || STORE_DEFAULTS.heroBadge;
+  const heroBadge = rawBadge.replace(/جيزة 86|GIZA 86/gi, "MODANIL");
   const heroTitle = settings?.heroTitle || STORE_DEFAULTS.heroTitle;
-  const heroSubtitle = settings?.heroSubtitle || STORE_DEFAULTS.heroSubtitle;
+  const heroSubtitle = (settings?.heroSubtitle || STORE_DEFAULTS.heroSubtitle).replace(/GIZA 86|جيزة 86/gi, "MODANIL");
   const heroBgImage = settings?.heroBgImage || STORE_DEFAULTS.heroBgImage;
   const heroPrimaryBtnText = settings?.heroPrimaryBtnText || STORE_DEFAULTS.heroPrimaryBtnText;
   const heroPrimaryBtnLink = settings?.heroPrimaryBtnLink || STORE_DEFAULTS.heroPrimaryBtnLink;
@@ -95,8 +104,8 @@ export function HomeHero({ storeName, settings }: HomeHeroProps = {}) {
             </div>
           </div>
 
-          {/* Curated Category Lookbook Showcase (Right side in RTL) */}
-          <HeroLookbook />
+          {/* Curated Products Lookbook Showcase (Right side in RTL) */}
+          <HeroLookbook products={heroProducts} categories={categories} />
         </div>
       </div>
     </section>

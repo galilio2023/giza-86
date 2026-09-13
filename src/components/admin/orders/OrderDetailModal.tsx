@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { OrderItemsTable, OrderFinancialSummary } from "@/components/common/order";
 import { buildCustomerContactWhatsAppUrl } from "@/lib/domain/whatsapp";
+import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 import {
   Dialog,
   DialogContent,
@@ -99,7 +100,7 @@ export function OrderDetailModal({
                 order.customerPhone,
                 order.customerName,
                 order.orderNumber,
-                storeName || "GIZA 86"
+                (storeName && storeName !== "GIZA 86") ? storeName : (STORE_DEFAULTS.storeName || "MODANIL")
               )}
               target="_blank"
               rel="noopener noreferrer"

@@ -40,7 +40,8 @@ interface SectionItem {
   content: React.ReactNode;
 }
 
-export function AdminGuideClient({ storeName = "GIZA 86" }: { storeName?: string }) {
+export function AdminGuideClient({ storeName = "MODANIL" }: { storeName?: string }) {
+  const currentStore = (storeName && storeName !== "GIZA 86") ? storeName : "MODANIL";
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<string>("all");
   const [expandedSection, setExpandedSection] = useState<string>("daily-routine");

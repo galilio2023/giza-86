@@ -2,13 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { CategoryItem } from "@/types";
+import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 
 interface HomeCategoriesProps {
   categories: CategoryItem[];
   storeName?: string;
 }
 
-export function HomeCategories({ categories, storeName = "GIZA 86" }: HomeCategoriesProps) {
+export function HomeCategories({ categories, storeName }: HomeCategoriesProps) {
+  const cleanName = (storeName && storeName !== "GIZA 86") ? storeName : (STORE_DEFAULTS.storeName || "MODANIL");
+
   return (
     <section className="layout-container py-12 sm:py-16">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4 border-b border-neutral-200/80 pb-5">
@@ -18,7 +21,7 @@ export function HomeCategories({ categories, storeName = "GIZA 86" }: HomeCatego
             <span>تصنيفات المتجر</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-neutral-950">
-            أقسام تشكيلة {storeName}
+            أقسام تشكيلة {cleanName}
           </h2>
         </div>
         <Link
@@ -47,12 +50,9 @@ export function HomeCategories({ categories, storeName = "GIZA 86" }: HomeCatego
             {/* Editorial Scrim Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/85 via-neutral-950/25 to-neutral-950/10 pointer-events-none transition-opacity duration-500 group-hover:opacity-90" />
 
-            {/* Top Row: Editorial Index */}
-            <div className="relative z-10 flex items-center justify-between w-full">
-              <span className="font-mono text-[11px] font-bold text-white/90 bg-neutral-950/60 backdrop-blur-md px-2 py-0.5 rounded-md border border-white/10">
-                0{idx + 1}
-              </span>
-              <span className="text-[10px] font-bold text-white/80 bg-white/15 backdrop-blur-md px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            {/* Top Row: Quick Action */}
+            <div className="relative z-10 flex items-center justify-end w-full">
+              <span className="text-[10px] font-bold text-white/80 bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 تسوق ←
               </span>
             </div>

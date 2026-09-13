@@ -24,11 +24,18 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [products, categories, settings] = await Promise.all([
+  const [products, categories, settings, featuredProducts] = await Promise.all([
     getProducts({ limit: 12 }),
     getCategories(),
     getStoreSettings(),
+    getProducts({ featured: true, limit: 6 }).catch(() => []),
   ]);
+
+  // Smart Hybrid: Prioritize products marked featured by admin, fallback to top catalog products
+  const heroProducts = [
+    ...featuredProducts,
+    ...products.filter((p) => !featuredProducts.some((f) => f.id === p.id)),
+  ].slice(0, 3);
 
   const brandName = settings?.storeName || STORE_DEFAULTS.storeName;
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://giza86.com";
@@ -68,7 +75,12 @@ export default async function HomePage() {
           __html: JSON.stringify(storeJsonLd).replace(/</g, "\\u003c"),
         }}
       />
-      <HomeHero storeName={brandName} settings={settings} />
+      <HomeHero
+        storeName={brandName}
+        settings={settings}
+        categories={categories}
+        heroProducts={heroProducts}
+      />
       <HomeCategories categories={categories} storeName={brandName} />
       <HomePromoBanner settings={settings} />
       <HomeProductsGrid products={products} />

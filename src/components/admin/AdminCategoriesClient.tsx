@@ -17,9 +17,11 @@ interface AdminCategoriesClientProps {
 
 export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClientProps) {
   const [loading, setLoading] = useState(false);
+  const [moving, setMoving] = useState(false);
 
   const {
     items: categories,
+    setItems: setCategories,
     modalOpen,
     setModalOpen,
     editingItem: editingCategory,
@@ -30,6 +32,7 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
     isDeleting,
     handleConfirmDelete,
     handleItemSaved,
+    router,
   } = useAdminCrud<CategoryItem>({
     initialItems: initialCategories,
     apiEndpoint: "/api/categories",
@@ -47,9 +50,15 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
     setLoading(true);
     try {
       if (editingCategory) {
-        const updated = await api.categories.update(editingCategory.id, payload);
+        await api.categories.update(editingCategory.id, payload);
         toast.success("تم تحديث بيانات القسم بنجاح في قاعدة البيانات");
-        handleItemSaved(updated, true);
+        // Refetch full categories list to capture any swapped order positions
+        const updatedList = await api.categories.getAll();
+        if (Array.isArray(updatedList)) {
+          setCategories(updatedList);
+        }
+        setModalOpen(false);
+        router.refresh();
       } else {
         const newCat = await api.categories.create(payload);
         toast.success("تمت إضافة القسم الجديد بنجاح في قاعدة البيانات");
@@ -62,6 +71,43 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
     }
   };
 
+  const handleMoveCategory = async (category: CategoryItem, direction: "up" | "down") => {
+    const sorted = [...categories].sort(
+      (a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0) || a.id - b.id
+    );
+    const currentIndex = sorted.findIndex((c) => c.id === category.id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= sorted.length) return;
+
+    const targetCategory = sorted[targetIndex];
+    setMoving(true);
+
+    try {
+      const targetOrder = targetCategory.displayOrder ?? targetIndex + 1;
+      await api.categories.update(category.id, {
+        name: category.name,
+        slug: category.slug,
+        image: category.image,
+        description: category.description,
+        displayOrder: targetOrder,
+      });
+
+      // Refetch full list to synchronize both swapped categories
+      const updatedList = await api.categories.getAll();
+      if (Array.isArray(updatedList)) {
+        setCategories(updatedList);
+      }
+      toast.success(`تم تغيير ترتيب "${category.name}" بنجاح`);
+      router.refresh();
+    } catch (err) {
+      toast.error(getErrorMessage(err, "فشل في تحديث ترتيب القسم"));
+    } finally {
+      setMoving(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -70,7 +116,7 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
             أقسام وتصنيفات المتجر
           </h1>
           <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-            إدارة وتعديل وتصنيف المنتجات لسهولة تصفح العملاء
+            إدارة وتعديل وترتيب الأقسام (تظهر أول 3 أقسام تلقائياً في شبكة اللوك بوك بالصفحة الرئيسية)
           </p>
         </div>
 
@@ -89,6 +135,8 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
         categories={categories}
         onEdit={openEditModal}
         onDelete={setDeletingCategory}
+        onMove={handleMoveCategory}
+        isMoving={moving}
       />
 
       <CategoryFormModal

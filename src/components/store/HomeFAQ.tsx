@@ -12,7 +12,8 @@ interface HomeFAQProps {
 
 export function HomeFAQ({ storeName, whatsapp }: HomeFAQProps = {}) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const brandName = storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName || "GIZA 86";
+  const rawName = storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName;
+  const brandName = (rawName && rawName !== "GIZA 86") ? rawName : "MODANIL";
   const currentWhatsApp = whatsapp || STORE_DEFAULTS.whatsapp;
 
   const faqs = [

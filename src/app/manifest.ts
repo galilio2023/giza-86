@@ -23,6 +23,11 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         sizes: "any",
         type: "image/x-icon",
       },
+      {
+        src: "/images/modanil-icon.svg",
+        sizes: "any",
+        type: "image/svg+xml",
+      },
     ],
   };
 }

@@ -3,19 +3,21 @@ import { isDatabaseConfigured, db } from "@/db";
 import { newsletterSubscribers } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
 import { memoryNewsletter } from "@/lib/repositories/memory-store";
+import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 
 export async function subscribeNewsletter(
   contact: string,
   type: "email" | "phone"
 ): Promise<{ success: boolean; message: string; isNew: boolean }> {
   const cleanContact = contact.trim().toLowerCase();
+  const brandName = STORE_DEFAULTS.storeName || "MODANIL";
 
   if (!isDatabaseConfigured || !db) {
     const existing = memoryNewsletter.find((n) => n.contact === cleanContact);
     if (existing) {
       return {
         success: true,
-        message: "أنت مشترك بالفعل معنا في نادي عملاء GIZA 86 وستصلك العروض الحصرية دورياً!",
+        message: `أنت مشترك بالفعل معنا في نادي عملاء ${brandName} وستصلك العروض الحصرية دورياً!`,
         isNew: false,
       };
     }
@@ -27,7 +29,7 @@ export async function subscribeNewsletter(
     });
     return {
       success: true,
-      message: "أهلاً بك في نادي عملاء GIZA 86! تم تسجيل بياناتك بنجاح، وستصلك أقوى العروض الحصرية.",
+      message: `أهلاً بك في نادي عملاء ${brandName}! تم تسجيل بياناتك بنجاح، وستصلك أقوى العروض الحصرية.`,
       isNew: true,
     };
   }
@@ -42,7 +44,7 @@ export async function subscribeNewsletter(
     if (existing.length > 0) {
       return {
         success: true,
-        message: "أنت مشترك بالفعل معنا في نادي عملاء GIZA 86 وستصلك العروض الحصرية دورياً!",
+        message: `أنت مشترك بالفعل معنا في نادي عملاء ${brandName} وستصلك العروض الحصرية دورياً!`,
         isNew: false,
       };
     }
@@ -57,7 +59,7 @@ export async function subscribeNewsletter(
 
     return {
       success: true,
-      message: "أهلاً بك في نادي عملاء GIZA 86! تم تسجيل بياناتك بنجاح، واستمتع بخصومات حصرية وقسائم شراء.",
+      message: `أهلاً بك في نادي عملاء ${brandName}! تم تسجيل بياناتك بنجاح، واستمتع بخصومات حصرية وقسائم شراء.`,
       isNew: true,
     };
   } catch (error) {

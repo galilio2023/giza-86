@@ -103,11 +103,11 @@ export const ORDER_STATUSES: Record<string, { label: string; color: string; bg: 
 
 // Centralized Store Default Constants (DRY Principle - Single Source of Truth)
 export const STORE_DEFAULTS = {
-  storeName: process.env.NEXT_PUBLIC_STORE_NAME || "GIZA 86",
+  storeName: process.env.NEXT_PUBLIC_STORE_NAME || "MODANIL",
   phone: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "01002081676",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201002081676",
-  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@giza86.eg",
-  instapayHandle: process.env.NEXT_PUBLIC_INSTAPAY_HANDLE || "giza86.eg@instapay",
+  supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@modanil.com",
+  instapayHandle: process.env.NEXT_PUBLIC_INSTAPAY_HANDLE || "modanil.eg@instapay",
   vodafoneCashPhone: process.env.NEXT_PUBLIC_VODAFONE_CASH || "01002081676",
   freeShippingThreshold: 1200,
   estimatedDeliveryDays: "1 - 3 أيام عمل",
@@ -117,9 +117,9 @@ export const STORE_DEFAULTS = {
   orderClosedMessage: "نعتذر، المتجر لا يستقبل طلبات جديدة في الوقت الحالي للصيانة والتحديث. يرجى مراجعتنا لاحقاً.",
   maintenanceMessage: "المتجر في وضع الصيانة والتحديث الدوري. سنعاود العمل قريباً جداً.",
   // Branding & Assets
-  logoUrl: "",
-  storeTagline: "العلامة المصرية الرائدة في أزياء القطن المصري الفاخر",
-  storeDescription: "نسعى لتقديم تصاميم عصرية تناسب الذوق المصري والعربي مع الحفاظ على أعلى معايير الصناعة والنسيج القطني الفاخر الذي اشتهرت به مصر عالمياً.",
+  logoUrl: "/images/modanil-logo.svg",
+  storeTagline: "أزياء راقية بلمسة عصرية وأصالة القطن المصري الفاخر",
+  storeDescription: "مودانيل (MODANIL) تقدم أحدث صيحات الموضة والكاجوال والأوفر سايز المصنوعة من أفخر أنسجة القطن المصري والقصات العصرية المتطورة. شحن سريع لكافة محافظات مصر.",
   // Location & Social
   physicalAddress: "المقر الرئيسي: القاهرة، جمهورية مصر العربية",
   facebookUrl: "https://facebook.com",
@@ -139,9 +139,9 @@ export const STORE_DEFAULTS = {
   promoDescription: "استخدم كود الخصم عند صفحة إتمام الطلب للحصول على الخصم فورياً لكافة الطلبات فوق 600 ج.م.",
   promoCouponCode: "EGYPT20",
   // SEO Defaults
-  seoTitle: "متجر الأزياء والقطن المصري الفاخر",
-  seoDescription: "تسوق تشكيلة الأزياء الكاجوال والأوفر سايز والهوديز المصنوعة من أفخر قطن مصري. شحن لكافة المحافظات ودفع عند الاستلام وإنستاباي.",
-  seoKeywords: "قطن مصري, أزياء رجالي, ملابس كاجوال, أوفر سايز, هوديز, قمصان كتان, إنستاباي, فودافون كاش",
+  seoTitle: "مودانيل | متجر الأزياء والقطن المصري الفاخر",
+  seoDescription: "تسوق تشكيلة الأزياء الكاجوال والأوفر سايز والهوديز من مودانيل MODANIL المصنوعة من أفخر قطن مصري. شحن لكافة المحافظات ودفع عند الاستلام وإنستاباي.",
+  seoKeywords: "مودانيل, MODANIL, قطن مصري, أزياء رجالي, ملابس كاجوال, أوفر سايز, هوديز, قمصان كتان, إنستاباي, فودافون كاش",
 } as const;
 
 /**

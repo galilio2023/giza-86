@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { LayoutTemplate, Sparkles, Image as ImageIcon, Upload, Trash2, Loader2 } from "lucide-react";
+import { LayoutTemplate, Sparkles, Image as ImageIcon, Upload, Trash2, Loader2, Layers, ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { STORE_DEFAULTS } from "@/lib/egypt-constants";
@@ -193,6 +194,61 @@ export function HeroSettingsTab({
               placeholder="/products"
               className="w-full p-2.5 rounded-xl border border-neutral-300 text-xs font-mono text-left bg-neutral-50 focus:bg-white transition"
             />
+          </div>
+        </div>
+      </Card>
+
+      {/* Lookbook Curation Integration Card */}
+      <Card variant="modern" padding="lg" className="space-y-4 bg-gradient-to-br from-amber-50/50 via-white to-neutral-50 border-amber-200/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-200/60 pb-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-amber-600 flex-shrink-0" />
+            <div>
+              <h3 className="text-sm font-black text-neutral-900">
+                معرض قطع اللوك بوك المميزة (Hero Lookbook Products Showcase)
+              </h3>
+              <p className="text-xs text-neutral-600 mt-0.5">
+                يعرض الكروت الثلاثية لقطع المنتجات المميزة مع الأسعار ونسب الخصم وروابط الطلب المباشرة
+              </p>
+            </div>
+          </div>
+          <Link href="/admin/products">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="border-amber-300 bg-white hover:bg-amber-100 text-amber-900 font-black text-xs gap-1.5 shadow-2xs cursor-pointer w-full sm:w-auto"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <span>إدارة المنتجات المميزة (Featured)</span>
+              <ArrowLeft className="w-3.5 h-3.5" />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="p-3 rounded-xl bg-white border border-neutral-200/80 space-y-1">
+            <span className="font-bold text-[11px] text-amber-700 bg-amber-100 px-2 py-0.5 rounded-md inline-block">
+              القطعة الرئيسية (Hero Star)
+            </span>
+            <p className="text-neutral-700 font-bold">المنتج المميز الأول</p>
+            <p className="text-[11px] text-neutral-500">يعرض صورة الموديل، خامة القطن، السعر، شارة الخصم، وزر عرض القطعة.</p>
+          </div>
+
+          <div className="p-3 rounded-xl bg-white border border-neutral-200/80 space-y-1">
+            <span className="font-bold text-[11px] text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded-md inline-block">
+              القطعة الجانبية الأولى
+            </span>
+            <p className="text-neutral-700 font-bold">المنتج المميز الثاني</p>
+            <p className="text-[11px] text-neutral-500">كارت جانبي يعرض اسم وتفاصيل القطعة وسعرها الفوري بالجنيه المصري.</p>
+          </div>
+
+          <div className="p-3 rounded-xl bg-white border border-neutral-200/80 space-y-1">
+            <span className="font-bold text-[11px] text-neutral-700 bg-neutral-100 px-2 py-0.5 rounded-md inline-block">
+              القطعة الجانبية الثانية
+            </span>
+            <p className="text-neutral-700 font-bold">المنتج المميز الثالث</p>
+            <p className="text-[11px] text-neutral-500">كارت جانبي متناسق يعرض القطعة الثالثة مع أزرار تصفح الأقسام السريعة.</p>
           </div>
         </div>
       </Card>

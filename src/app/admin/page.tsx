@@ -3,8 +3,8 @@ import { AdminDashboardClient } from "@/components/admin/AdminDashboardClient";
 import { requireAdminServer } from "@/lib/auth-guard";
 
 export const metadata = {
-  title: "لوحة التحكم | GIZA 86",
-  description: "لوحة الإحصائيات والمتابعة لمتجر GIZA 86",
+  title: "لوحة التحكم | MODANIL",
+  description: "لوحة الإحصائيات والمتابعة لمتجر MODANIL",
 };
 
 export default async function AdminDashboardPage() {

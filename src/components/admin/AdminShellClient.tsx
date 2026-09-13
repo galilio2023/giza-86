@@ -21,6 +21,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
+import { BrandLogo } from "@/components/store/BrandLogo";
 
 export function AdminShellClient({
   children,
@@ -76,10 +77,14 @@ export function AdminShellClient({
         {/* Brand header */}
         <div className="p-6 border-b border-neutral-800 flex items-center justify-between gap-2">
           <div className="flex flex-col min-w-0">
-            <span className="text-lg font-black tracking-tight text-white flex items-center gap-1.5 whitespace-nowrap truncate font-sans">
-              <span className="text-amber-500 font-black">{storeName || "GIZA 86"}</span>
-            </span>
-            <span className="text-[10px] text-neutral-400 font-semibold uppercase tracking-wider whitespace-nowrap">
+            <BrandLogo
+              name={storeName}
+              size="sm"
+              isDark={true}
+              href="/admin"
+              showSubtext={false}
+            />
+            <span className="text-[10px] text-neutral-400 font-semibold uppercase tracking-wider whitespace-nowrap mt-1">
               لوحة الإدارة والمحتوى • CMS
             </span>
           </div>
@@ -219,9 +224,17 @@ export function AdminShellClient({
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
           <SheetContent side="right" className="bg-neutral-950 text-white border-neutral-800 p-6 flex flex-col max-w-xs">
             <SheetHeader className="border-b border-neutral-800 pb-4">
-              <SheetTitle className="text-white text-base font-bold flex items-center gap-2 truncate">
-                <span className="text-amber-500 truncate">{storeName || "GIZA 86"}</span>
-                <span className="text-xs text-neutral-400 font-normal shrink-0">| CMS</span>
+              <SheetTitle asChild className="text-white text-base font-bold">
+                <div className="flex items-center gap-2 truncate">
+                  <BrandLogo
+                    name={storeName}
+                    size="sm"
+                    isDark={true}
+                    href="/admin"
+                    showSubtext={false}
+                  />
+                  <span className="text-xs text-neutral-400 font-normal shrink-0">| CMS</span>
+                </div>
               </SheetTitle>
             </SheetHeader>
 

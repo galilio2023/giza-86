@@ -4,7 +4,7 @@ import { requireAdminServer } from "@/lib/auth-guard";
 
 export const metadata = {
   title: "إدارة المنتجات والمخزون | لوحة التحكم",
-  description: "إدارة وتعديل المنتجات والمخزون في متجر GIZA 86",
+  description: "إدارة وتعديل المنتجات والمخزون في متجر MODANIL",
 };
 
 interface AdminProductsPageProps {

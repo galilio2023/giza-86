@@ -44,6 +44,17 @@ export class MemoryCategoryRepository implements ICategoryRepository {
   async update(id: number, data: Partial<CategoryItem>): Promise<CategoryItem | null> {
     const idx = memoryCategories.findIndex((c) => c.id === id);
     if (idx === -1) return null;
+
+    if (data.displayOrder !== undefined && data.displayOrder !== memoryCategories[idx].displayOrder) {
+      const oldOrder = memoryCategories[idx].displayOrder ?? 0;
+      const collisionIdx = memoryCategories.findIndex(
+        (c) => c.id !== id && c.displayOrder === data.displayOrder
+      );
+      if (collisionIdx !== -1) {
+        memoryCategories[collisionIdx].displayOrder = oldOrder;
+      }
+    }
+
     memoryCategories[idx] = {
       ...memoryCategories[idx],
       ...data,
@@ -83,7 +94,7 @@ export class DrizzleCategoryRepository implements ICategoryRepository {
       .from(categories)
       .leftJoin(products, eq(categories.id, products.categoryId))
       .groupBy(categories.id)
-      .orderBy(asc(categories.displayOrder));
+      .orderBy(asc(categories.displayOrder), asc(categories.id));
 
     return rows.map((r) => ({
       id: r.id,
@@ -141,6 +152,30 @@ export class DrizzleCategoryRepository implements ICategoryRepository {
   }
 
   async update(id: number, data: Partial<CategoryItem>): Promise<CategoryItem | null> {
+    // If displayOrder is updated and conflicts with another category, swap them
+    if (data.displayOrder !== undefined) {
+      const [current] = await db
+        .select({ id: categories.id, displayOrder: categories.displayOrder })
+        .from(categories)
+        .where(eq(categories.id, id))
+        .limit(1);
+
+      if (current && current.displayOrder !== data.displayOrder) {
+        const [targetOther] = await db
+          .select({ id: categories.id })
+          .from(categories)
+          .where(sql`${categories.id} != ${id} AND ${categories.displayOrder} = ${data.displayOrder}`)
+          .limit(1);
+
+        if (targetOther) {
+          await db
+            .update(categories)
+            .set({ displayOrder: current.displayOrder, updatedAt: new Date() })
+            .where(eq(categories.id, targetOther.id));
+        }
+      }
+    }
+
     const [updated] = await db
       .update(categories)
       .set({

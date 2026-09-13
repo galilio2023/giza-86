@@ -74,6 +74,23 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
       return this.mapRowToItem(inserted);
     }
 
+    if (rows[0] && (rows[0].storeName === "GIZA 86" || !rows[0].storeName)) {
+      // Auto-migrate legacy DB record to MODANIL
+      await db
+        .update(storeSettings)
+        .set({
+          storeName: STORE_DEFAULTS.storeName,
+          logoUrl: STORE_DEFAULTS.logoUrl,
+          storeTagline: STORE_DEFAULTS.storeTagline,
+          updatedAt: new Date(),
+        })
+        .where(eq(storeSettings.id, rows[0].id))
+        .catch(() => {});
+      rows[0].storeName = STORE_DEFAULTS.storeName;
+      rows[0].logoUrl = STORE_DEFAULTS.logoUrl;
+      rows[0].storeTagline = STORE_DEFAULTS.storeTagline;
+    }
+
     return this.mapRowToItem(rows[0]);
   }
 
@@ -144,7 +161,10 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
   }
 
   private mapRowToItem(s: typeof storeSettings.$inferSelect): StoreSettingsItem {
-    const effectiveStoreName = s.storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName;
+    const rawStoreName = s.storeName?.trim();
+    const effectiveStoreName = (rawStoreName && rawStoreName !== "GIZA 86")
+      ? rawStoreName
+      : (process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName);
     return {
       storeName: effectiveStoreName,
       phone: s.phone || STORE_DEFAULTS.phone,
@@ -163,7 +183,7 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
       orderClosedMessage: s.orderClosedMessage ?? undefined,
       maintenanceMessage: s.maintenanceMessage ?? undefined,
       governoratesShipping: s.governoratesShipping || undefined,
-      logoUrl: s.logoUrl ?? undefined,
+      logoUrl: s.logoUrl || STORE_DEFAULTS.logoUrl,
       storeTagline: s.storeTagline || STORE_DEFAULTS.storeTagline,
       storeDescription: s.storeDescription || STORE_DEFAULTS.storeDescription,
       physicalAddress: s.physicalAddress || STORE_DEFAULTS.physicalAddress,

@@ -93,6 +93,7 @@ export const api = {
       post<import("@/lib/repositories/order.repository").TrackOrderResult>("/api/orders/track", data),
   },
   categories: {
+    getAll: () => get<import("@/types").CategoryItem[]>("/api/categories"),
     create: (data: CreateCategoryInput) => post<import("@/types").CategoryItem>("/api/categories", data),
     update: (id: number, data: UpdateCategoryInput) => put<import("@/types").CategoryItem>(`/api/categories/${id}`, data),
     delete: (id: number) => del<{ success: boolean }>(`/api/categories/${id}`),

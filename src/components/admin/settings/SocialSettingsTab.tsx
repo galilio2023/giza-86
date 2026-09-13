@@ -3,7 +3,7 @@
 import React from "react";
 import { Phone, Mail, MapPin, Share2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
+import { WhatsAppIcon, FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/ui/SocialIcons";
 import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 
 interface SocialSettingsTabProps {
@@ -59,7 +59,7 @@ export function SocialSettingsTab({
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder={STORE_DEFAULTS.phone}
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-xs bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-base lg:text-sm bg-neutral-50 focus:bg-white transition"
             />
           </div>
 
@@ -74,7 +74,7 @@ export function SocialSettingsTab({
               value={whatsapp}
               onChange={(e) => setWhatsapp(e.target.value)}
               placeholder={STORE_DEFAULTS.whatsapp}
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-xs bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-base lg:text-sm bg-neutral-50 focus:bg-white transition"
             />
           </div>
 
@@ -89,7 +89,7 @@ export function SocialSettingsTab({
               value={supportEmail}
               onChange={(e) => setSupportEmail(e.target.value)}
               placeholder={STORE_DEFAULTS.supportEmail}
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-xs bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-base lg:text-sm bg-neutral-50 focus:bg-white transition"
             />
           </div>
         </div>
@@ -104,7 +104,7 @@ export function SocialSettingsTab({
             value={physicalAddress}
             onChange={(e) => setPhysicalAddress(e.target.value)}
             placeholder="مثال: المقر الرئيسي: القاهرة، جمهورية مصر العربية"
-            className="w-full p-2.5 rounded-xl border border-neutral-300 text-xs bg-neutral-50 focus:bg-white transition"
+            className="w-full p-2.5 rounded-xl border border-neutral-300 text-base lg:text-sm bg-neutral-50 focus:bg-white transition"
           />
         </div>
       </Card>
@@ -118,8 +118,9 @@ export function SocialSettingsTab({
 
         <div className="space-y-4">
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-neutral-800">
-              رابط صفحة فيسبوك (Facebook URL)
+            <label className="block text-xs font-bold text-neutral-800 flex items-center gap-1.5">
+              <FacebookIcon className="w-4 h-4 flex-shrink-0" />
+              <span>رابط صفحة فيسبوك (Facebook URL)</span>
             </label>
             <input
               type="url"
@@ -127,13 +128,14 @@ export function SocialSettingsTab({
               value={facebookUrl}
               onChange={(e) => setFacebookUrl(e.target.value)}
               placeholder="https://facebook.com/your-store"
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-xs bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-base lg:text-sm bg-neutral-50 focus:bg-white transition"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-neutral-800">
-              رابط حساب إنستغرام (Instagram URL)
+            <label className="block text-xs font-bold text-neutral-800 flex items-center gap-1.5">
+              <InstagramIcon className="w-4 h-4 flex-shrink-0" />
+              <span>رابط حساب إنستغرام (Instagram URL)</span>
             </label>
             <input
               type="url"
@@ -141,13 +143,14 @@ export function SocialSettingsTab({
               value={instagramUrl}
               onChange={(e) => setInstagramUrl(e.target.value)}
               placeholder="https://instagram.com/your-store"
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-xs bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-base lg:text-sm bg-neutral-50 focus:bg-white transition"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-neutral-800">
-              رابط حساب تيك توك (TikTok URL)
+            <label className="block text-xs font-bold text-neutral-800 flex items-center gap-1.5">
+              <TikTokIcon className="w-4 h-4 flex-shrink-0" />
+              <span>رابط حساب تيك توك (TikTok URL)</span>
             </label>
             <input
               type="url"
@@ -155,7 +158,7 @@ export function SocialSettingsTab({
               value={tiktokUrl}
               onChange={(e) => setTiktokUrl(e.target.value)}
               placeholder="https://tiktok.com/@your-store"
-              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-xs bg-neutral-50 focus:bg-white transition"
+              className="w-full p-2.5 rounded-xl border border-neutral-300 text-left font-mono text-base lg:text-sm bg-neutral-50 focus:bg-white transition"
             />
           </div>
         </div>
