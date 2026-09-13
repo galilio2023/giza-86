@@ -38,16 +38,16 @@ export function AdminShellClient({
   const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
-    if (isDbConfigured && !isPending && pathname !== "/admin/login") {
+    if (!isPending && pathname !== "/admin/login") {
       const role = (session?.user as { role?: string } | undefined)?.role;
       const email = session?.user?.email?.toLowerCase();
-      const configuredAdminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase()?.trim() || "admin@giza86.com";
+      const configuredAdminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase()?.trim() || "admin@modanil.com";
       const isAdmin = Boolean(session?.user && (role === "admin" || email === configuredAdminEmail));
       if (!isAdmin) {
         router.push("/admin/login");
       }
     }
-  }, [isPending, session, pathname, router, isDbConfigured]);
+  }, [isPending, session, pathname, router]);
 
   // If we are on /admin/login, render login page directly without admin shell
   if (pathname === "/admin/login") {
@@ -197,7 +197,6 @@ export function AdminShellClient({
 
             <Link
               href="/"
-              target="_blank"
               className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-neutral-700 hover:text-amber-700 bg-neutral-100 hover:bg-neutral-200 px-3 py-1.5 rounded-lg transition"
             >
               <Store className="w-3.5 h-3.5" />

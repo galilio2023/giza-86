@@ -83,7 +83,7 @@ export function ProductGeneralInfo({
   };
 
   const BADGE_PRESETS = [
-    "قطن جيزة 86 🇪🇬",
+    "قطن مصري فاخر 🇪🇬",
     "إكسسوار حصري ✨",
     "جلد طبيعي 💼",
     "صناعة يدوية 🧵",
@@ -135,7 +135,7 @@ export function ProductGeneralInfo({
             type="text"
             value={slug}
             onChange={(e) => onSlugChange(e.target.value)}
-            placeholder="product-slug-giza86"
+            placeholder="product-slug-modanil"
             className="w-full p-2.5 rounded-xl border border-neutral-200 font-mono text-left text-base lg:text-sm"
           />
         </div>
@@ -208,7 +208,7 @@ export function ProductGeneralInfo({
           type="text"
           value={badgeText}
           onChange={(e) => onBadgeTextChange(e.target.value)}
-          placeholder="اترك فارغاً للاعتماد على شارة القسم، أو اكتب شارة مخصصة مثل: قطن جيزة 86 🇪🇬 أو إكسسوار حصري ✨"
+          placeholder="اترك فارغاً للاعتماد على شارة القسم، أو اكتب شارة مخصصة مثل: قطن مصري فاخر 🇪🇬 أو إكسسوار حصري ✨"
           className="w-full p-2.5 rounded-xl border border-neutral-200 text-base lg:text-sm font-bold"
         />
         <div className="flex flex-wrap gap-1.5 pt-0.5">
