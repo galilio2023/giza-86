@@ -95,7 +95,7 @@ export const POST = withAdminAuth(async (request: Request) => {
     badgeText: validated.badgeText || undefined,
   });
 
-  revalidateTag("products", "default");
+  revalidateTag("products", { expire: 0 });
   revalidatePath("/");
   revalidatePath("/products");
   return NextResponse.json(newProduct, { status: 201 });

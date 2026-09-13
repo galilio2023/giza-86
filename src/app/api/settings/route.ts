@@ -15,7 +15,7 @@ export const PATCH = withAdminAuth(async (request: Request) => {
   const validated = updateSettingsSchema.parse(rawBody);
 
   const updated = await updateStoreSettings(validated as Partial<StoreSettingsItem>);
-  revalidateTag("settings", "default");
+  revalidateTag("settings", { expire: 0 });
   revalidatePath("/", "layout");
   revalidatePath("/products");
   return NextResponse.json(updated);

@@ -6,6 +6,7 @@ import { NavbarLinks } from "@/components/store/NavbarLinks";
 
 import { BrandLogo } from "@/components/store/BrandLogo";
 import { CategoryItem } from "@/types";
+import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 
 interface NavbarProps {
   settings?: Partial<StoreSettingsItem>;
@@ -13,7 +14,12 @@ interface NavbarProps {
 }
 
 export function Navbar({ settings, categories }: NavbarProps = {}) {
-  const showBanner = settings?.isBannerActive !== false && !!settings?.bannerNotice;
+  const isBannerActive =
+    settings?.isBannerActive !== undefined
+      ? settings.isBannerActive
+      : STORE_DEFAULTS.isBannerActive;
+  const bannerNotice = settings?.bannerNotice?.trim() || STORE_DEFAULTS.bannerNotice;
+  const showBanner = Boolean(isBannerActive && bannerNotice);
 
   const navLinks = [
     { label: "الرئيسية", href: "/" },
@@ -38,7 +44,7 @@ export function Navbar({ settings, categories }: NavbarProps = {}) {
       {showBanner && (
         <div className="bg-neutral-950 text-white text-[11px] sm:text-xs py-1.5 px-4 text-center font-bold tracking-wide border-b border-neutral-800/80">
           <div className="layout-container flex items-center justify-center gap-2">
-            <span>{settings.bannerNotice}</span>
+            <span>{bannerNotice}</span>
           </div>
         </div>
       )}

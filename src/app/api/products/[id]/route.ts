@@ -41,7 +41,7 @@ export const PATCH = withAdminAuth(
       return NextResponse.json({ error: "المنتج غير موجود", code: "NOT_FOUND" }, { status: 404 });
     }
 
-    revalidateTag("products", "default");
+    revalidateTag("products", { expire: 0 });
     revalidatePath("/");
     revalidatePath("/products");
     revalidatePath(`/products/${id}`);
@@ -70,7 +70,7 @@ export const DELETE = withAdminAuth(
       return NextResponse.json({ error: "المنتج غير موجود", code: "NOT_FOUND" }, { status: 404 });
     }
 
-    revalidateTag("products", "default");
+    revalidateTag("products", { expire: 0 });
     revalidatePath("/");
     revalidatePath("/products");
     revalidatePath(`/products/${id}`);

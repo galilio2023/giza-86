@@ -29,7 +29,7 @@ export const POST = withAdminAuth(async (request: Request) => {
     displayOrder: validated.displayOrder,
   });
 
-  revalidateTag("categories", "default");
+  revalidateTag("categories", { expire: 0 });
   revalidatePath("/");
   revalidatePath("/products");
 
