@@ -51,7 +51,7 @@ export default function Image() {
               letterSpacing: "2px",
             }}
           >
-            modanil.com
+            modanil.vercel.app
           </div>
         </div>
 

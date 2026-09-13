@@ -92,7 +92,7 @@ export default async function ProductPage({
   // Get related products from the same category
   const relatedProducts = await getRelatedProducts(product.categoryId, product.id, 4);
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://modanil.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl;
 
   const jsonLd = {
     "@context": "https://schema.org",

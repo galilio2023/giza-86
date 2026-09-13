@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { getProducts, getCategories } from "@/lib/data-service";
+import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://modanil.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl;
 
   const [products, categories] = await Promise.all([
     getProducts().catch(() => []),
