@@ -51,7 +51,7 @@ export function AdminLoginClient({
     setLoading(true);
 
     if (!isDbConfigured) {
-      toast.success("تم الدخول بحساب مدير متجر GIZA 86 (وضع العرض السريع)");
+      toast.success("تم الدخول بحساب مدير متجر MODANIL (وضع العرض السريع)");
       router.push("/admin");
       setLoading(false);
       return;
@@ -71,7 +71,7 @@ export function AdminLoginClient({
         return;
       }
 
-      toast.success("تم الدخول بحساب مدير متجر GIZA 86");
+      toast.success("تم الدخول بحساب مدير متجر MODANIL");
       router.push("/admin");
     } catch {
       toast.error("تعذر تسجيل الدخول بحساب التجربة.");

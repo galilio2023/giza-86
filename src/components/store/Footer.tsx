@@ -4,7 +4,7 @@ import { StoreSettingsItem } from "@/types";
 import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 import { NewsletterForm } from "@/components/store/NewsletterForm";
 import { BrandLogo } from "@/components/store/BrandLogo";
-import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
+import { WhatsAppIcon, FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/ui/SocialIcons";
 
 import { CategoryItem } from "@/types";
 
@@ -119,41 +119,50 @@ export function Footer({ settings, categories }: FooterProps = {}) {
                 </div>
               )}
 
-              {/* Social Links if configured */}
-              {(settings?.facebookUrl || settings?.instagramUrl || settings?.tiktokUrl) && (
-                <div className="flex items-center gap-2 pt-2">
-                  {settings?.facebookUrl && (
+              {/* Social Media Channels (Vibrant Happy Badges) */}
+              <div className="pt-3 border-t border-border/60">
+                <span className="block text-xs font-bold text-muted-foreground mb-3">
+                  تواصل وتابعنا على منصات التواصل الاجتماعي:
+                </span>
+                <div className="flex items-center gap-3.5">
+                  {(settings?.facebookUrl || STORE_DEFAULTS.facebookUrl) && (
                     <a
-                      href={settings.facebookUrl}
+                      href={settings?.facebookUrl || STORE_DEFAULTS.facebookUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-amber-100 hover:text-amber-800 text-neutral-700 text-xs font-bold transition-colors"
+                      aria-label="فيسبوك"
+                      title="فيسبوك - صفحة المتجر الرسمية"
+                      className="group relative block cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95"
                     >
-                      فيسبوك
+                      <FacebookIcon className="w-10 h-10 drop-shadow-[0_4px_10px_rgba(24,119,242,0.35)] group-hover:drop-shadow-[0_6px_20px_rgba(24,119,242,0.65)] transition-all duration-300" />
                     </a>
                   )}
-                  {settings?.instagramUrl && (
+                  {(settings?.instagramUrl || STORE_DEFAULTS.instagramUrl) && (
                     <a
-                      href={settings.instagramUrl}
+                      href={settings?.instagramUrl || STORE_DEFAULTS.instagramUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-amber-100 hover:text-amber-800 text-neutral-700 text-xs font-bold transition-colors"
+                      aria-label="إنستغرام"
+                      title="إنستغرام - أحدث الموديلات والإطلالات"
+                      className="group relative block cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95"
                     >
-                      إنستغرام
+                      <InstagramIcon className="w-10 h-10 drop-shadow-[0_4px_10px_rgba(225,48,108,0.35)] group-hover:drop-shadow-[0_6px_20px_rgba(225,48,108,0.65)] transition-all duration-300" />
                     </a>
                   )}
-                  {settings?.tiktokUrl && (
+                  {(settings?.tiktokUrl || STORE_DEFAULTS.tiktokUrl) && (
                     <a
-                      href={settings.tiktokUrl}
+                      href={settings?.tiktokUrl || STORE_DEFAULTS.tiktokUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-amber-100 hover:text-amber-800 text-neutral-700 text-xs font-bold transition-colors"
+                      aria-label="تيك توك"
+                      title="تيك توك - فيديوهات وتنسيقات الموديلات"
+                      className="group relative block cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95"
                     >
-                      تيك توك
+                      <TikTokIcon className="w-10 h-10 drop-shadow-[0_4px_10px_rgba(0,242,254,0.30)] group-hover:drop-shadow-[0_6px_20px_rgba(254,44,85,0.60)] transition-all duration-300" />
                     </a>
                   )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
 

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 56" width="280" height="56" fill="none">
+  <defs>
+    <!-- Egyptian Metallic Gold Gradient -->
+    <linearGradient id="modanil-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#dfba73" />
+      <stop offset="50%" stop-color="#c59b27" />
+      <stop offset="100%" stop-color="#9e7514" />
+    </linearGradient>
+
+    <!-- Highlight Gradient -->
+    <linearGradient id="modanil-gold-hi" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff4dc" />
+      <stop offset="40%" stop-color="#e5c583" />
+      <stop offset="100%" stop-color="#c59b27" />
+    </linearGradient>
+
+    <!-- Deep Shadow Gradient -->
+    <linearGradient id="modanil-gold-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ad8318" />
+      <stop offset="60%" stop-color="#7e5a0b" />
+      <stop offset="100%" stop-color="#573e04" />
+    </linearGradient>
+  </defs>
+
+  <!-- Group: Concept 1 Architectural Interlocking 'M' Monogram -->
+  <g transform="translate(6, 4) scale(1.5)">
+    <!-- Outer M: Left Upright -->
+    <path d="M4 27V7L6.5 5V27H4Z" fill="url(#modanil-gold-hi)" />
+    <path d="M6.5 5L9 7V27H6.5V5Z" fill="url(#modanil-gold)" />
+    <path d="M2.5 25H9.5V27H2.5V25Z" fill="url(#modanil-gold)" />
+
+    <!-- Outer M: Right Upright -->
+    <path d="M23 7L25.5 5V27H23V7Z" fill="url(#modanil-gold)" />
+    <path d="M25.5 5L28 7V27H25.5V5Z" fill="url(#modanil-gold-dark)" />
+    <path d="M22.5 25H29.5V27H22.5V25Z" fill="url(#modanil-gold-dark)" />
+
+    <!-- Outer M: Diagonals -->
+    <path d="M6.5 5L16 16.5L14.5 18L5 7.5L6.5 5Z" fill="url(#modanil-gold-hi)" />
+    <path d="M25.5 5L16 16.5L17.5 18L27 7.5L25.5 5Z" fill="url(#modanil-gold-dark)" />
+
+    <!-- Inner M: Interlocking Peaks -->
+    <path d="M10.5 10L12.5 8V25H10.5V10Z" fill="url(#modanil-gold-hi)" />
+    <path d="M12.5 8L14.5 10V25H12.5V8Z" fill="url(#modanil-gold)" />
+    <path d="M17.5 10L19.5 8V25H17.5V10Z" fill="url(#modanil-gold)" />
+    <path d="M19.5 8L21.5 10V25H19.5V8Z" fill="url(#modanil-gold-dark)" />
+
+    <!-- Inner M: Central Chevron -->
+    <path d="M12.5 8L16 13L16 21L14.5 21L11.5 12L12.5 8Z" fill="url(#modanil-gold-hi)" />
+    <path d="M19.5 8L16 13L16 21L17.5 21L20.5 12L19.5 8Z" fill="url(#modanil-gold-dark)" />
+
+    <!-- Apex Highlights -->
+    <polygon points="6.5,4.5 7.2,5.5 5.8,5.5" fill="#ffffff" opacity="0.8" />
+    <polygon points="25.5,4.5 26.2,5.5 24.8,5.5" fill="#ffffff" opacity="0.6" />
+    <polygon points="12.5,7.5 13.2,8.5 11.8,8.5" fill="#ffffff" opacity="0.9" />
+    <polygon points="19.5,7.5 20.2,8.5 18.8,8.5" fill="#ffffff" opacity="0.7" />
+  </g>
+
+  <!-- Brand Typography: Single Solid Wordmark MODANIL -->
+  <text x="60" y="34" font-family="'Cairo', 'Segoe UI', -apple-system, sans-serif" font-weight="900" font-size="28" letter-spacing="-0.5px" fill="url(#modanil-gold)">
+    MODANIL
+  </text>
+
+  <!-- Editorial Heritage Subtitle -->
+  <text x="61" y="47" font-family="'Cairo', 'Segoe UI', -apple-system, sans-serif" font-weight="700" font-size="7.5" letter-spacing="3.2px" fill="#71717a">
+    EGYPTIAN COTTON • CAIRO
+  </text>
+</svg>

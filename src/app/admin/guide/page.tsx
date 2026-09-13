@@ -4,7 +4,7 @@ import { requireAdminServer } from "@/lib/auth-guard";
 
 export const metadata = {
   title: "دليل تشغيل وإدارة المتجر 💡 | لوحة التحكم",
-  description: "شرح شامل خطوة بخطوة لكافة وظائف متجر GIZA 86 للملابس والإكسسوارات وكيفية إدارته بكفاءة",
+  description: "شرح شامل خطوة بخطوة لكافة وظائف متجر MODANIL للملابس والإكسسوارات وكيفية إدارته بكفاءة",
 };
 
 export default async function AdminGuidePage() {
@@ -12,5 +12,5 @@ export default async function AdminGuidePage() {
 
   const settings = await getStoreSettings().catch(() => null);
 
-  return <AdminGuideClient storeName={settings?.storeName || "GIZA 86"} />;
+  return <AdminGuideClient storeName={settings?.storeName || "MODANIL"} />;
 }

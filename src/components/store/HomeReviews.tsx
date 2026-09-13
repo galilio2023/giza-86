@@ -6,7 +6,8 @@ interface HomeReviewsProps {
 }
 
 export function HomeReviews({ storeName }: HomeReviewsProps = {}) {
-  const brandName = storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName || "GIZA 86";
+  const rawName = storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName;
+  const brandName = (rawName && rawName !== "GIZA 86") ? rawName : "MODANIL";
   const reviews = [
     {
       name: "م. أحمد مصطفى",

@@ -55,6 +55,11 @@ export function ProductTable({
                 <span className="font-bold text-neutral-900 block truncate text-sm">{p.name}</span>
                 <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-mono mt-0.5">
                   <span>{p.sku}</span>
+                  {p.isFeatured && (
+                    <span className="text-[10px] font-sans font-bold bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded border border-amber-300">
+                      ⭐ مميز (لوك بوك)
+                    </span>
+                  )}
                   {p.categoryName && (
                     <span className="text-[11px] font-sans text-neutral-500 font-bold bg-neutral-100 px-1.5 py-0.5 rounded">
                       {p.categoryName}
@@ -147,6 +152,11 @@ export function ProductTable({
                       <span className="font-bold text-neutral-900 block line-clamp-1">{p.name}</span>
                       <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 font-mono mt-0.5">
                         <span>{p.sku}</span>
+                        {p.isFeatured && (
+                          <span className="text-[10px] font-sans font-bold bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded border border-amber-300">
+                            ⭐ مميز (لوك بوك)
+                          </span>
+                        )}
                         {p.badgeText && (
                           <span className="text-[10px] font-sans font-bold bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200/60">
                             {p.badgeText}

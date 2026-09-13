@@ -18,7 +18,14 @@ const getCachedStoreSettings = unstable_cache(
 );
 
 export const getStoreSettings = cache(async function getStoreSettings(): Promise<StoreSettingsItem> {
-  return getCachedStoreSettings();
+  const settings = await getCachedStoreSettings();
+  if (settings && (settings.storeName === "GIZA 86" || !settings.storeName)) {
+    settings.storeName = "MODANIL";
+  }
+  if (settings && (!settings.logoUrl || settings.logoUrl.includes("giza"))) {
+    settings.logoUrl = "/images/modanil-logo.svg";
+  }
+  return settings;
 });
 
 /**

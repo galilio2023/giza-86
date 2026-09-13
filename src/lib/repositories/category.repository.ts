@@ -1,5 +1,5 @@
 import { CategoryItem } from "@/types";
-import { isDatabaseConfigured, db } from "@/db";
+import { isDatabaseConfigured, db, dbPool } from "@/db";
 import { categories, products } from "@/db/schema";
 import { eq, asc, sql, ne } from "drizzle-orm";
 import { memoryCategories, memoryProducts } from "./memory-store";
@@ -14,7 +14,13 @@ export interface ICategoryRepository {
 
 export class MemoryCategoryRepository implements ICategoryRepository {
   async findMany(): Promise<CategoryItem[]> {
-    return memoryCategories.map((c) => ({
+    const sorted = [...memoryCategories].sort((a, b) => {
+      const orderA = a.displayOrder ?? 0;
+      const orderB = b.displayOrder ?? 0;
+      if (orderA !== orderB) return orderA - orderB;
+      return a.id - b.id;
+    });
+    return sorted.map((c) => ({
       ...c,
       productsCount: memoryProducts.filter((p) => p.categoryId === c.id).length,
     }));
@@ -44,6 +50,17 @@ export class MemoryCategoryRepository implements ICategoryRepository {
   async update(id: number, data: Partial<CategoryItem>): Promise<CategoryItem | null> {
     const idx = memoryCategories.findIndex((c) => c.id === id);
     if (idx === -1) return null;
+
+    if (data.displayOrder !== undefined && data.displayOrder !== memoryCategories[idx].displayOrder) {
+      const oldOrder = memoryCategories[idx].displayOrder ?? 0;
+      const collisionIdx = memoryCategories.findIndex(
+        (c) => c.id !== id && c.displayOrder === data.displayOrder
+      );
+      if (collisionIdx !== -1) {
+        memoryCategories[collisionIdx].displayOrder = oldOrder;
+      }
+    }
+
     memoryCategories[idx] = {
       ...memoryCategories[idx],
       ...data,
@@ -83,7 +100,7 @@ export class DrizzleCategoryRepository implements ICategoryRepository {
       .from(categories)
       .leftJoin(products, eq(categories.id, products.categoryId))
       .groupBy(categories.id)
-      .orderBy(asc(categories.displayOrder));
+      .orderBy(asc(categories.displayOrder), asc(categories.id));
 
     return rows.map((r) => ({
       id: r.id,
@@ -141,31 +158,64 @@ export class DrizzleCategoryRepository implements ICategoryRepository {
   }
 
   async update(id: number, data: Partial<CategoryItem>): Promise<CategoryItem | null> {
-    const [updated] = await db
-      .update(categories)
-      .set({
-        name: data.name,
-        slug: data.slug,
-        image: data.image,
-        description: data.description,
-        displayOrder: data.displayOrder,
-        updatedAt: new Date(),
-      })
-      .where(eq(categories.id, id))
-      .returning();
+    const client = dbPool || db;
+    return await client.transaction(async (tx) => {
+      // If displayOrder is updated and conflicts with another category, swap them
+      if (data.displayOrder !== undefined) {
+        const [current] = await tx
+          .select({ id: categories.id, displayOrder: categories.displayOrder })
+          .from(categories)
+          .where(eq(categories.id, id))
+          .limit(1);
 
-    if (!updated) return null;
+        if (current && current.displayOrder !== data.displayOrder) {
+          const [targetOther] = await tx
+            .select({ id: categories.id, displayOrder: categories.displayOrder })
+            .from(categories)
+            .where(sql`${categories.id} != ${id} AND ${categories.displayOrder} = ${data.displayOrder}`)
+            .limit(1);
 
-    return {
-      id: updated.id,
-      name: updated.name,
-      slug: updated.slug,
-      image: updated.image,
-      description: updated.description ?? undefined,
-      displayOrder: updated.displayOrder ?? 0,
-      createdAt: updated.createdAt?.toISOString(),
-      updatedAt: updated.updatedAt?.toISOString(),
-    };
+          if (targetOther) {
+            // Lock rows in a consistent order by id (ascending) to serialize updates and avoid deadlocks
+            const firstId = Math.min(id, targetOther.id);
+            const secondId = Math.max(id, targetOther.id);
+            await tx.select({ id: categories.id }).from(categories).where(eq(categories.id, firstId)).for("update");
+            await tx.select({ id: categories.id }).from(categories).where(eq(categories.id, secondId)).for("update");
+
+            await tx
+              .update(categories)
+              .set({ displayOrder: current.displayOrder, updatedAt: new Date() })
+              .where(eq(categories.id, targetOther.id));
+          }
+        }
+      }
+
+      const [updated] = await tx
+        .update(categories)
+        .set({
+          name: data.name,
+          slug: data.slug,
+          image: data.image,
+          description: data.description,
+          displayOrder: data.displayOrder,
+          updatedAt: new Date(),
+        })
+        .where(eq(categories.id, id))
+        .returning();
+
+      if (!updated) return null;
+
+      return {
+        id: updated.id,
+        name: updated.name,
+        slug: updated.slug,
+        image: updated.image,
+        description: updated.description ?? undefined,
+        displayOrder: updated.displayOrder ?? 0,
+        createdAt: updated.createdAt?.toISOString(),
+        updatedAt: updated.updatedAt?.toISOString(),
+      };
+    });
   }
 
   async delete(id: number): Promise<boolean> {
