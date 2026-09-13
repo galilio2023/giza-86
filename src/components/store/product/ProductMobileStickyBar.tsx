@@ -62,7 +62,13 @@ export function ProductMobileStickyBar({
         ) : (
           <>
             <ShoppingBag className="w-4 h-4" />
-            <span>{isOutOfStock ? "نفد المخزون" : `أضف للسلة (${selectedSize})`}</span>
+            <span>
+              {isOutOfStock
+                ? "نفد المخزون"
+                : selectedSize === "مقاس موحد" || selectedSize === "One Size"
+                ? "أضف للسلة"
+                : `أضف للسلة (${selectedSize})`}
+            </span>
           </>
         )}
       </Button>

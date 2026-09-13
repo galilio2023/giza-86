@@ -94,12 +94,31 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
           )}
         </div>
 
-        {/* Egyptian Cotton Badge */}
-        <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-10 hidden sm:block">
-          <span className="bg-white/95 backdrop-blur-md text-neutral-900 text-xs font-bold px-2.5 py-1 rounded-lg border border-neutral-200/80 shadow-xs">
-            قطن جيزة 86 🇪🇬
-          </span>
-        </div>
+        {/* Dynamic / Egyptian Cotton Badge */}
+        {(() => {
+          const isAccessory =
+            product.categorySlug?.includes("accessories") ||
+            product.categoryName?.includes("إكسسوار") ||
+            product.categoryName?.includes("شنط") ||
+            product.categoryName?.includes("حقائب");
+
+          const effectiveBadge =
+            product.badgeText !== undefined && product.badgeText !== null && product.badgeText !== ""
+              ? product.badgeText
+              : product.fabricDetails?.includes("قطن") || (!isAccessory && product.fabricDetails)
+              ? "قطن جيزة 86 🇪🇬"
+              : undefined;
+
+          if (!effectiveBadge) return null;
+
+          return (
+            <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-10 hidden sm:block">
+              <span className="bg-white/95 backdrop-blur-md text-neutral-900 text-xs font-bold px-2.5 py-1 rounded-lg border border-neutral-200/80 shadow-xs">
+                {effectiveBadge}
+              </span>
+            </div>
+          );
+        })()}
 
         {/* Wishlist Button */}
         <button
@@ -185,26 +204,32 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
           {/* Sizes Pills - strictly single row on desktop, never wraps into 2 rows */}
           {product.sizes && product.sizes.length > 0 && (
             <div className="hidden lg:flex items-center gap-1 flex-nowrap overflow-hidden">
-              {product.sizes.slice(0, 5).map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setSelectedSize(s);
-                  }}
-                  aria-label={`اختيار المقاس ${s}`}
-                  aria-pressed={selectedSize === s}
-                  className={`text-[11px] px-2 py-0.5 rounded-md font-bold min-w-[28px] h-[28px] transition cursor-pointer flex items-center justify-center flex-shrink-0 ${
-                    selectedSize === s
-                      ? "btn-3d-primary shadow-xs"
-                      : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
+              {product.sizes.length === 1 && (product.sizes[0] === "مقاس موحد" || product.sizes[0] === "One Size") ? (
+                <span className="text-[10px] px-2 py-0.5 rounded-md font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                  {product.sizes[0]}
+                </span>
+              ) : (
+                product.sizes.slice(0, 5).map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedSize(s);
+                    }}
+                    aria-label={`اختيار المقاس ${s}`}
+                    aria-pressed={selectedSize === s}
+                    className={`text-[11px] px-2 py-0.5 rounded-md font-bold min-w-[28px] h-[28px] transition cursor-pointer flex items-center justify-center flex-shrink-0 ${
+                      selectedSize === s
+                        ? "btn-3d-primary shadow-xs"
+                        : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))
+              )}
             </div>
           )}
         </div>

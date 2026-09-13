@@ -34,6 +34,7 @@ export const PATCH = withAdminAuth(
       salePrice: validated.salePrice === null ? 0 : validated.salePrice,
       fabricDetails: validated.fabricDetails === null ? "" : validated.fabricDetails,
       sku: validated.sku === null ? "" : validated.sku,
+      badgeText: validated.badgeText === null ? null : validated.badgeText,
     });
 
     if (!updated) {

@@ -88,7 +88,7 @@ export function QuickViewModal({ product, onClose, whatsappNumber }: QuickViewMo
             <div className="space-y-4">
               <div className="space-y-1">
                 <Badge variant="warning">
-                  {product.categoryName || "أزياء مصرية"}
+                  {product.badgeText || product.categoryName || "منتج أصلي"}
                 </Badge>
                 <DialogTitle className="text-xl font-black text-neutral-900 leading-snug pt-1">
                   {product.name}

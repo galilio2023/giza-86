@@ -27,6 +27,8 @@ async function main() {
     console.log("2. Ensuring timestamp and missing columns exist across all tables...");
     await sql`ALTER TABLE "categories" ADD COLUMN IF NOT EXISTS "updated_at" timestamp DEFAULT now() NOT NULL;`;
     await sql`ALTER TABLE "products" ADD COLUMN IF NOT EXISTS "updated_at" timestamp DEFAULT now() NOT NULL;`;
+    await sql`ALTER TABLE "products" ADD COLUMN IF NOT EXISTS "has_size_guide" boolean DEFAULT true;`;
+    await sql`ALTER TABLE "products" ADD COLUMN IF NOT EXISTS "badge_text" varchar(50);`;
     await sql`ALTER TABLE "coupons" ADD COLUMN IF NOT EXISTS "usage_limit" integer;`;
     await sql`ALTER TABLE "coupons" ADD COLUMN IF NOT EXISTS "used_count" integer DEFAULT 0 NOT NULL;`;
     await sql`ALTER TABLE "coupons" ADD COLUMN IF NOT EXISTS "updated_at" timestamp DEFAULT now() NOT NULL;`;
