@@ -259,9 +259,9 @@ async function main() {
 
   console.log("Seeding default administrator account...");
   try {
-    const adminEmail = "admin@giza86.com";
-    const adminPass = "Giza86Admin2026!";
-    const adminId = "admin-giza86-system";
+    const adminEmail = process.env.ADMIN_EMAIL?.trim() || "admin@modanil.com";
+    const adminPass = process.env.ADMIN_PASSWORD || "ModanilAdmin2026!";
+    const adminId = "admin-modanil-system";
 
     const [existingUser] = await db
       .select({ id: schema.user.id })
@@ -311,7 +311,7 @@ async function main() {
           password: hashedPassword,
         });
     }
-    console.log("Admin account seeded successfully (admin@giza86.com).");
+    console.log(`Admin account seeded successfully (${adminEmail}).`);
   } catch (adminErr) {
     console.warn("Notice: Admin account seed warning:", adminErr);
   }

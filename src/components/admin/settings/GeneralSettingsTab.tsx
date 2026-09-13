@@ -48,7 +48,7 @@ export function GeneralSettingsTab({
               type="text"
               value={storeName}
               onChange={(e) => setStoreName(e.target.value)}
-              placeholder="مثال: GIZA 86 أو الاسم التجاري لمتجرك"
+              placeholder="مثال: MODANIL أو الاسم التجاري لمتجرك"
               className="w-full p-2.5 rounded-xl border border-neutral-300 text-xs font-bold bg-neutral-50 focus:bg-white transition"
             />
             <p className="text-[11px] text-neutral-500">

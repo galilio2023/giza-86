@@ -18,17 +18,8 @@ export interface AdminAuthResult {
  * Supports both API Route Requests and Server Components.
  */
 export async function validateAdminSession(requestHeaders?: Headers): Promise<AdminAuthResult> {
-  // If database is not configured in local/dev preview mode
-  if (!isDatabaseConfigured && process.env.NODE_ENV !== "production") {
-    return {
-      isAdmin: true,
-      user: {
-        id: "demo-admin-id",
-        name: "مدير المتجر (وضع العرض)",
-        email: "admin@giza86.com",
-        role: "admin",
-      },
-    };
+  if (!isDatabaseConfigured) {
+    return { isAdmin: false, user: null };
   }
 
   try {

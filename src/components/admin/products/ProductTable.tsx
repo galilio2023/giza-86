@@ -90,8 +90,6 @@ export function ProductTable({
             <div className="flex items-center justify-end gap-2 pt-2 border-t border-neutral-50">
               <Link
                 href={`/products/${encodeURIComponent(p.slug || String(p.id))}`}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="min-h-[38px] min-w-[38px] p-2 text-neutral-600 hover:text-amber-700 hover:bg-neutral-100 rounded-xl transition cursor-pointer inline-flex items-center justify-center border border-neutral-200"
                 title="معاينة في المتجر"
               >
@@ -211,9 +209,7 @@ export function ProductTable({
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/products/${encodeURIComponent(p.slug || String(p.id))}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="min-h-[36px] min-w-[36px] p-2 text-neutral-600 hover:text-amber-700 hover:bg-neutral-100 rounded-lg transition cursor-pointer inline-flex items-center justify-center"
+                      className="min-h-[36px] min-w-[36px] p-2 text-neutral-600 hover:text-amber-700 hover:bg-neutral-100 rounded-lg transition inline-flex items-center justify-center border border-neutral-200"
                       title="معاينة في المتجر"
                     >
                       <ExternalLink className="w-4 h-4" />

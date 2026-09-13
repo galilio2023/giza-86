@@ -3,14 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Lock, Mail, ShieldCheck, ArrowLeft } from "lucide-react";
+import { Lock, Mail, ArrowLeft, AlertCircle } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 export function AdminLoginClient({
-  isDbConfigured = false,
+  isDbConfigured = true,
+  storeName = "MODANIL",
 }: {
   isDbConfigured?: boolean;
+  storeName?: string;
 }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -22,8 +24,7 @@ export function AdminLoginClient({
     setLoading(true);
 
     if (!isDbConfigured) {
-      toast.success("تم تسجيل الدخول بنجاح (وضع العرض السريع)");
-      router.push("/admin");
+      toast.error("قاعدة البيانات غير متصلة. يرجى تهيئة متغير DATABASE_URL للتحقق من هوية المسؤول.");
       setLoading(false);
       return;
     }
@@ -33,48 +34,17 @@ export function AdminLoginClient({
         email: email.trim(),
         password,
       });
+
       if (error) {
-        toast.error(error.message || "بيانات الدخول غير صحيحة");
+        toast.error(error.message || "بيانات الدخول غير صحيحة. يرجى التحقق من البريد وكلمة المرور.");
         return;
       }
+
       toast.success("تم تسجيل الدخول بنجاح");
       router.push("/admin");
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "حدث خطأ أثناء تسجيل الدخول";
       toast.error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleQuickDemoLogin = async () => {
-    setLoading(true);
-
-    if (!isDbConfigured) {
-      toast.success("تم الدخول بحساب مدير متجر MODANIL (وضع العرض السريع)");
-      router.push("/admin");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const adminEmail = "admin@giza86.com";
-      const adminPass = "Giza86Admin2026!";
-
-      const res = await authClient.signIn.email({
-        email: adminEmail,
-        password: adminPass,
-      });
-
-      if (res.error) {
-        toast.error("تعذر تسجيل الدخول التلقائي. يرجى إدخال بيانات حساب المدير.");
-        return;
-      }
-
-      toast.success("تم الدخول بحساب مدير متجر MODANIL");
-      router.push("/admin");
-    } catch {
-      toast.error("تعذر تسجيل الدخول بحساب التجربة.");
     } finally {
       setLoading(false);
     }
@@ -87,13 +57,25 @@ export function AdminLoginClient({
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 mb-1">
           <Lock className="w-6 h-6" />
         </div>
-        <h1 className="text-2xl font-black text-neutral-900 font-mono">
-          <span className="text-amber-600">GIZA</span> 86 • CMS
+        <h1 className="text-2xl font-black text-neutral-900 font-mono tracking-wider">
+          <span className="text-amber-600">{storeName}</span> • CMS
         </h1>
         <p className="text-xs text-neutral-500">
-          تسجيل الدخول إلى لوحة التحكم الإدارية (للمسؤولين فقط)
+          تسجيل الدخول إلى لوحة التحكم الإدارية (للمسؤولين المعتمدين فقط)
         </p>
       </div>
+
+      {!isDbConfigured && (
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-2.5 text-xs text-amber-800">
+          <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <span className="font-bold block">تنبيه اتصال قاعدة البيانات</span>
+            <span className="text-[11px] leading-relaxed block text-amber-700">
+              قاعدة البيانات غير مهيأة بعد. يرجى ضبط متغير البيئة DATABASE_URL للتحقق من الاعتمادات.
+            </span>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4 text-xs">
         <div>
@@ -106,7 +88,7 @@ export function AdminLoginClient({
               dir="ltr"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@giza86.com"
+              placeholder="admin@modanil.com"
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-200 text-base lg:text-sm text-left focus:ring-2 focus:ring-amber-500 focus:outline-none"
             />
           </div>
@@ -131,35 +113,23 @@ export function AdminLoginClient({
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-neutral-900 hover:bg-neutral-800 disabled:opacity-60 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2"
+          className="w-full bg-neutral-900 hover:bg-neutral-800 disabled:opacity-60 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
         >
-          <span>{loading ? "جاري التحقق..." : "تسجيل الدخول"}</span>
+          <span>{loading ? "جاري التحقق..." : "تسجيل الدخول الآمن"}</span>
           <ArrowLeft className="w-4 h-4" />
         </button>
       </form>
 
-      {/* Quick Demo Login & Store Link */}
-      <div className="pt-2 border-t border-neutral-100 space-y-3">
-        <button
-          type="button"
-          onClick={handleQuickDemoLogin}
-          disabled={loading}
-          className="w-full bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2"
-        >
-          <ShieldCheck className="w-4 h-4 text-amber-700" />
-          <span>دخول فوري بحساب المدير الافتراضي</span>
-        </button>
+      {/* Return to Store Link */}
+      <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
+        <span className="text-[11px] text-neutral-400">
+          * محمي بنظام التشفير Better-Auth
+        </span>
 
-        <div className="flex items-center justify-between text-xs text-neutral-500 pt-1">
-          <span className="text-[11px] text-neutral-400">
-            * يتم إنشاء حسابات المسؤولين الجدد عبر خادم النظام CLI فقط
-          </span>
-
-          <Link href="/" className="hover:text-neutral-900 flex items-center gap-1 font-semibold">
-            <span>المتجر</span>
-            <ArrowLeft className="w-3 h-3" />
-          </Link>
-        </div>
+        <Link href="/" className="hover:text-neutral-900 flex items-center gap-1 font-semibold">
+          <span>العودة للمتجر</span>
+          <ArrowLeft className="w-3 h-3" />
+        </Link>
       </div>
     </div>
   );
