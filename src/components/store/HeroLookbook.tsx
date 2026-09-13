@@ -101,6 +101,17 @@ export function HeroLookbook({ products = [], categories = [] }: HeroLookbookPro
     ? Math.round(((prod3.price - Number(prod3.salePrice)) / prod3.price) * 100)
     : 0;
 
+  // Real product cards link to canonical slug or id; fallback synthetic cards route to /products
+  const prod1Href = products[0]
+    ? `/products/${encodeURIComponent(prod1.slug || String(prod1.id))}`
+    : "/products";
+  const prod2Href = products[1]
+    ? `/products/${encodeURIComponent(prod2.slug || String(prod2.id))}`
+    : "/products";
+  const prod3Href = products[2]
+    ? `/products/${encodeURIComponent(prod3.slug || String(prod3.id))}`
+    : "/products";
+
   return (
     <div className="lg:col-span-6 space-y-3 sm:space-y-4">
       {/* Editorial Lookbook Header */}
@@ -125,7 +136,7 @@ export function HeroLookbook({ products = [], categories = [] }: HeroLookbookPro
       <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 h-auto sm:h-[440px] lg:h-[480px]">
         {/* Primary Feature Product Card */}
         <Link
-          href={`/products/${prod1.id}`}
+          href={prod1Href}
           className="group relative sm:col-span-7 rounded-3xl overflow-hidden bg-neutral-900 border border-neutral-200/80 hover:border-amber-400/50 shadow-md hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-500 flex flex-col justify-end h-[260px] sm:h-full cursor-pointer"
         >
           <Image
@@ -196,7 +207,7 @@ export function HeroLookbook({ products = [], categories = [] }: HeroLookbookPro
         <div className="sm:col-span-5 grid grid-cols-2 sm:flex sm:flex-col gap-3 sm:gap-4 h-full">
           {/* Secondary Card 1 */}
           <Link
-            href={`/products/${prod2.id}`}
+            href={prod2Href}
             className="group relative rounded-3xl overflow-hidden bg-neutral-900 border border-neutral-200/80 hover:border-amber-400/50 shadow-md hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-500 flex flex-col justify-end h-[160px] sm:h-auto sm:flex-1 sm:min-h-0 cursor-pointer"
           >
             <Image
@@ -250,7 +261,7 @@ export function HeroLookbook({ products = [], categories = [] }: HeroLookbookPro
 
           {/* Secondary Card 2 */}
           <Link
-            href={`/products/${prod3.id}`}
+            href={prod3Href}
             className="group relative rounded-3xl overflow-hidden bg-neutral-900 border border-neutral-200/80 hover:border-amber-400/50 shadow-md hover:shadow-xl hover:shadow-amber-500/10 transition-all duration-500 flex flex-col justify-end h-[160px] sm:h-auto sm:flex-1 sm:min-h-0 cursor-pointer"
           >
             <Image

@@ -22,6 +22,11 @@ export class MemorySettingsRepository implements ISettingsRepository {
   }
 }
 
+function isLegacyGizaValue(val?: string | null): boolean {
+  if (!val) return false;
+  return /giza[\s_-]*86|جيزة[\s_-]*86/i.test(val);
+}
+
 export class DrizzleSettingsRepository implements ISettingsRepository {
   async get(): Promise<StoreSettingsItem> {
     const rows = await db.select().from(storeSettings).orderBy(asc(storeSettings.id)).limit(1);
@@ -74,21 +79,57 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
       return this.mapRowToItem(inserted);
     }
 
-    if (rows[0] && (rows[0].storeName === "GIZA 86" || !rows[0].storeName)) {
-      // Auto-migrate legacy DB record to MODANIL
-      await db
-        .update(storeSettings)
-        .set({
-          storeName: STORE_DEFAULTS.storeName,
-          logoUrl: STORE_DEFAULTS.logoUrl,
-          storeTagline: STORE_DEFAULTS.storeTagline,
-          updatedAt: new Date(),
-        })
-        .where(eq(storeSettings.id, rows[0].id))
-        .catch(() => {});
-      rows[0].storeName = STORE_DEFAULTS.storeName;
-      rows[0].logoUrl = STORE_DEFAULTS.logoUrl;
-      rows[0].storeTagline = STORE_DEFAULTS.storeTagline;
+    if (rows[0]) {
+      const row = rows[0];
+      const migrationUpdates: Record<string, unknown> = {};
+
+      if (!row.storeName || row.storeName === "GIZA 86") {
+        migrationUpdates.storeName = STORE_DEFAULTS.storeName;
+        row.storeName = STORE_DEFAULTS.storeName;
+      }
+      if (!row.logoUrl || row.logoUrl.includes("giza")) {
+        migrationUpdates.logoUrl = STORE_DEFAULTS.logoUrl;
+        row.logoUrl = STORE_DEFAULTS.logoUrl;
+      }
+      if (!row.storeTagline || isLegacyGizaValue(row.storeTagline)) {
+        migrationUpdates.storeTagline = STORE_DEFAULTS.storeTagline;
+        row.storeTagline = STORE_DEFAULTS.storeTagline;
+      }
+      if (!row.supportEmail || row.supportEmail.includes("giza86")) {
+        migrationUpdates.supportEmail = STORE_DEFAULTS.supportEmail;
+        row.supportEmail = STORE_DEFAULTS.supportEmail;
+      }
+      if (!row.instapayHandle || row.instapayHandle.includes("giza86")) {
+        migrationUpdates.instapayHandle = STORE_DEFAULTS.instapayHandle;
+        row.instapayHandle = STORE_DEFAULTS.instapayHandle;
+      }
+      if (!row.storeDescription || isLegacyGizaValue(row.storeDescription)) {
+        migrationUpdates.storeDescription = STORE_DEFAULTS.storeDescription;
+        row.storeDescription = STORE_DEFAULTS.storeDescription;
+      }
+      if (!row.seoTitle || isLegacyGizaValue(row.seoTitle)) {
+        migrationUpdates.seoTitle = STORE_DEFAULTS.seoTitle;
+        row.seoTitle = STORE_DEFAULTS.seoTitle;
+      }
+      if (!row.seoDescription || isLegacyGizaValue(row.seoDescription)) {
+        migrationUpdates.seoDescription = STORE_DEFAULTS.seoDescription;
+        row.seoDescription = STORE_DEFAULTS.seoDescription;
+      }
+      if (!row.seoKeywords || isLegacyGizaValue(row.seoKeywords)) {
+        migrationUpdates.seoKeywords = STORE_DEFAULTS.seoKeywords;
+        row.seoKeywords = STORE_DEFAULTS.seoKeywords;
+      }
+
+      if (Object.keys(migrationUpdates).length > 0) {
+        migrationUpdates.updatedAt = new Date();
+        await db
+          .update(storeSettings)
+          .set(migrationUpdates)
+          .where(eq(storeSettings.id, row.id))
+          .catch(() => {});
+      }
+
+      return this.mapRowToItem(row);
     }
 
     return this.mapRowToItem(rows[0]);
@@ -165,12 +206,45 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
     const effectiveStoreName = (rawStoreName && rawStoreName !== "GIZA 86")
       ? rawStoreName
       : (process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName);
+
+    const effectiveLogoUrl = (s.logoUrl && !s.logoUrl.includes("giza"))
+      ? s.logoUrl
+      : STORE_DEFAULTS.logoUrl;
+
+    const effectiveStoreTagline = (s.storeTagline && !isLegacyGizaValue(s.storeTagline))
+      ? s.storeTagline
+      : STORE_DEFAULTS.storeTagline;
+
+    const effectiveSupportEmail = (s.supportEmail && !s.supportEmail.includes("giza86"))
+      ? s.supportEmail
+      : STORE_DEFAULTS.supportEmail;
+
+    const effectiveInstapayHandle = (s.instapayHandle && !s.instapayHandle.includes("giza86"))
+      ? s.instapayHandle
+      : STORE_DEFAULTS.instapayHandle;
+
+    const effectiveStoreDescription = (s.storeDescription && !isLegacyGizaValue(s.storeDescription))
+      ? s.storeDescription
+      : STORE_DEFAULTS.storeDescription;
+
+    const effectiveSeoTitle = (s.seoTitle && !isLegacyGizaValue(s.seoTitle))
+      ? s.seoTitle
+      : STORE_DEFAULTS.seoTitle;
+
+    const effectiveSeoDescription = (s.seoDescription && !isLegacyGizaValue(s.seoDescription))
+      ? s.seoDescription
+      : STORE_DEFAULTS.seoDescription;
+
+    const effectiveSeoKeywords = (s.seoKeywords && !isLegacyGizaValue(s.seoKeywords))
+      ? s.seoKeywords
+      : STORE_DEFAULTS.seoKeywords;
+
     return {
       storeName: effectiveStoreName,
       phone: s.phone || STORE_DEFAULTS.phone,
       whatsapp: s.whatsapp || STORE_DEFAULTS.whatsapp,
-      supportEmail: s.supportEmail || STORE_DEFAULTS.supportEmail,
-      instapayHandle: s.instapayHandle || STORE_DEFAULTS.instapayHandle,
+      supportEmail: effectiveSupportEmail,
+      instapayHandle: effectiveInstapayHandle,
       instapayPhone: s.instapayPhone || STORE_DEFAULTS.phone,
       vodafoneCashPhone: s.vodafoneCashPhone || STORE_DEFAULTS.vodafoneCashPhone,
       freeShippingThreshold: Number(s.freeShippingThreshold || STORE_DEFAULTS.freeShippingThreshold),
@@ -183,9 +257,9 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
       orderClosedMessage: s.orderClosedMessage ?? undefined,
       maintenanceMessage: s.maintenanceMessage ?? undefined,
       governoratesShipping: s.governoratesShipping || undefined,
-      logoUrl: s.logoUrl || STORE_DEFAULTS.logoUrl,
-      storeTagline: s.storeTagline || STORE_DEFAULTS.storeTagline,
-      storeDescription: s.storeDescription || STORE_DEFAULTS.storeDescription,
+      logoUrl: effectiveLogoUrl,
+      storeTagline: effectiveStoreTagline,
+      storeDescription: effectiveStoreDescription,
       physicalAddress: s.physicalAddress || STORE_DEFAULTS.physicalAddress,
       facebookUrl: s.facebookUrl || STORE_DEFAULTS.facebookUrl,
       instagramUrl: s.instagramUrl || STORE_DEFAULTS.instagramUrl,
@@ -201,9 +275,9 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
       promoTitle: s.promoTitle || STORE_DEFAULTS.promoTitle,
       promoDescription: s.promoDescription || STORE_DEFAULTS.promoDescription,
       promoCouponCode: s.promoCouponCode || STORE_DEFAULTS.promoCouponCode,
-      seoTitle: s.seoTitle || STORE_DEFAULTS.seoTitle,
-      seoDescription: s.seoDescription || STORE_DEFAULTS.seoDescription,
-      seoKeywords: s.seoKeywords || STORE_DEFAULTS.seoKeywords,
+      seoTitle: effectiveSeoTitle,
+      seoDescription: effectiveSeoDescription,
+      seoKeywords: effectiveSeoKeywords,
       createdAt: s.createdAt?.toISOString(),
       updatedAt: s.updatedAt?.toISOString(),
     };

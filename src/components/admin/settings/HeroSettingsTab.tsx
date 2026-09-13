@@ -212,17 +212,13 @@ export function HeroSettingsTab({
               </p>
             </div>
           </div>
-          <Link href="/admin/products">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="border-amber-300 bg-white hover:bg-amber-100 text-amber-900 font-black text-xs gap-1.5 shadow-2xs cursor-pointer w-full sm:w-auto"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>إدارة المنتجات المميزة (Featured)</span>
-              <ArrowLeft className="w-3.5 h-3.5" />
-            </Button>
+          <Link
+            href="/admin/products"
+            className="inline-flex items-center justify-center font-black text-xs gap-1.5 px-3 py-1.5 rounded-xl min-h-[36px] border border-amber-300 bg-white hover:bg-amber-100 text-amber-900 shadow-2xs cursor-pointer w-full sm:w-auto transition-all active:scale-[0.98] select-none"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <span>إدارة المنتجات المميزة (Featured)</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
           </Link>
         </div>
 
