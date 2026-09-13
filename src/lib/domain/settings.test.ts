@@ -31,22 +31,29 @@ describe("Domain Store Settings Resolution", () => {
   });
 
   it("should determine banner visibility and fallback notice correctly", () => {
-    // When active and notice provided
-    const activeWithNotice = { isBannerActive: true, bannerNotice: "خصومات الصيف" };
-    const customNotice = activeWithNotice.bannerNotice?.trim();
-    const notice = customNotice || STORE_DEFAULTS.bannerNotice;
-    assert.equal(Boolean(activeWithNotice.isBannerActive && notice), true);
-    assert.equal(notice, "خصومات الصيف");
+    const resolveBannerNotice = (rawNotice?: string | null) =>
+      rawNotice === "" ? "" : rawNotice?.trim() || STORE_DEFAULTS.bannerNotice;
 
-    // When active but notice is empty/spaces, fallback to default so active banner always renders
-    const activeEmptyNotice = { isBannerActive: true, bannerNotice: "   " };
-    const customEmptyNotice = activeEmptyNotice.bannerNotice?.trim();
-    const fallbackNotice = customEmptyNotice || STORE_DEFAULTS.bannerNotice;
-    assert.equal(Boolean(activeEmptyNotice.isBannerActive && fallbackNotice), true);
-    assert.equal(fallbackNotice, STORE_DEFAULTS.bannerNotice);
+    // When active and notice provided
+    const notice1 = resolveBannerNotice("خصومات الصيف");
+    assert.equal(Boolean(true && notice1), true);
+    assert.equal(notice1, "خصومات الصيف");
+
+    // When active and notice is explicitly empty string, preserve empty and hide banner
+    const noticeEmpty = resolveBannerNotice("");
+    assert.equal(Boolean(true && noticeEmpty), false);
+    assert.equal(noticeEmpty, "");
+
+    // When active and notice is undefined or null, fallback to STORE_DEFAULTS.bannerNotice
+    const noticeUndef = resolveBannerNotice(undefined);
+    assert.equal(Boolean(true && noticeUndef), true);
+    assert.equal(noticeUndef, STORE_DEFAULTS.bannerNotice);
+
+    const noticeNull = resolveBannerNotice(null);
+    assert.equal(Boolean(true && noticeNull), true);
+    assert.equal(noticeNull, STORE_DEFAULTS.bannerNotice);
 
     // When deactivated, banner should not be visible regardless of notice
-    const inactive = { isBannerActive: false, bannerNotice: "خصومات الصيف" };
-    assert.equal(Boolean(inactive.isBannerActive && notice), false);
+    assert.equal(Boolean(false && notice1), false);
   });
 });

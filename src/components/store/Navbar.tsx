@@ -18,8 +18,10 @@ export function Navbar({ settings, categories }: NavbarProps = {}) {
     settings?.isBannerActive !== undefined
       ? settings.isBannerActive
       : STORE_DEFAULTS.isBannerActive;
-  const customNotice = settings?.bannerNotice?.trim();
-  const bannerNotice = customNotice || STORE_DEFAULTS.bannerNotice;
+  const rawNotice = settings?.bannerNotice;
+  const customNotice = rawNotice?.trim();
+  const bannerNotice =
+    rawNotice === "" ? "" : customNotice || STORE_DEFAULTS.bannerNotice;
   const showBanner = Boolean(isBannerActive && bannerNotice);
 
   const navLinks = [
