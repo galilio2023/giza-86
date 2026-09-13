@@ -14,7 +14,14 @@ async function main() {
 
   const name = nameArg || "مدير متجر MODANIL";
   const email = emailArg || process.env.ADMIN_EMAIL || "admin@modanil.com";
-  const password = passwordArg || process.env.ADMIN_PASSWORD || "ModanilAdmin2026!";
+  const password = passwordArg || process.env.ADMIN_PASSWORD;
+
+  if (!password?.trim()) {
+    console.error(
+      "ADMIN_PASSWORD environment variable or --password argument is required to provision admin."
+    );
+    process.exit(1);
+  }
 
   const dbUrl = process.env.DATABASE_URL;
   if (!dbUrl) {

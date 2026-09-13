@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { 
-  Save, 
   Truck, 
   Store, 
   CreditCard, 
@@ -11,16 +9,17 @@ import {
   Megaphone, 
   Share2, 
   Search, 
-  LayoutTemplate, 
-  Loader2 
+  LayoutTemplate 
 } from "lucide-react";
 import { EGYPTIAN_GOVERNORATES, STORE_DEFAULTS } from "@/lib/egypt-constants";
 import { getErrorMessage } from "@/lib/utils";
 import { StoreSettingsItem } from "@/types";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { uploadImageFile } from "@/lib/upload-client";
 import { api } from "@/lib/api-client";
+
+import { SettingsHeader } from "./settings/SettingsHeader";
+import { SettingsSaveButton } from "./settings/SettingsSaveButton";
 
 import { GeneralSettingsTab } from "./settings/GeneralSettingsTab";
 import { HeroSettingsTab } from "./settings/HeroSettingsTab";
@@ -93,7 +92,6 @@ interface SettingsFormData {
 }
 
 export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProps) {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState<
     "general" | "hero" | "promos" | "social" | "shipping" | "payments" | "emergency" | "seo"
   >("general");
@@ -157,7 +155,7 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
       ),
       estimatedDeliveryDays:
         initialSettings.estimatedDeliveryDays || STORE_DEFAULTS.estimatedDeliveryDays,
-      bannerNotice: initialSettings.bannerNotice || STORE_DEFAULTS.bannerNotice,
+      bannerNotice: initialSettings.bannerNotice ?? STORE_DEFAULTS.bannerNotice,
 
       governoratesRates: initialRates,
 
@@ -171,7 +169,6 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
     setFormData((prev) => ({ ...prev, [key]: val }));
   };
 
-  const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingHeroBg, setUploadingHeroBg] = useState(false);
 
@@ -228,10 +225,7 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
     }));
   };
 
-  const handleSaveAll = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
-
+  const handleSaveAll = async () => {
     try {
       await api.settings.update({
         storeName: formData.storeName,
@@ -275,11 +269,9 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
       });
 
       toast.success("تم حفظ كافة إعدادات وتخصيصات المتجر بنجاح في قاعدة البيانات!");
-      router.refresh();
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, "حدث خطأ أثناء حفظ الإعدادات"));
-    } finally {
-      setSaving(false);
+      throw err;
     }
   };
 
@@ -295,7 +287,7 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
   ];
 
   return (
-    <form onSubmit={handleSaveAll} className="space-y-6 pb-16">
+    <div className="space-y-6 pb-16">
       {/* Hidden file inputs for Cloudinary uploads */}
       <input
         type="file"
@@ -320,33 +312,8 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
         }}
       />
 
-      {/* Sticky Header with Save Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sticky top-2 sm:top-4 z-30 bg-white/95 backdrop-blur-md p-3 sm:p-6 rounded-2xl border border-neutral-200 shadow-sm">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-base sm:text-2xl font-black text-neutral-900">
-              لوحة التحكم الشاملة بالإعدادات
-            </h1>
-            <span className="bg-amber-100 text-amber-900 text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0">
-              تحكم ذكي فوري ⚡
-            </span>
-          </div>
-          <p className="hidden sm:block text-xs text-neutral-500 mt-1">
-            إدارة كافة نصوص الموقع، اللوجو، صور الهيرو، السوشيال ميديا، العروض وأسعار الشحن دون الحاجة لتعديل أي ملف برمجي
-          </p>
-        </div>
-
-        <Button
-          type="submit"
-          variant="primary"
-          size="md"
-          disabled={saving}
-          className="gap-2 shadow-md cursor-pointer flex-shrink-0 min-h-[40px] w-full sm:w-auto justify-center"
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          <span>{saving ? "جاري الحفظ..." : "حفظ التغييرات في النظام"}</span>
-        </Button>
-      </div>
+      {/* Sticky Header with Save Button (leaf component) */}
+      <SettingsHeader onSave={handleSaveAll} />
 
       {/* Modern Navigation Tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-neutral-200 scrollbar-none">
@@ -500,18 +467,15 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
 
       {/* Bottom Save Action Bar */}
       <div className="flex items-center justify-end gap-3 pt-4 border-t border-neutral-200">
-        <Button
-          type="submit"
-          variant="primary"
+        <SettingsSaveButton
+          onSave={handleSaveAll}
           size="lg"
-          disabled={saving}
-          className="gap-2 shadow-lg cursor-pointer px-8"
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          <span>{saving ? "جاري الحفظ والربط..." : "حفظ وتطبيق التغييرات فورا"}</span>
-        </Button>
+          label="حفظ وتطبيق التغييرات فورا"
+          loadingLabel="جاري الحفظ والربط..."
+          className="shadow-lg px-8"
+        />
       </div>
-    </form>
+    </div>
   );
 }
 
