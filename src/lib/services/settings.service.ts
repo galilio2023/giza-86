@@ -12,13 +12,18 @@ const getCachedStoreSettings = unstable_cache(
   async () => getSettingsRepository().get(),
   ["store-settings-global"],
   {
-    revalidate: 3600,
+    revalidate: 15,
     tags: ["settings"],
   }
 );
 
 export const getStoreSettings = cache(async function getStoreSettings(): Promise<StoreSettingsItem> {
-  const settings = await getCachedStoreSettings();
+  let settings: StoreSettingsItem;
+  try {
+    settings = await getCachedStoreSettings();
+  } catch {
+    settings = await getSettingsRepository().get();
+  }
   if (settings && (settings.storeName === "GIZA 86" || !settings.storeName)) {
     settings.storeName = "MODANIL";
   }

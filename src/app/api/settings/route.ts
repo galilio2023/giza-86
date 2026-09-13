@@ -15,8 +15,9 @@ export const PATCH = withAdminAuth(async (request: Request) => {
   const validated = updateSettingsSchema.parse(rawBody);
 
   const updated = await updateStoreSettings(validated as Partial<StoreSettingsItem>);
-  revalidateTag("settings", { expire: 0 });
+  revalidateTag("settings", "max");
   revalidatePath("/", "layout");
+  revalidatePath("/");
   revalidatePath("/products");
   return NextResponse.json(updated);
 }, "فشل في تحديث إعدادات المتجر");
