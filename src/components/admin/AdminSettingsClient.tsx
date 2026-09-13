@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { 
   Truck, 
   Store, 
@@ -92,6 +93,7 @@ interface SettingsFormData {
 }
 
 export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<
     "general" | "hero" | "promos" | "social" | "shipping" | "payments" | "emergency" | "seo"
   >("general");
@@ -268,6 +270,7 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
         seoKeywords: formData.seoKeywords || null,
       });
 
+      router.refresh();
       toast.success("تم حفظ كافة إعدادات وتخصيصات المتجر بنجاح في قاعدة البيانات!");
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, "حدث خطأ أثناء حفظ الإعدادات"));
