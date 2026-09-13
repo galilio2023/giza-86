@@ -1,4 +1,5 @@
 import { ProductItem } from "@/types";
+import { isAccessoryProduct } from "@/lib/domain/variants";
 
 interface ProductDescriptionSectionProps {
   product: ProductItem;
@@ -9,12 +10,7 @@ export function ProductDescriptionSection({
   product,
   brandName,
 }: ProductDescriptionSectionProps) {
-  const isAccessory =
-    product.categorySlug?.includes("accessories") ||
-    product.categoryName?.includes("إكسسوار") ||
-    product.categoryName?.includes("شنط") ||
-    product.categoryName?.includes("حقائب") ||
-    (product.hasSizeGuide === false && (product.sizes?.includes("مقاس موحد") || product.sizes?.includes("One Size")));
+  const isAccessory = isAccessoryProduct(product);
 
   return (
     <div className="mt-16 bg-white rounded-3xl p-6 sm:p-10 border border-neutral-200/80 space-y-6">

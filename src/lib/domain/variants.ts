@@ -49,3 +49,29 @@ export function getEffectiveStock(
   }
   return Math.max(0, product.stock || 0);
 }
+
+/**
+ * Determines whether a product is classified as an accessory (e.g. bags, hair clips, jewelry).
+ * Checks category slug, category name, or one-size fallback when size guide is disabled.
+ */
+export function isAccessoryProduct(product: {
+  categorySlug?: string | null;
+  categoryName?: string | null;
+  hasSizeGuide?: boolean | null;
+  sizes?: string[] | null;
+}): boolean {
+  const slug = product.categorySlug?.toLowerCase() || "";
+  const name = product.categoryName || "";
+
+  return Boolean(
+    slug.includes("accessories") ||
+      slug.includes("bags") ||
+      slug.includes("clips") ||
+      name.includes("إكسسوار") ||
+      name.includes("شنط") ||
+      name.includes("حقائب") ||
+      name.includes("توك") ||
+      (product.hasSizeGuide === false &&
+        (product.sizes?.includes("مقاس موحد") || product.sizes?.includes("One Size")))
+  );
+}
