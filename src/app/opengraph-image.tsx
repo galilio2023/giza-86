@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 
 export const alt = "MODANIL | Luxury Egyptian Cotton Apparel";
 export const size = {
@@ -8,6 +9,14 @@ export const size = {
 export const contentType = "image/png";
 
 export default function Image() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl;
+  let displayHost = "modanil.vercel.app";
+  try {
+    displayHost = new URL(siteUrl).host;
+  } catch {
+    displayHost = siteUrl.replace(/^https?:\/\//, "").split("/")[0] || "modanil.vercel.app";
+  }
+
   return new ImageResponse(
     (
       <div
@@ -51,7 +60,7 @@ export default function Image() {
               letterSpacing: "2px",
             }}
           >
-            modanil.com
+            {displayHost}
           </div>
         </div>
 

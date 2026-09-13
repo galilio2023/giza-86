@@ -38,7 +38,7 @@ export default async function HomePage() {
   ].slice(0, 3);
 
   const brandName = settings?.storeName || STORE_DEFAULTS.storeName;
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://modanil.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl;
 
   const storeJsonLd = {
     "@context": "https://schema.org",

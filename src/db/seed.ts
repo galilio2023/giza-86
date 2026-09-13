@@ -3,6 +3,7 @@ dotenv.config({ path: ".env.local" });
 
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
+import { eq } from "drizzle-orm";
 import * as schema from "./schema";
 import { 
   INITIAL_CATEGORIES, 
@@ -91,6 +92,7 @@ async function main() {
 
     if (prod.variants && prod.variants.length > 0) {
       for (const v of prod.variants) {
+        const variantSku = v.sku || `${prod.sku || "SKU"}-${v.size}-${v.colorName}`.replace(/\s+/g, "");
         await db
           .insert(schema.productVariants)
           .values({
@@ -98,16 +100,15 @@ async function main() {
             size: v.size,
             colorName: v.colorName,
             colorHex: v.colorHex,
-            sku: v.sku || `${prod.sku || "SKU"}-${v.size}-${v.colorName}`.replace(/\s+/g, ""),
+            sku: variantSku,
             stock: v.stock,
             price: v.price ? String(v.price) : null,
             imageUrl: v.imageUrl,
           })
           .onConflictDoUpdate({
-            target: schema.productVariants.sku,
+            target: [schema.productVariants.productId, schema.productVariants.size, schema.productVariants.colorName],
             set: {
-              size: v.size,
-              colorName: v.colorName,
+              sku: variantSku,
               colorHex: v.colorHex,
               stock: v.stock,
               price: v.price ? String(v.price) : null,
@@ -217,11 +218,18 @@ async function main() {
         storeName: INITIAL_SETTINGS.storeName,
         phone: INITIAL_SETTINGS.phone,
         whatsapp: INITIAL_SETTINGS.whatsapp,
+        supportEmail: INITIAL_SETTINGS.supportEmail,
         instapayHandle: INITIAL_SETTINGS.instapayHandle,
         instapayPhone: INITIAL_SETTINGS.instapayPhone,
         vodafoneCashPhone: INITIAL_SETTINGS.vodafoneCashPhone,
         freeShippingThreshold: String(INITIAL_SETTINGS.freeShippingThreshold),
         bannerNotice: INITIAL_SETTINGS.bannerNotice,
+        logoUrl: INITIAL_SETTINGS.logoUrl,
+        storeTagline: INITIAL_SETTINGS.storeTagline,
+        storeDescription: INITIAL_SETTINGS.storeDescription,
+        seoTitle: INITIAL_SETTINGS.seoTitle,
+        seoDescription: INITIAL_SETTINGS.seoDescription,
+        seoKeywords: INITIAL_SETTINGS.seoKeywords,
       });
   } else {
     await db
@@ -230,11 +238,18 @@ async function main() {
         storeName: INITIAL_SETTINGS.storeName,
         phone: INITIAL_SETTINGS.phone,
         whatsapp: INITIAL_SETTINGS.whatsapp,
+        supportEmail: INITIAL_SETTINGS.supportEmail,
         instapayHandle: INITIAL_SETTINGS.instapayHandle,
         instapayPhone: INITIAL_SETTINGS.instapayPhone,
         vodafoneCashPhone: INITIAL_SETTINGS.vodafoneCashPhone,
         freeShippingThreshold: String(INITIAL_SETTINGS.freeShippingThreshold),
         bannerNotice: INITIAL_SETTINGS.bannerNotice,
+        logoUrl: INITIAL_SETTINGS.logoUrl,
+        storeTagline: INITIAL_SETTINGS.storeTagline,
+        storeDescription: INITIAL_SETTINGS.storeDescription,
+        seoTitle: INITIAL_SETTINGS.seoTitle,
+        seoDescription: INITIAL_SETTINGS.seoDescription,
+        seoKeywords: INITIAL_SETTINGS.seoKeywords,
       });
   }
 
@@ -244,38 +259,54 @@ async function main() {
     const adminPass = "Giza86Admin2026!";
     const adminId = "admin-giza86-system";
 
-    await db
-      .insert(schema.user)
-      .values({
-        id: adminId,
-        name: "مدير المتجر",
-        email: adminEmail,
-        emailVerified: true,
-        role: "admin",
-      })
-      .onConflictDoUpdate({
-        target: schema.user.email,
-        set: {
+    const [existingUser] = await db
+      .select({ id: schema.user.id })
+      .from(schema.user)
+      .where(eq(schema.user.email, adminEmail))
+      .limit(1);
+
+    const actualUserId = existingUser?.id || adminId;
+
+    if (!existingUser) {
+      await db
+        .insert(schema.user)
+        .values({
+          id: adminId,
+          name: "مدير المتجر",
+          email: adminEmail,
+          emailVerified: true,
           role: "admin",
-        },
-      });
+        });
+    } else {
+      await db
+        .update(schema.user)
+        .set({ role: "admin" })
+        .where(eq(schema.user.id, actualUserId));
+    }
 
     const hashedPassword = await hashPassword(adminPass);
-    await db
-      .insert(schema.account)
-      .values({
-        id: "admin-account-system",
-        accountId: adminId,
-        providerId: "credential",
-        userId: adminId,
-        password: hashedPassword,
-      })
-      .onConflictDoUpdate({
-        target: schema.account.id,
-        set: {
+    const [existingAccount] = await db
+      .select({ id: schema.account.id })
+      .from(schema.account)
+      .where(eq(schema.account.userId, actualUserId))
+      .limit(1);
+
+    if (existingAccount) {
+      await db
+        .update(schema.account)
+        .set({ password: hashedPassword })
+        .where(eq(schema.account.id, existingAccount.id));
+    } else {
+      await db
+        .insert(schema.account)
+        .values({
+          id: "admin-account-system",
+          accountId: actualUserId,
+          providerId: "credential",
+          userId: actualUserId,
           password: hashedPassword,
-        },
-      });
+        });
+    }
     console.log("Admin account seeded successfully (admin@giza86.com).");
   } catch (adminErr) {
     console.warn("Notice: Admin account seed warning:", adminErr);

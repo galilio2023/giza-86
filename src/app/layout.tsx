@@ -31,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const keywords = settings?.seoKeywords ? settings.seoKeywords.split(",").map((k) => k.trim()) : [brandName, "قطن مصري", "ملابس كاجوال", "أوفر سايز", "هوديز", "إنستاباي", "فودافون كاش", "متجر مصري"];
 
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://modanil.com"),
+    metadataBase: new URL(STORE_DEFAULTS.siteUrl),
     title,
     description,
     keywords,

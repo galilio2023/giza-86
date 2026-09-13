@@ -1,5 +1,6 @@
-# 🧵 GIZA 86 | متجر خيوط نيلية - E-Commerce & Admin CMS
+# 🧵 MODANIL | متجر مودانيل للأزياء والقطن المصري - E-Commerce & Admin CMS
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-modanil.vercel.app-000000?style=for-the-badge&logo=vercel)](https://modanil.vercel.app/)
 [![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.2.8-blue?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -10,7 +11,7 @@
 [![Better Auth](https://img.shields.io/badge/Better_Auth-1.7.3-black?style=for-the-badge)](https://www.better-auth.com/)
 [![Cloudinary](https://img.shields.io/badge/Cloudinary-Media_CDN-3448C5?style=for-the-badge&logo=cloudinary)](https://cloudinary.com/)
 
-**GIZA 86** is a high-performance, enterprise-grade e-commerce storefront and Content Management System (CMS) tailored specifically for premium Egyptian cotton apparel (Oversized T-Shirts, Hoodies, Linen Shirts, and Winter Wear). Built with **Next.js 16 App Router (Turbopack)**, **React 19**, and a **Clean Layered Domain Architecture**.
+**MODANIL** (Live: [https://modanil.vercel.app/](https://modanil.vercel.app/)) is a high-performance, enterprise-grade e-commerce storefront and Content Management System (CMS) tailored specifically for premium Egyptian cotton apparel (Oversized T-Shirts, Hoodies, Linen Shirts, and Winter Wear). Built with **Next.js 16 App Router (Turbopack)**, **React 19**, and a **Clean Layered Domain Architecture**.
 
 ---
 
@@ -230,9 +231,10 @@ BETTER_AUTH_SECRET="your-super-secure-token-min-32-chars-long"
 BETTER_AUTH_URL="http://localhost:3000"
 
 # Store Configuration
-NEXT_PUBLIC_STORE_NAME="GIZA 86"
+NEXT_PUBLIC_SITE_URL="https://modanil.vercel.app"
+NEXT_PUBLIC_STORE_NAME="MODANIL"
 NEXT_PUBLIC_WHATSAPP_NUMBER="201002081676"
-NEXT_PUBLIC_INSTAPAY_HANDLE="giza86.eg@instapay"
+NEXT_PUBLIC_INSTAPAY_HANDLE="modanil.eg@instapay"
 NEXT_PUBLIC_VODAFONE_CASH="01002081676"
 
 # Cloudinary Image Hosting (Optional - fallbacks to local storage if omitted)
@@ -262,7 +264,7 @@ pnpm db:push
 pnpm db:seed
 
 # Create an initial Administrator account for the CMS
-pnpm admin:create --email=admin@giza86.com --password=YourStrongPassword2026!
+pnpm admin:create --email=admin@modanil.com --password="${ADMIN_PASSWORD:?Set a unique ADMIN_PASSWORD before running}"
 ```
 
 ---

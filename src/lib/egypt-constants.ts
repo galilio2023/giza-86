@@ -104,6 +104,7 @@ export const ORDER_STATUSES: Record<string, { label: string; color: string; bg: 
 // Centralized Store Default Constants (DRY Principle - Single Source of Truth)
 export const STORE_DEFAULTS = {
   storeName: process.env.NEXT_PUBLIC_STORE_NAME || "MODANIL",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://modanil.vercel.app",
   phone: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "01002081676",
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201002081676",
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "support@modanil.com",
