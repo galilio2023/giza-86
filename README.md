@@ -1,46 +1,61 @@
-# 🧵 متجر خيوط نيلية | GIZA 86 - E-Commerce & CMS Architecture
+# 🧵 GIZA 86 | متجر خيوط نيلية - E-Commerce & Admin CMS
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.3.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.2.8-blue?style=for-the-badge&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
 [![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-0.45.2-C5F74F?style=for-the-badge&logo=drizzle)](https://orm.drizzle.team/)
 [![PostgreSQL](https://img.shields.io/badge/Neon_PostgreSQL-Serverless-00E599?style=for-the-badge&logo=postgresql)](https://neon.tech/)
-[![Better Auth](https://img.shields.io/badge/Better_Auth-1.7-black?style=for-the-badge)](https://www.better-auth.com/)
+[![Upstash Redis](https://img.shields.io/badge/Upstash_Redis-Rate_Limiting-00E599?style=for-the-badge&logo=redis)](https://upstash.com/)
+[![Better Auth](https://img.shields.io/badge/Better_Auth-1.7.3-black?style=for-the-badge)](https://www.better-auth.com/)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-Media_CDN-3448C5?style=for-the-badge&logo=cloudinary)](https://cloudinary.com/)
 
-متجر إلكتروني متكامل للأزياء والملابس المصنوعة من القطن المصري الفاخر (تيشيرتات أوفر سايز، هوديز، قمصان كتان)، مجهز بنظام إدارة محتوى كامل (**Admin CMS**) ومصمم خصيصاً لتلبية متطلبات السوق المصري والتجارة الإلكترونية الحديثة بنظام **Next.js 16 App Router** وهندسة برمجية نظيفة (**Clean Layered Architecture**).
+**GIZA 86** is a high-performance, enterprise-grade e-commerce storefront and Content Management System (CMS) tailored specifically for premium Egyptian cotton apparel (Oversized T-Shirts, Hoodies, Linen Shirts, and Winter Wear). Built with **Next.js 16 App Router (Turbopack)**, **React 19**, and a **Clean Layered Domain Architecture**.
 
 ---
 
-## 🏛️ النظام المعماري للبرمجية (System Architecture)
+## ✨ Key Platform Highlights
 
-يعتمد التطبيق على مبادئ **Clean Architecture** مع فصل صارم للمسؤوليات (SoC)، مما يضمن قابلية إعادة الاستخدام (**Reusability**)، وسهولة التوسع والتحجيم السحابي (**Serverless Scalability**):
+- ⚡ **Next.js 16 App Router & Turbopack:** Full streaming with Server Components (`loading.tsx`), static rendering (`SSG`), and resilient error boundaries (`global-error.tsx`, `error.tsx`).
+- 🇪🇬 **Egyptian Market Native:** Pre-configured with all 27 Egyptian governorates, dynamic shipping tariffs, Egyptian mobile phone validation (11-digit regex), and instant WhatsApp direct ordering.
+- 💳 **Local Payment Ecosystem:** Cash on Delivery (COD), InstaPay with 1-click handle copying, Vodafone Cash mobile wallet, and online card readiness.
+- 🛡️ **Distributed Rate Limiting:** Powered by **Upstash Redis REST API** pipeline for serverless multi-instance protection against brute-force and DDoS, with in-memory sliding window fallback.
+- 📸 **Cloudinary CDN Integration:** High-speed cloud image delivery and upload pipeline with local filesystem fallback.
+- 🔐 **Better Auth & Drizzle ORM:** Secure credential-based session management, role-based route handlers, and type-safe database access with Neon Serverless PostgreSQL.
+- 🎛️ **Full Admin CMS:** Dashboard metrics, product variant matrix (sizes, colors, custom pricing & stock), coupon rules engine, category hierarchy, and live store settings.
 
-### 1. مخطط الطبقات المعمارية (Layered Architecture)
+---
+
+## 🏛️ System Architecture
+
+The application strictly enforces **Clean Layered Architecture** with strict Separation of Concerns (SoC):
+
+### 1. Architectural Layers
 
 ```mermaid
 graph TD
-    subgraph UI ["1. Presentation Layer (App Router & UI)"]
+    subgraph Presentation ["1. Presentation Layer (App Router & UI)"]
         SC["Server Components (app/page, app/products)"]
         CC["Leaf Client Components (components/store, components/admin)"]
         RH["Route Handlers (app/api/* with withAdminAuth)"]
     end
 
-    subgraph Service ["2. Domain & Application Services Layer"]
+    subgraph Domain ["2. Domain & Application Services Layer"]
         PS["products.service.ts"]
         OS["orders.service.ts"]
         CS["categories.service.ts"]
         CPS["coupons.service.ts"]
         SS["settings.service.ts"]
-        subgraph DomainLogic ["Pure Domain Rules"]
+        subgraph DomainRules ["Pure Domain Rules & Utilities"]
             PR["pricing.ts (Discount, Shipping, Totals)"]
             VR["variants.ts (Effective Price, Stock, Matching)"]
             WA["whatsapp.ts (Instant WhatsApp Ordering)"]
+            RL["rate-limiter.ts (Upstash Redis + Memory Fallback)"]
             ERR["errors.ts (Domain Errors)"]
         end
     end
 
-    subgraph Repo ["3. Repository Layer (Data Abstraction)"]
+    subgraph Repository ["3. Repository Layer (Data Abstraction)"]
         IPR["IProductRepository"]
         IOR["IOrderRepository"]
         ICR["ICategoryRepository"]
@@ -48,9 +63,11 @@ graph TD
         ISR["ISettingsRepository"]
     end
 
-    subgraph Data ["4. Infrastructure & Persistence"]
+    subgraph Persistence ["4. Infrastructure & Persistence"]
         DRZ["Drizzle ORM + Neon Serverless Postgres"]
-        MEM["Memory Store (Offline / Demo Fallback)"]
+        REDIS["Upstash Redis (Atomic Distributed Rate Limiting)"]
+        CLD["Cloudinary Media Storage"]
+        MEM["Memory Store (Offline / Zero-Config Fallback)"]
     end
 
     SC --> PS
@@ -59,6 +76,7 @@ graph TD
     CC --> RH
     RH --> PS
     RH --> OS
+    RH --> RL
     PS --> IPR
     OS --> IOR
     CS --> ICR
@@ -68,31 +86,33 @@ graph TD
     IPR --> MEM
     IOR --> DRZ
     IOR --> MEM
+    RL --> REDIS
+    RL --> MEM
 ```
 
 ---
 
-### 2. دورة حياة وإدارة حالة الطلب (Order State Machine)
+### 2. Order Lifecycle State Machine
 
 ```mermaid
 stateDiagram-v2
-    [*] --> new : العميل يُنشئ الطلب (Checkout)
-    new --> confirmed : تأكيد الطلب
-    new --> processing : قيد التجهيز
-    new --> cancelled : إلغاء الطلب (استرجاع المخزون تلقائياً)
+    [*] --> new : Customer places order (Checkout)
+    new --> confirmed : Admin confirms order
+    new --> processing : Order enters preparation
+    new --> cancelled : Cancelled (Inventory auto-restored)
     
-    confirmed --> processing : بدء تجهيز الشحنة
-    confirmed --> shipped : تسليم للمندوب
-    confirmed --> cancelled : إلغاء الطلب
+    confirmed --> processing : Preparation in warehouse
+    confirmed --> shipped : Dispatched to courier
+    confirmed --> cancelled : Cancelled
     
-    processing --> shipped : خرج للتوصيل (بوليصة الشحن)
-    processing --> delivered : تم التسليم
-    processing --> cancelled : إلغاء
+    processing --> shipped : Dispatched for delivery
+    processing --> delivered : Delivered directly
+    processing --> cancelled : Cancelled
     
-    shipped --> delivered : تم التحصيل والتسليم للعميل
-    shipped --> returned : مرتجع / تعذر التسليم (استرجاع المخزون)
+    shipped --> delivered : Delivered & COD collected
+    shipped --> returned : Delivery failed / Returned (Inventory restored)
     
-    delivered --> returned : طلب استرجاع واستبدال
+    delivered --> returned : Return / Exchange requested
     delivered --> [*]
     returned --> [*]
     cancelled --> [*]
@@ -100,160 +120,192 @@ stateDiagram-v2
 
 ---
 
-## 📂 هيكل المشروع والمجلدات (Directory Structure)
+## 📂 Project Structure
 
 ```
-clothes-store/
+giza-86/
+├── drizzle/                         # SQL migration outputs generated by Drizzle Kit
+├── public/                          # Static assets and fallback uploads
+├── scripts/
+│   └── create-admin.ts              # CLI utility to create or promote CMS admin users
 ├── src/
-│   ├── app/                         # Next.js 16 App Router Routes
-│   │   ├── (storefront)/            # واجهة المتجر العامة للعملاء
-│   │   │   ├── page.tsx             # الصفحة الرئيسية (Server Component + JSON-LD)
-│   │   │   ├── products/            # كتالوج الملابس وتفاصيل الموديل
-│   │   │   ├── cart/                # سلة المشتريات
-│   │   │   ├── checkout/            # إنهاء الطلب وبيانات الشحن المصرية
-│   │   │   ├── track/               # تتبع حالة الشحنة بالهاتف ورقم الطلب
-│   │   │   └── order-success/[id]/  # صفحة تأكيد نجاح الطلب وإيصال الدفع
-│   │   ├── admin/                   # لوحة الإدارة والتحكم CMS
-│   │   │   ├── page.tsx             # إحصائيات المبيعات ومؤشرات الأداء
-│   │   │   ├── products/            # إدارة الموديلات والمخزون والمقاسات
-│   │   │   ├── orders/              # إدارة وتحديث الشحنات وطباعة البوليصة
-│   │   │   ├── categories/          # إدارة وتصنيف أقسام المتجر
-│   │   │   ├── coupons/             # إدارة أكواد الخصم والعروض
-│   │   │   └── settings/            # أسعار شحن الـ 27 محافظة وبيانات الدفع
-│   │   └── api/                     # مسارات Route Handlers مؤمنة بـ Zod و Better-Auth
+│   ├── app/                         # Next.js 16 App Router
+│   │   ├── (storefront)/            # Customer-facing storefront
+│   │   │   ├── page.tsx             # Home landing page (Hero, Categories, Promo)
+│   │   │   ├── products/            # Catalog filter & individual product details
+│   │   │   ├── cart/                # Shopping cart drawer & full page
+│   │   │   ├── checkout/            # Egyptian checkout flow (COD, InstaPay, VF-Cash)
+│   │   │   ├── track/               # Order status tracking by phone & order ID
+│   │   │   └── order-success/[id]/  # Order confirmation & receipt printing
+│   │   ├── admin/                   # Full Backoffice Admin CMS
+│   │   │   ├── page.tsx             # Analytics dashboard & KPI metrics
+│   │   │   ├── products/            # Product & variant catalog manager
+│   │   │   ├── orders/              # Order fulfillment, airway bills, status updates
+│   │   │   ├── categories/          # Category taxonomy management
+│   │   │   ├── coupons/             # Coupon & promo code rules engine
+│   │   │   ├── settings/            # 27 Governorates shipping rates & payment settings
+│   │   │   └── login/               # Secure admin login portal
+│   │   └── api/                     # Type-safe API Route Handlers (Zod + Better-Auth)
 │   ├── components/
-│   │   ├── store/                   # مكونات واجهة المتجر (Cards, Drawer, Checkout)
-│   │   ├── admin/                   # مكونات لوحة التحكم (Tables, Modals, Stats)
-│   │   └── ui/                      # مكونات التصميم الأساسية (Radix UI + Tailwind)
-│   ├── db/                          # طبقة قاعدة البيانات
-│   │   ├── index.ts                 # تهيئة اتصال Neon Postgres
-│   │   ├── schema.ts                # تعريف جداول Drizzle مع فهارس الأداء B-Tree
-│   │   └── seed-data.ts             # البيانات الأولية والتجريبية الجاهزة
+│   │   ├── admin/                   # CMS backoffice tables, forms, and dialogs
+│   │   ├── common/                  # Reusable order summary, item tables, badges
+│   │   ├── store/                   # Storefront navigation, product cards, filters
+│   │   └── ui/                      # Base UI primitives (Radix UI + Tailwind CSS)
+│   ├── db/
+│   │   ├── index.ts                 # Neon Serverless Postgres client initialization
+│   │   ├── schema.ts                # Drizzle ORM schema with indexes & relations
+│   │   ├── seed.ts                  # Database seeding script
+│   │   └── seed-data.ts             # Initial categories, products, and variants
+│   ├── hooks/                       # Custom React leaf hooks
 │   ├── lib/
-│   │   ├── domain/                  # قواعد العمل المجردة (Pricing, Variants, WhatsApp)
-│   │   ├── repositories/            # طبقة المستودعات المعزولة (Drizzle vs Memory)
-│   │   ├── services/                # خدمات العمليات (Facade Services)
-│   │   ├── auth.ts                  # إعداد Better Auth للتحقق من المدير
-│   │   ├── egypt-constants.ts       # ثوابت محافظات مصر الـ 27 وتنسيق الهاتف
-│   │   └── utils.ts                 # أدوات التنسيق (formatEGP, slugify, cn)
-│   └── types/                       # تعريفات وتوافق أنواع TypeScript الصارمة
+│   │   ├── domain/                  # Pure business rules (pricing, variants, WhatsApp)
+│   │   ├── repositories/            # Data access abstractions (Drizzle & Memory)
+│   │   ├── services/                # Business orchestration facade services
+│   │   ├── validations/             # Zod validation schemas
+│   │   ├── auth.ts                  # Better Auth server configuration
+│   │   ├── auth-guard.ts            # Route protection middleware wrapper
+│   │   ├── cloudinary.ts            # Cloudinary upload helpers
+│   │   ├── egypt-constants.ts       # 27 governorates metadata & phone rules
+│   │   ├── rate-limiter.ts          # Upstash Redis & in-memory sliding window limiter
+│   │   └── utils.ts                 # EGP currency formatters, slugify, cn
+│   └── types/                       # TypeScript models & domain types
+├── .env.example                     # Environment template
+├── drizzle.config.ts                # Drizzle Kit configuration
+├── next.config.ts                   # Next.js compiler & image domain configuration
+├── package.json
+└── tsconfig.json
 ```
 
 ---
 
-## 🇪🇬 مميزات خاصة بالسوق المصري (Egyptian E-Commerce Features)
+## 🇪🇬 Egyptian Market Native Features
 
-| الميزة | التفاصيل |
+| Feature | Description |
 | :--- | :--- |
-| **العملة الرسمية** | تسعير دقيق وواضح بصيغة الجنيه المصري (`ج.م` / `EGP`). |
-| **تغطية الـ 27 محافظة** | حساب ديناميكي لتكلفة الشحن وزمن التوصيل حسب المحافظة المختارة. |
-| **الشحن المجاني التلقائي** | تفعيل فوري عند بلوغ سلة العميل حد الشحن المجاني (قابل للتعديل من CMS). |
-| **طرق الدفع المحلية** | الدفع نقدياً عند الاستلام (**COD**)، تحويلات **إنستاباي (InstaPay)** مع زر نسخ المعرف، ومحافظ **فودافون كاش**. |
-| **التحقق من الهاتف المصري** | خوارزمية ذكية تفحص وتصحح أرقام الموبايل (11 رقماً تبدأ بـ `010`, `011`, `012`, `015`). |
-| **الطلب السريع عبر واتساب** | رسالة مسبقة التجهيز بضغطة زر تنقل تفاصيل الموديل والمقاس ومجموع السعر للمحادثة مباشرة. |
+| **Currency Formatting** | Formatted in Egyptian Pounds (`ج.م` / `EGP`) with thousands separation. |
+| **27 Egyptian Governorates** | Real-time shipping calculation and delivery estimates customized per governorate. |
+| **Free Shipping Threshold** | Dynamic progress bar encouraging customers to reach the free delivery tier. |
+| **Cash on Delivery (COD)** | Full COD support with automated order confirmation and tracking. |
+| **InstaPay Integration** | Display of store InstaPay username with 1-click clipboard copy and payment receipt upload. |
+| **Vodafone Cash** | Direct wallet transfer number support with payment instructions. |
+| **Phone Number Validation** | Strict Egyptian mobile number format validation (11 digits, prefixes: `010`, `011`, `012`, `015`). |
+| **1-Click WhatsApp Ordering** | Instant WhatsApp order generation with pre-populated Arabic message containing product, size, and pricing. |
 
 ---
 
-## 🚀 البدء والتشغيل (Quickstart & Installation)
+## 🚀 Getting Started
 
-### 1. المتطلبات الأساسية
-- تثبيت [Node.js](https://nodejs.org/) الإصدار 20 فأعلى.
-- مدير الحزم [pnpm](https://pnpm.io/) (`npm i -g pnpm`).
+### Prerequisites
 
-### 2. التثبيت والتشغيل المحلي
+- [Node.js](https://nodejs.org/) v20.x or higher
+- [pnpm](https://pnpm.io/) package manager (`npm install -g pnpm`)
+
+### 1. Installation
+
 ```bash
-# 1. تثبيت الاعتمادات
-pnpm install
+# Clone the repository
+git clone git@github.com:galilio2023/giza-86.git
+cd giza-86
 
-# 2. تشغيل بيئة التطوير (Turbopack)
-pnpm dev
+# Install dependencies
+pnpm install
 ```
 
-افتح المتصفح على:
-- المتجر: [http://localhost:3000](http://localhost:3000)
-- لوحة الإدارة CMS: [http://localhost:3000/admin](http://localhost:3000/admin)
+### 2. Environment Setup
 
-> [!NOTE]
-> المتجر مهيأ ليعمل تلقائياً في **وضع العرض التجريبي (Demo Mode)** بدون الحاجة لقاعدة بيانات خارجية فور استنساخ المستودع، بالاعتماد على `MemoryStore`.
+Create a `.env.local` file in the root directory by copying the template:
 
----
+```bash
+cp .env.example .env.local
+```
 
-## 🗄️ ربط قاعدة البيانات السحابية (Neon Serverless PostgreSQL)
-
-1. أنشئ مشروعاً مجانياً على منصة [Neon.tech](https://neon.tech).
-2. أنشئ ملف `.env.local` في المجلد الرئيسي وضع به الرابط:
+Configure your environment variables:
 
 ```env
+# Database: Neon Serverless PostgreSQL
 DATABASE_URL="postgresql://neondb_owner:password@ep-sample-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require"
 
-# لوحة التحكم وإعدادات المدير
-ADMIN_EMAIL="admin@giza86.com"
-NEXT_PUBLIC_ADMIN_EMAIL="admin@giza86.com"
-NEXT_PUBLIC_STORE_NAME="متجر خيوط نيلية | GIZA 86"
+# Better Auth Secret (Min 32 random characters)
+BETTER_AUTH_SECRET="your-super-secure-token-min-32-chars-long"
+BETTER_AUTH_URL="http://localhost:3000"
+
+# Store Configuration
+NEXT_PUBLIC_STORE_NAME="GIZA 86"
+NEXT_PUBLIC_WHATSAPP_NUMBER="201002081676"
+NEXT_PUBLIC_INSTAPAY_HANDLE="giza86.eg@instapay"
+NEXT_PUBLIC_VODAFONE_CASH="01002081676"
+
+# Cloudinary Image Hosting (Optional - fallbacks to local storage if omitted)
+CLOUDINARY_CLOUD_NAME="your_cloud_name"
+CLOUDINARY_API_KEY="your_api_key"
+CLOUDINARY_API_SECRET="your_api_secret"
+
+# Upstash Redis Distributed Rate Limiting (Optional - fallbacks to in-memory window)
+UPSTASH_REDIS_REST_URL="https://your-instance.upstash.io"
+UPSTASH_REDIS_REST_TOKEN="your_upstash_rest_token"
 ```
 
-3. ادفع الجداول والفهارس لقاعدة البيانات مباشرة:
+> [!NOTE]
+> **Zero-Config Fallback:** If `DATABASE_URL` is not provided, the application automatically runs in **Demo Mode** using an in-memory repository store (`MemoryStore`).
+
+---
+
+### 3. Database Initialization & Seed
+
+When using Neon PostgreSQL:
+
 ```bash
+# Push the Drizzle schema to Neon database
 pnpm db:push
-```
 
-4. قم بتغذية المتجر بالموديلات والأقسام الافتراضية:
-```bash
+# Seed initial categories, products, and default governorate rates
 pnpm db:seed
-```
 
-5. أنشئ حساب مدير لوحة التحكم لأول مرة:
-```bash
+# Create an initial Administrator account for the CMS
 pnpm admin:create --email=admin@giza86.com --password=YourStrongPassword2026!
 ```
 
 ---
 
-## 🧪 التحقق والاختبارات (Verification & Quality Gates)
-
-لضمان سلامة الكود، يحتوي المشروع على اختبارات تلقائية وفحوصات صارمة:
+### 4. Running Locally
 
 ```bash
-# تشغيل اختبارات النطاق وقواعد التسعير وحالات الطلب (Unit Tests)
+# Start the Next.js development server with Turbopack
+pnpm dev
+```
+
+Open your browser:
+- **Storefront:** [http://localhost:3000](http://localhost:3000)
+- **Admin CMS:** [http://localhost:3000/admin](http://localhost:3000/admin)
+
+---
+
+## 🧪 Verification & Quality Control
+
+To verify code quality and build stability before pushing:
+
+```bash
+# 1. Run unit test suite (pricing, variants, orders, coupons, whatsapp)
 pnpm test
 
-# فحص توافق الأنواع الكامل (TypeScript Verification)
+# 2. Run TypeScript strict type verification
 pnpm tsc --noEmit
 
-# بناء النسخة الإنتاجية وفحص الصفحات الثابتة والديناميكية
+# 3. Compile Next.js production build
 pnpm build
 ```
 
 ---
 
-## 🆘 المساعدة وحل المشكلات الشائعة (Troubleshooting & FAQ)
+## 🛡️ Security & Performance
 
-<details>
-<summary><b>1. فشل الدخول إلى لوحة التحكم (/admin)</b></summary>
-
-- تأكد من تفعيل دور المدير (`role: "admin"`) لحسابك عبر تشغيل سكربت:
-  ```bash
-  pnpm admin:create --email=admin@giza86.com --password=YourPassword!
-  ```
-- إذا كنت تستخدم بريداً مخصصاً، تأكد من تحديث قيمة `ADMIN_EMAIL` و `NEXT_PUBLIC_ADMIN_EMAIL` في ملف `.env.local`.
-</details>
-
-<details>
-<summary><b>2. خطأ في اتصال قاعدة بيانات Neon (Connection Timeout)</b></summary>
-
-- تأكد من إضافة معامل `?sslmode=require` في نهاية رابط `DATABASE_URL`.
-- يفضل استخدام رابط **Pooled Connection** (المتضمن لكلمة `-pooler`) المخصص لبيئات Serverless.
-</details>
-
-<details>
-<summary><b>3. كيفية تعديل أسعار الشحن لمحافظة معينة؟</b></summary>
-
-- ادخل إلى لوحة التحكم: `/admin/settings` -> تبويب **الشحن والتوصيل**.
-- يمكنك تعديل السعر المخصص لكل محافظة من المحافظات الـ 27 وحفظ التغييرات فورياً دون الحاجة لتعديل الكود.
-</details>
+- **DDoS & Brute-Force Protection:** Route handlers and checkout submissions are protected by a sliding-window rate limiter via Upstash Redis REST API, preventing API abuse in distributed serverless environments.
+- **Role-Based Access Control:** All `/api/admin/*` and CMS mutations are shielded by `withAdminAuth` verifying user session roles via Better Auth.
+- **Sanitized Inputs:** Every API endpoint rigorously validates request payloads using **Zod** schemas.
+- **Optimized Media:** Images are processed through Cloudinary and Next.js Image optimization (`sharp`), with responsive source sets and WebP/AVIF formatting.
 
 ---
 
-## 📄 الترخيص (License)
+## 📄 License
 
-هذا المشروع متاح للاستخدام التجاري والتطوير بموجب رخصة [MIT License](LICENSE).
+This project is licensed under the MIT License.
