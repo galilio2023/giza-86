@@ -67,12 +67,19 @@ export function ProductTable({
                     </div>
                     <div>
                       <span className="font-bold text-neutral-900 block line-clamp-1">{p.name}</span>
-                      <span className="text-[11px] text-neutral-400 font-mono">{p.sku}</span>
+                      <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 font-mono mt-0.5">
+                        <span>{p.sku}</span>
+                        {p.badgeText && (
+                          <span className="text-[10px] font-sans font-bold bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200/60">
+                            {p.badgeText}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </td>
                 <td className="p-4 font-medium text-neutral-600">
-                  {p.categoryName || "ملابس كاجوال"}
+                  {p.categoryName || "عام"}
                 </td>
                 <td className="p-4 font-bold text-neutral-900">{formatEGP(p.price)}</td>
                 <td className="p-4">

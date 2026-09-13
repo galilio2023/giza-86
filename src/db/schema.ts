@@ -100,6 +100,8 @@ export const products = pgTable("products", {
   isFeatured: boolean("is_featured").default(false),
   isNew: boolean("is_new").default(true),
   sku: varchar("sku", { length: 50 }),
+  hasSizeGuide: boolean("has_size_guide").default(true),
+  badgeText: varchar("badge_text", { length: 50 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => [

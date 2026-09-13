@@ -84,7 +84,7 @@ export function ProductDetailClient({ product, relatedProductsSlot, settings }: 
           </Link>
           <span>/</span>
           <Link href="/products" className="hover:text-neutral-900">
-            الملابس
+            المتجر
           </Link>
           <span>/</span>
           {product.categoryName && (
@@ -176,10 +176,12 @@ export function ProductDetailClient({ product, relatedProductsSlot, settings }: 
       />
 
       {/* Size Guide Accessible Dialog */}
-      <ProductSizeGuideModal
-        open={sizeGuideOpen}
-        onOpenChange={setSizeGuideOpen}
-      />
+      {product.hasSizeGuide !== false && (
+        <ProductSizeGuideModal
+          open={sizeGuideOpen}
+          onOpenChange={setSizeGuideOpen}
+        />
+      )}
     </>
   );
 }

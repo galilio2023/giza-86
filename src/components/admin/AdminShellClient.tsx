@@ -15,7 +15,8 @@ import {
   ExternalLink,
   Shirt,
   LogOut,
-  UserCheck
+  UserCheck,
+  BookOpen
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
@@ -65,6 +66,7 @@ export function AdminShellClient({
     { label: "الأقسام والتصنيفات", href: "/admin/categories", icon: Layers },
     { label: "كوبونات الخصم والعروض", href: "/admin/coupons", icon: Tag },
     { label: "إعدادات المتجر والشحن", href: "/admin/settings", icon: Settings },
+    { label: "دليل تشغيل المتجر 💡", href: "/admin/guide", icon: BookOpen },
   ];
 
   return (
@@ -178,7 +180,15 @@ export function AdminShellClient({
             </h2>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/admin/guide"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-amber-800 hover:text-amber-900 bg-amber-50 hover:bg-amber-100/90 border border-amber-300/80 px-3 py-1.5 rounded-lg transition shadow-xs"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-amber-600" />
+              <span>دليل التشغيل 💡</span>
+            </Link>
+
             <Link
               href="/"
               target="_blank"

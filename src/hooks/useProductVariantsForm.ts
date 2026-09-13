@@ -4,7 +4,10 @@ import { useState, useCallback } from "react";
 import { ProductColor, ProductVariantItem } from "@/types";
 import { toast } from "sonner";
 
-export const AVAILABLE_SIZES = ["S", "M", "L", "XL", "2XL", "3XL", "30", "32", "34", "36", "48", "50", "52"];
+export const APPAREL_SIZES = ["S", "M", "L", "XL", "2XL", "3XL"];
+export const PANTS_SIZES = ["30", "32", "34", "36", "48", "50", "52"];
+export const ACCESSORY_SIZES = ["مقاس موحد", "One Size"];
+export const AVAILABLE_SIZES = ["مقاس موحد", "One Size", ...APPAREL_SIZES, ...PANTS_SIZES];
 export const DEFAULT_VARIANT_STOCK = 10;
 
 export function generateDefaultVariants(
@@ -47,6 +50,7 @@ export function generateDefaultVariants(
 
 export function useProductVariantsForm() {
   const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L", "XL", "2XL"]);
+  const [customSizes, setCustomSizes] = useState<string[]>([]);
   const [colors, setColors] = useState<ProductColor[]>([
     { name: "أسود", hex: "#111827" },
     { name: "أبيض", hex: "#ffffff" },
@@ -59,6 +63,10 @@ export function useProductVariantsForm() {
   const initVariants = useCallback(
     (baseSku: string, initialSizes: string[], initialColors: ProductColor[], initialVariants: ProductVariantItem[] = []) => {
       setSelectedSizes(initialSizes);
+      const customOnes = initialSizes.filter((s) => !AVAILABLE_SIZES.includes(s));
+      if (customOnes.length > 0) {
+        setCustomSizes((prev) => Array.from(new Set([...prev, ...customOnes])));
+      }
       setColors(initialColors);
       const generated = generateDefaultVariants(baseSku, initialSizes, initialColors, initialVariants, DEFAULT_VARIANT_STOCK);
       setVariants(initialVariants.length > 0 ? initialVariants : generated);
@@ -73,6 +81,38 @@ export function useProductVariantsForm() {
           ? prevSizes.filter((s) => s !== size)
           : [...prevSizes, size];
 
+        setVariants((prevVariants) =>
+          generateDefaultVariants(baseSku, nextSizes, colors, prevVariants, DEFAULT_VARIANT_STOCK)
+        );
+        return nextSizes;
+      });
+    },
+    [colors]
+  );
+
+  const handleApplySizePreset = useCallback(
+    (preset: "apparel" | "pants" | "one-size", baseSku: string) => {
+      let nextSizes: string[] = [];
+      if (preset === "apparel") nextSizes = ["S", "M", "L", "XL", "2XL"];
+      else if (preset === "pants") nextSizes = ["30", "32", "34", "36"];
+      else if (preset === "one-size") nextSizes = ["مقاس موحد"];
+
+      setSelectedSizes(nextSizes);
+      setVariants((prevVariants) =>
+        generateDefaultVariants(baseSku, nextSizes, colors, prevVariants, DEFAULT_VARIANT_STOCK)
+      );
+    },
+    [colors]
+  );
+
+  const handleAddCustomSize = useCallback(
+    (customSize: string, baseSku: string) => {
+      const trimmed = customSize.trim();
+      if (!trimmed) return;
+      setCustomSizes((prev) => Array.from(new Set([...prev, trimmed])));
+      setSelectedSizes((prev) => {
+        if (prev.includes(trimmed)) return prev;
+        const nextSizes = [...prev, trimmed];
         setVariants((prevVariants) =>
           generateDefaultVariants(baseSku, nextSizes, colors, prevVariants, DEFAULT_VARIANT_STOCK)
         );
@@ -121,6 +161,7 @@ export function useProductVariantsForm() {
   return {
     selectedSizes,
     setSelectedSizes,
+    customSizes,
     colors,
     setColors,
     variants,
@@ -130,6 +171,8 @@ export function useProductVariantsForm() {
     totalStock,
     initVariants,
     handleToggleSize,
+    handleApplySizePreset,
+    handleAddCustomSize,
     handleColorsChange,
     handleVariantStockChange,
     handleVariantSkuChange,

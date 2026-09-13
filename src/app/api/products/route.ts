@@ -92,6 +92,7 @@ export const POST = withAdminAuth(async (request: Request) => {
     fabricDetails: validated.fabricDetails || undefined,
     sku: validated.sku || undefined,
     salePrice: validated.salePrice || undefined,
+    badgeText: validated.badgeText || undefined,
   });
 
   revalidateTag("products", "default");

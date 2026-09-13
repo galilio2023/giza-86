@@ -41,9 +41,11 @@ function ProductFormContent({
   const [sku, setSku] = useState(initialSku);
   const [description, setDescription] = useState(editingProduct?.description || "");
   const [fabricDetails, setFabricDetails] = useState(
-    editingProduct
-      ? editingProduct.fabricDetails || ""
-      : "قطن مصري 100% فاخر معالج ضد الانكماش والوبر"
+    editingProduct ? editingProduct.fabricDetails || "" : ""
+  );
+  const [badgeText, setBadgeText] = useState(editingProduct?.badgeText || "");
+  const [hasSizeGuide, setHasSizeGuide] = useState(
+    editingProduct ? (editingProduct.hasSizeGuide ?? true) : true
   );
   const [price, setPrice] = useState(editingProduct ? String(editingProduct.price) : "");
   const [salePrice, setSalePrice] = useState(
@@ -63,6 +65,7 @@ function ProductFormContent({
 
   const {
     selectedSizes,
+    customSizes,
     colors,
     variants,
     bulkStock,
@@ -70,11 +73,24 @@ function ProductFormContent({
     totalStock,
     initVariants,
     handleToggleSize,
+    handleApplySizePreset,
+    handleAddCustomSize,
     handleColorsChange,
     handleVariantStockChange,
     handleVariantSkuChange,
     handleApplyBulkStock,
   } = useProductVariantsForm();
+
+  const handlePresetSelection = (preset: "apparel" | "pants" | "one-size") => {
+    handleApplySizePreset(preset, sku);
+    if (preset === "one-size") {
+      setHasSizeGuide(false);
+      if (!badgeText) setBadgeText("إكسسوار حصري ✨");
+    } else {
+      setHasSizeGuide(true);
+      if (badgeText === "إكسسوار حصري ✨") setBadgeText("قطن جيزة 86 🇪🇬");
+    }
+  };
 
   // Initialize variants on mount cleanly without render-time side effects
   useEffect(() => {
@@ -132,12 +148,14 @@ function ProductFormContent({
       sku: sku.trim() || `SKU-${Math.floor(1000 + Math.random() * 9000)}`,
       description: description.trim() || name.trim(),
       fabricDetails: fabricDetails.trim() || undefined,
+      badgeText: badgeText.trim() || undefined,
+      hasSizeGuide,
       price: Number(price),
       salePrice: salePrice && !isNaN(Number(salePrice)) ? Number(salePrice) : undefined,
       stock: calculatedTotalStock,
       categoryId,
       categoryName: cat?.name || "ملابس كاجوال",
-      sizes: selectedSizes.length > 0 ? selectedSizes : ["M", "L", "XL"],
+      sizes: selectedSizes.length > 0 ? selectedSizes : ["مقاس موحد"],
       colors,
       images,
       variants,
@@ -180,17 +198,24 @@ function ProductFormContent({
         onDescriptionChange={setDescription}
         fabricDetails={fabricDetails}
         onFabricDetailsChange={setFabricDetails}
+        badgeText={badgeText}
+        onBadgeTextChange={setBadgeText}
         price={price}
         onPriceChange={setPrice}
         salePrice={salePrice}
         onSalePriceChange={setSalePrice}
         totalStock={totalStock}
         selectedSizes={selectedSizes}
+        customSizes={customSizes}
         onToggleSize={(s) => handleToggleSize(s, sku)}
+        onApplySizePreset={handlePresetSelection}
+        onAddCustomSize={(cs) => handleAddCustomSize(cs, sku)}
         isFeatured={isFeatured}
         onToggleFeatured={setIsFeatured}
         isNew={isNew}
         onToggleNew={setIsNew}
+        hasSizeGuide={hasSizeGuide}
+        onToggleSizeGuide={setHasSizeGuide}
       />
 
       {/* Colors Selection with Image Sync */}

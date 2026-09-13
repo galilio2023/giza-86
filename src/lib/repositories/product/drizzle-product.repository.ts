@@ -29,6 +29,8 @@ export class DrizzleProductRepository implements IProductRepository {
         isFeatured: products.isFeatured,
         isNew: products.isNew,
         sku: products.sku,
+        hasSizeGuide: products.hasSizeGuide,
+        badgeText: products.badgeText,
         createdAt: products.createdAt,
         updatedAt: products.updatedAt,
       })
@@ -77,6 +79,10 @@ export class DrizzleProductRepository implements IProductRepository {
       isFeatured: r.isFeatured ?? false,
       isNew: r.isNew ?? false,
       sku: r.sku ?? undefined,
+      hasSizeGuide: r.hasSizeGuide !== null && r.hasSizeGuide !== undefined
+        ? Boolean(r.hasSizeGuide)
+        : (Array.isArray(r.sizes) && (r.sizes as string[]).some((s) => ["S", "M", "L", "XL", "2XL", "3XL"].includes(String(s).trim().toUpperCase()))),
+      badgeText: r.badgeText || undefined,
       createdAt: r.createdAt?.toISOString(),
       updatedAt: r.updatedAt?.toISOString(),
     }));
@@ -149,6 +155,8 @@ export class DrizzleProductRepository implements IProductRepository {
         isFeatured: products.isFeatured,
         isNew: products.isNew,
         sku: products.sku,
+        hasSizeGuide: products.hasSizeGuide,
+        badgeText: products.badgeText,
         createdAt: products.createdAt,
       })
       .from(products)
@@ -211,6 +219,10 @@ export class DrizzleProductRepository implements IProductRepository {
       isFeatured: r.isFeatured ?? false,
       isNew: r.isNew ?? false,
       sku: r.sku ?? undefined,
+      hasSizeGuide: r.hasSizeGuide !== null && r.hasSizeGuide !== undefined
+        ? Boolean(r.hasSizeGuide)
+        : (Array.isArray(r.sizes) && (r.sizes as string[]).some((s) => ["S", "M", "L", "XL", "2XL", "3XL"].includes(String(s).trim().toUpperCase()))),
+      badgeText: r.badgeText || undefined,
       variants,
       createdAt: r.createdAt?.toISOString(),
     };
@@ -236,6 +248,8 @@ export class DrizzleProductRepository implements IProductRepository {
         isFeatured: products.isFeatured,
         isNew: products.isNew,
         sku: products.sku,
+        hasSizeGuide: products.hasSizeGuide,
+        badgeText: products.badgeText,
         createdAt: products.createdAt,
         updatedAt: products.updatedAt,
       })
@@ -262,6 +276,10 @@ export class DrizzleProductRepository implements IProductRepository {
       isFeatured: r.isFeatured ?? false,
       isNew: r.isNew ?? false,
       sku: r.sku ?? undefined,
+      hasSizeGuide: r.hasSizeGuide !== null && r.hasSizeGuide !== undefined
+        ? Boolean(r.hasSizeGuide)
+        : (Array.isArray(r.sizes) && (r.sizes as string[]).some((s) => ["S", "M", "L", "XL", "2XL", "3XL"].includes(String(s).trim().toUpperCase()))),
+      badgeText: r.badgeText || undefined,
       createdAt: r.createdAt?.toISOString(),
       updatedAt: r.updatedAt?.toISOString(),
     }));
@@ -287,6 +305,8 @@ export class DrizzleProductRepository implements IProductRepository {
         isFeatured: products.isFeatured,
         isNew: products.isNew,
         sku: products.sku,
+        hasSizeGuide: products.hasSizeGuide,
+        badgeText: products.badgeText,
         createdAt: products.createdAt,
         updatedAt: products.updatedAt,
       })
@@ -314,6 +334,10 @@ export class DrizzleProductRepository implements IProductRepository {
       isFeatured: r.isFeatured ?? false,
       isNew: r.isNew ?? false,
       sku: r.sku ?? undefined,
+      hasSizeGuide: r.hasSizeGuide !== null && r.hasSizeGuide !== undefined
+        ? Boolean(r.hasSizeGuide)
+        : (Array.isArray(r.sizes) && (r.sizes as string[]).some((s) => ["S", "M", "L", "XL", "2XL", "3XL"].includes(String(s).trim().toUpperCase()))),
+      badgeText: r.badgeText || undefined,
       createdAt: r.createdAt?.toISOString(),
       updatedAt: r.updatedAt?.toISOString(),
     }));
@@ -352,6 +376,8 @@ export class DrizzleProductRepository implements IProductRepository {
           isFeatured: data.isFeatured ?? false,
           isNew: data.isNew ?? true,
           sku: cleanSku,
+          hasSizeGuide: data.hasSizeGuide !== undefined ? data.hasSizeGuide : true,
+          badgeText: data.badgeText && data.badgeText.trim() ? data.badgeText.trim() : null,
         })
         .returning();
 
@@ -392,6 +418,8 @@ export class DrizzleProductRepository implements IProductRepository {
         id: inserted.id,
         slug: inserted.slug,
         sku: inserted.sku ?? undefined,
+        hasSizeGuide: inserted.hasSizeGuide ?? true,
+        badgeText: inserted.badgeText ?? undefined,
         stock: totalStock,
         variants: savedVariants,
         createdAt: inserted.createdAt.toISOString(),
@@ -424,6 +452,8 @@ export class DrizzleProductRepository implements IProductRepository {
           isFeatured: data.isFeatured,
           isNew: data.isNew,
           sku: data.sku !== undefined ? (data.sku && data.sku.trim() ? data.sku.trim() : null) : undefined,
+          hasSizeGuide: data.hasSizeGuide !== undefined ? data.hasSizeGuide : undefined,
+          badgeText: data.badgeText !== undefined ? (data.badgeText && data.badgeText.trim() ? data.badgeText.trim() : null) : undefined,
           updatedAt: new Date(),
         })
         .where(eq(products.id, id))
@@ -549,6 +579,10 @@ export class DrizzleProductRepository implements IProductRepository {
         isFeatured: updated.isFeatured ?? false,
         isNew: updated.isNew ?? false,
         sku: updated.sku ?? undefined,
+        hasSizeGuide: updated.hasSizeGuide !== null && updated.hasSizeGuide !== undefined
+          ? Boolean(updated.hasSizeGuide)
+          : (Array.isArray(updated.sizes) && (updated.sizes as string[]).some((s) => ["S", "M", "L", "XL", "2XL", "3XL"].includes(String(s).trim().toUpperCase()))),
+        badgeText: updated.badgeText || undefined,
         variants: savedVariants,
         createdAt: updated.createdAt?.toISOString(),
         updatedAt: updated.updatedAt?.toISOString(),

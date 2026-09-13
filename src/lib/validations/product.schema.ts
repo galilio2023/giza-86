@@ -27,6 +27,8 @@ export const baseProductSchema = z.object({
   isFeatured: z.boolean().optional(),
   isNew: z.boolean().optional(),
   sku: z.string().trim().max(50).optional().nullable(),
+  hasSizeGuide: z.boolean().optional(),
+  badgeText: z.string().trim().max(50).optional().nullable(),
 });
 
 export const createProductSchema = baseProductSchema.refine(

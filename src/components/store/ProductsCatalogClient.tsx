@@ -22,7 +22,7 @@ interface Props {
   pageSize?: number;
 }
 
-const ALL_SIZES = ["S", "M", "L", "XL", "2XL", "3XL", "30", "32", "34", "36", "38", "50", "52"];
+const ALL_SIZES = ["مقاس موحد", "One Size", "S", "M", "L", "XL", "2XL", "3XL", "30", "32", "34", "36", "38", "50", "52"];
 
 export function ProductsCatalogClient({
   initialProducts,
@@ -145,7 +145,7 @@ export function ProductsCatalogClient({
                 ? "قائمة المنتجات المفضلة"
                 : queryParam
                 ? `نتائج البحث عن: "${queryParam}"`
-                : "جميع الموديلات والملابس"}
+                : "جميع المنتجات والموديلات"}
             </h1>
             {isPending && (
               <span className="flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md animate-pulse">

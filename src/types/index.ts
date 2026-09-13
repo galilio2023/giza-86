@@ -37,6 +37,8 @@ export interface ProductItem {
   isFeatured?: boolean;
   isNew?: boolean;
   sku?: string;
+  hasSizeGuide?: boolean;
+  badgeText?: string | null;
   createdAt?: string;
   updatedAt?: string;
 }

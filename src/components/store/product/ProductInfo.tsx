@@ -80,51 +80,81 @@ export function ProductInfo({
       </div>
 
       {/* Editorial Fabric & Fit Spec Gauge */}
-      <div className="p-4 rounded-2xl bg-neutral-50/80 border border-neutral-200/80 space-y-3">
-        <div className="flex items-center justify-between text-xs pb-2 border-b border-neutral-200/60">
-          <span className="font-bold text-neutral-900 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>مواصفات النسيج والقصة</span>
-          </span>
-          <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60 text-[10px] whitespace-nowrap">
-            {brandName} AUTHENTIC
-          </span>
-        </div>
+      {(() => {
+        const isAccessory =
+          product.categorySlug?.includes("accessories") ||
+          product.categoryName?.includes("إكسسوار") ||
+          product.categoryName?.includes("شنط") ||
+          product.categoryName?.includes("حقائب") ||
+          (!product.hasSizeGuide && (product.sizes?.includes("مقاس موحد") || product.sizes?.includes("One Size")));
 
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <div className="space-y-1">
-            <span className="text-neutral-500 block font-medium">كثافة النسيج:</span>
-            <span className="font-black text-neutral-950 block">
-              {product.categorySlug?.includes("hoodies")
-                ? "380 GSM (ميلتون ثقيل)"
-                : product.categorySlug?.includes("shirts")
-                ? "190 GSM (كتان نقي)"
-                : "240 GSM (قطن ثقيل فاخر)"}
-            </span>
+        return (
+          <div className="p-4 rounded-2xl bg-neutral-50/80 border border-neutral-200/80 space-y-3">
+            <div className="flex items-center justify-between text-xs pb-2 border-b border-neutral-200/60">
+              <span className="font-bold text-neutral-900 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>{isAccessory ? "مواصفات القطعة والجودة" : "مواصفات النسيج والقصة"}</span>
+              </span>
+              <span className="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60 text-[10px] whitespace-nowrap">
+                {product.badgeText || `${brandName} AUTHENTIC`}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              {isAccessory ? (
+                <>
+                  <div className="space-y-1">
+                    <span className="text-neutral-500 block font-medium">نوع المقاس:</span>
+                    <span className="font-black text-neutral-950 block">
+                      {product.sizes?.length === 1 ? product.sizes[0] : "مقاس موحد يناسب الجميع"}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-neutral-500 block font-medium">ضمان الجودة:</span>
+                    <span className="font-black text-neutral-950 block">
+                      فحص يدوي دقيق 100%
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-1">
+                    <span className="text-neutral-500 block font-medium">كثافة النسيج:</span>
+                    <span className="font-black text-neutral-950 block">
+                      {product.categorySlug?.includes("hoodies")
+                        ? "380 GSM (ميلتون ثقيل)"
+                        : product.categorySlug?.includes("shirts")
+                        ? "190 GSM (كتان نقي)"
+                        : "240 GSM (قطن ثقيل فاخر)"}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-neutral-500 block font-medium">نوع القَصّة:</span>
+                    <span className="font-black text-neutral-950 block">
+                      {product.categorySlug?.includes("oversized")
+                        ? "Relaxed Oversized (أوفر سايز)"
+                        : "Regular Standard Fit (قصة مضبوطة)"}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Fast Dispatch Banner */}
+            <div className="pt-2 border-t border-neutral-200/60 flex items-center gap-2 text-[11px] font-bold text-emerald-800">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+              <span>جاهز للشحن الفوري: توصيل خلال 24-48 ساعة مع المعاينة قبل الدفع</span>
+            </div>
           </div>
-          <div className="space-y-1">
-            <span className="text-neutral-500 block font-medium">نوع القَصّة:</span>
-            <span className="font-black text-neutral-950 block">
-              {product.categorySlug?.includes("oversized")
-                ? "Relaxed Oversized (أوفر سايز)"
-                : "Regular Standard Fit (قصة مضبوطة)"}
-            </span>
-          </div>
-        </div>
+        );
+      })()}
 
-        {/* Fast Dispatch Banner */}
-        <div className="pt-2 border-t border-neutral-200/60 flex items-center gap-2 text-[11px] font-bold text-emerald-800">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-          <span>جاهز للشحن الفوري: توصيل خلال 24-48 ساعة مع المعاينة قبل الدفع</span>
-        </div>
-      </div>
-
-      {/* Egyptian Cotton Details */}
+      {/* Fabric / Material Details */}
       {product.fabricDetails && (
         <div className="p-4 rounded-2xl bg-white border border-neutral-200/80 flex items-start gap-3 shadow-2xs">
           <Sparkles className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="space-y-0.5 text-sm text-neutral-700">
-            <h4 className="font-bold text-neutral-950">مواصفات النسيج والخامة المصرية:</h4>
+            <h4 className="font-bold text-neutral-950">تفاصيل الخامة والمكونات:</h4>
             <p className="leading-relaxed">{product.fabricDetails}</p>
           </div>
         </div>

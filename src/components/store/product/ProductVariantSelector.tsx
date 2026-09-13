@@ -77,45 +77,65 @@ export function ProductVariantSelector({
       )}
 
       {/* Size Selection */}
-      {product.sizes && product.sizes.length > 0 && (
-        <div className="space-y-2 pt-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-neutral-900">المقاس:</span>
-            {onOpenSizeGuide && (
-              <button
-                type="button"
-                onClick={onOpenSizeGuide}
-                className="text-neutral-700 hover:text-neutral-950 font-bold flex items-center gap-1 cursor-pointer"
-              >
-                <Ruler className="w-3.5 h-3.5" />
-                <span>جدول المقاسات بالسنتيمتر</span>
-              </button>
+      {product.sizes && product.sizes.length > 0 && (() => {
+        const isOnlyOneSize =
+          product.sizes.length === 1 &&
+          (product.sizes[0] === "مقاس موحد" || product.sizes[0] === "One Size");
+        const showSizeGuide =
+          product.hasSizeGuide !== false && !!onOpenSizeGuide && !isOnlyOneSize;
+
+        return (
+          <div className="space-y-2 pt-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold text-neutral-900">المقاس:</span>
+              {showSizeGuide && (
+                <button
+                  type="button"
+                  onClick={onOpenSizeGuide}
+                  className="text-neutral-700 hover:text-neutral-950 font-bold flex items-center gap-1 cursor-pointer"
+                >
+                  <Ruler className="w-3.5 h-3.5" />
+                  <span>جدول المقاسات بالسنتيمتر</span>
+                </button>
+              )}
+            </div>
+
+            {isOnlyOneSize ? (
+              <div className="flex items-center gap-2">
+                <span className="px-3.5 py-2 rounded-xl border border-neutral-950 bg-neutral-950 text-white text-xs font-bold shadow-xs">
+                  {product.sizes[0]}
+                </span>
+                <span className="text-[11px] text-neutral-500 font-medium">
+                  (مقاس قياسي موحد)
+                </span>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {product.sizes.map((s) => {
+                  const available = isSizeAvailableInColor(s);
+                  return (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => onSizeSelect(s)}
+                      className={`min-w-12 h-11 px-3 rounded-xl border text-xs font-bold transition flex items-center justify-center cursor-pointer ${
+                        selectedSize === s
+                          ? "border-neutral-950 bg-neutral-950 text-white shadow-xs"
+                          : available
+                          ? "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400"
+                          : "border-neutral-200/60 bg-neutral-100 text-neutral-400 opacity-60 line-through"
+                      }`}
+                      title={available ? undefined : "غير متوفر بهذا اللون حالياً"}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
+              </div>
             )}
           </div>
-          <div className="flex flex-wrap gap-2">
-            {product.sizes.map((s) => {
-              const available = isSizeAvailableInColor(s);
-              return (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => onSizeSelect(s)}
-                  className={`min-w-12 h-11 px-3 rounded-xl border text-xs font-bold transition flex items-center justify-center cursor-pointer ${
-                    selectedSize === s
-                      ? "border-neutral-950 bg-neutral-950 text-white shadow-xs"
-                      : available
-                      ? "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400"
-                      : "border-neutral-200/60 bg-neutral-100 text-neutral-400 opacity-60 line-through"
-                  }`}
-                  title={available ? undefined : "غير متوفر بهذا اللون حالياً"}
-                >
-                  {s}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Quantity Selector */}
       <div className="flex items-center gap-4 pt-2">
