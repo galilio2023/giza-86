@@ -93,9 +93,44 @@ export function ProductsCatalogClient({
     };
   }, [wishlist, isWishlistMode, initialProducts, extraProducts]);
 
-  const filteredProducts = isWishlistMode ? wishlistProducts : initialProducts;
-  const total = isWishlistMode ? wishlist.length : (totalCount ?? initialProducts.length);
+  // Process wishlist items with active filters and sorting
+  const processedWishlistProducts = useMemo(() => {
+    if (!isWishlistMode) return [];
+    let list = [...wishlistProducts];
+
+    if (categoryParam && categoryParam !== "all") {
+      list = list.filter((p) => p.categorySlug === categoryParam);
+    }
+    if (sizeParam && sizeParam !== "all") {
+      list = list.filter((p) => p.sizes?.includes(sizeParam));
+    }
+    if (onSaleParam === "true") {
+      list = list.filter((p) => p.salePrice !== undefined && p.salePrice !== null);
+    }
+    const searchParam = searchParams.get("search");
+    if (searchParam) {
+      const q = searchParam.toLowerCase();
+      list = list.filter((p) => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+    }
+    if (sortParam === "price-asc") {
+      list.sort((a, b) => Number(a.salePrice ?? a.price) - Number(b.salePrice ?? b.price));
+    } else if (sortParam === "price-desc") {
+      list.sort((a, b) => Number(b.salePrice ?? b.price) - Number(a.salePrice ?? a.price));
+    } else if (sortParam === "newest") {
+      list.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+    }
+
+    return list;
+  }, [isWishlistMode, wishlistProducts, categoryParam, sizeParam, onSaleParam, searchParams, sortParam]);
+
+  const total = isWishlistMode ? processedWishlistProducts.length : (totalCount ?? initialProducts.length);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  const filteredProducts = useMemo(() => {
+    if (!isWishlistMode) return initialProducts;
+    const startIndex = (currentPage - 1) * pageSize;
+    return processedWishlistProducts.slice(startIndex, startIndex + pageSize);
+  }, [isWishlistMode, initialProducts, processedWishlistProducts, currentPage, pageSize]);
 
   const updateUrlFilters = (updates: {
     category?: string;

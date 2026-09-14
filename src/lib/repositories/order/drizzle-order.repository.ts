@@ -335,21 +335,28 @@ export class DrizzleOrderRepository implements IOrderRepository {
     const isNowCancelledOrReturned = targetOrderStatus === "cancelled" || targetOrderStatus === "returned";
 
     const itemsByProduct = new Map<number, number>();
+    const itemsByVariant = new Map<number, { qty: number; name: string }>();
     for (const item of (prevOrder.items as OrderItem["items"])) {
       itemsByProduct.set(item.productId, (itemsByProduct.get(item.productId) || 0) + item.quantity);
+      if (item.variantId) {
+        const existing = itemsByVariant.get(item.variantId);
+        itemsByVariant.set(item.variantId, {
+          qty: (existing?.qty || 0) + item.quantity,
+          name: item.name,
+        });
+      }
     }
 
     return await (dbPool || db).transaction(async (tx) => {
       if (!wasCancelledOrReturned && isNowCancelledOrReturned) {
-        const variantItems = (prevOrder.items as OrderItem["items"]).filter((i) => Boolean(i.variantId));
-        for (const vItem of variantItems) {
+        for (const [variantId, vData] of itemsByVariant.entries()) {
           await tx
             .update(productVariants)
             .set({
-              stock: sql`${productVariants.stock} + ${vItem.quantity}`,
+              stock: sql`${productVariants.stock} + ${vData.qty}`,
               updatedAt: new Date(),
             })
-            .where(eq(productVariants.id, vItem.variantId!));
+            .where(eq(productVariants.id, variantId));
         }
 
         for (const [productId, qty] of itemsByProduct.entries()) {
@@ -372,20 +379,19 @@ export class DrizzleOrderRepository implements IOrderRepository {
             .where(eq(coupons.code, prevOrder.couponCode));
         }
       } else if (wasCancelledOrReturned && !isNowCancelledOrReturned) {
-        const variantItems = (prevOrder.items as OrderItem["items"]).filter((i) => Boolean(i.variantId));
-        for (const vItem of variantItems) {
+        for (const [variantId, vData] of itemsByVariant.entries()) {
           const updatedVar = await tx
             .update(productVariants)
             .set({
-              stock: sql`${productVariants.stock} - ${vItem.quantity}`,
+              stock: sql`${productVariants.stock} - ${vData.qty}`,
               updatedAt: new Date(),
             })
-            .where(and(eq(productVariants.id, vItem.variantId!), sql`${productVariants.stock} >= ${vItem.quantity}`))
+            .where(and(eq(productVariants.id, variantId), sql`${productVariants.stock} >= ${vData.qty}`))
             .returning({ id: productVariants.id });
 
           if (updatedVar.length === 0) {
             throw new OutOfStockError(
-              `تعذر إعادة تنشيط الطلب: نفدت كمية المقاس واللون المختارين للمنتج "${vItem.name}" (المطلوب: ${vItem.quantity} قطعة).`
+              `تعذر إعادة تنشيط الطلب: نفدت كمية المقاس واللون المختارين للمنتج "${vData.name}" (المطلوب: ${vData.qty} قطعة).`
             );
           }
         }

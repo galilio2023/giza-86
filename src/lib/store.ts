@@ -49,10 +49,18 @@ export const useCartStore = create<CartStore>()(
         const cleanColor = color.name.trim().toLowerCase();
         const id = `${product.id}-${cleanSize}-${cleanColor}-${color.hex}`;
         const currentItems = get().items;
-        const existingIndex = currentItems.findIndex((item) => item.id === id);
+        const existingIndex = currentItems.findIndex(
+          (item) =>
+            item.id === id ||
+            (item.productId === product.id &&
+              item.selectedSize.trim().toUpperCase() === cleanSize &&
+              (item.selectedColor.hex.toLowerCase() === color.hex.toLowerCase() ||
+                item.selectedColor.name.trim().toLowerCase() === cleanColor))
+        );
 
         if (existingIndex > -1) {
           const updated = [...currentItems];
+          updated[existingIndex].id = id;
           updated[existingIndex].quantity += quantity;
           if (effectiveVariantId && !updated[existingIndex].variantId) {
             updated[existingIndex].variantId = effectiveVariantId;
@@ -111,7 +119,7 @@ export const useCartStore = create<CartStore>()(
     {
       name: "giza86-cart-storage",
       partialize: (state) => ({ items: state.items }),
-      onRehydrateStorage: () => () => {
+      onRehydrateStorage: () => (state) => {
         if (typeof window !== "undefined") {
           try {
             const legacy = localStorage.getItem("nile-threads-cart-storage");
@@ -121,6 +129,23 @@ export const useCartStore = create<CartStore>()(
           } catch {
             // Ignore localStorage read errors
           }
+        }
+
+        if (state && Array.isArray(state.items)) {
+          const itemMap = new Map<string, CartItem>();
+          for (const item of state.items) {
+            const cleanSize = (item.selectedSize || "").trim().toUpperCase();
+            const cleanColor = (item.selectedColor?.name || "").trim().toLowerCase();
+            const hex = item.selectedColor?.hex || "";
+            const normalizedId = `${item.productId}-${cleanSize}-${cleanColor}-${hex}`;
+            const existing = itemMap.get(normalizedId);
+            if (existing) {
+              existing.quantity += item.quantity;
+            } else {
+              itemMap.set(normalizedId, { ...item, id: normalizedId });
+            }
+          }
+          state.items = Array.from(itemMap.values());
         }
       },
     }

@@ -226,28 +226,63 @@ export class MemoryOrderRepository implements IOrderRepository {
         }
       }
     } else if (wasCancelledOrReturned && !isNowCancelledOrReturned) {
+      const productQuantities = new Map<number, number>();
+      const variantQuantities = new Map<number, { qty: number; name: string }>();
+
       for (const item of prev.items) {
-        const p = memoryProducts.find((mp) => mp.id === item.productId);
-        if (p) {
-          if (p.stock < item.quantity) {
-            throw new OutOfStockError("تعذر إعادة تنشيط الطلب: نفدت كمية أحد المنتجات المطلوبة من المخزن.");
-          }
-          if (item.variantId && p.variants) {
-            const v = p.variants.find((pv) => pv.id === item.variantId);
-            if (v && v.stock < item.quantity) {
-              throw new OutOfStockError(`تعذر إعادة تنشيط الطلب: نفدت كمية المقاس واللون المختارين للمنتج "${item.name}".`);
+        productQuantities.set(item.productId, (productQuantities.get(item.productId) || 0) + item.quantity);
+        if (item.variantId) {
+          const existing = variantQuantities.get(item.variantId);
+          variantQuantities.set(item.variantId, {
+            qty: (existing?.qty || 0) + item.quantity,
+            name: item.name,
+          });
+        }
+      }
+
+      for (const [variantId, vData] of variantQuantities.entries()) {
+        let foundVariant = false;
+        for (const mp of memoryProducts) {
+          const v = mp.variants?.find((pv) => pv.id === variantId);
+          if (v) {
+            foundVariant = true;
+            if (v.stock < vData.qty) {
+              throw new OutOfStockError(
+                `تعذر إعادة تنشيط الطلب: نفدت كمية المقاس واللون المختارين للمنتج "${vData.name}" (المطلوب: ${vData.qty} قطعة).`
+              );
             }
+            break;
+          }
+        }
+        if (!foundVariant) {
+          throw new OutOfStockError("تعذر إعادة تنشيط الطلب: متغير المنتج المطلوب غير موجود في المخزن.");
+        }
+      }
+
+      for (const [productId, qty] of productQuantities.entries()) {
+        const p = memoryProducts.find((mp) => mp.id === productId);
+        if (!p) {
+          throw new OutOfStockError("تعذر إعادة تنشيط الطلب: المنتج المطلوب غير موجود في المخزن.");
+        }
+        if (p.stock < qty) {
+          throw new OutOfStockError("تعذر إعادة تنشيط الطلب: نفدت كمية أحد المنتجات المطلوبة من المخزن.");
+        }
+      }
+
+      for (const [variantId, vData] of variantQuantities.entries()) {
+        for (const mp of memoryProducts) {
+          const v = mp.variants?.find((pv) => pv.id === variantId);
+          if (v) {
+            v.stock = Math.max(0, v.stock - vData.qty);
+            break;
           }
         }
       }
-      for (const item of prev.items) {
-        const p = memoryProducts.find((mp) => mp.id === item.productId);
+
+      for (const [productId, qty] of productQuantities.entries()) {
+        const p = memoryProducts.find((mp) => mp.id === productId);
         if (p) {
-          p.stock = Math.max(0, p.stock - item.quantity);
-          if (item.variantId && p.variants) {
-            const v = p.variants.find((pv) => pv.id === item.variantId);
-            if (v) v.stock = Math.max(0, v.stock - item.quantity);
-          }
+          p.stock = Math.max(0, p.stock - qty);
           p.updatedAt = new Date().toISOString();
         }
       }

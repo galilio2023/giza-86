@@ -34,7 +34,7 @@ export function CartItemRow({
 
         <div className="flex-1 min-w-0 space-y-1">
           <Link
-            href={`/products/${item.slug || item.productId}`}
+            href={`/products/${item.productId}`}
             className="text-xs sm:text-sm font-bold text-neutral-900 hover:text-amber-800 transition truncate block"
           >
             {item.name}
@@ -101,7 +101,7 @@ export function CartItemRow({
 
       <div className="flex-1 min-w-0 space-y-1">
         <Link
-          href={`/products/${item.slug || item.productId}`}
+          href={`/products/${item.productId}`}
           className="text-sm sm:text-base font-bold text-neutral-900 hover:text-amber-800 transition line-clamp-1"
         >
           {item.name}
