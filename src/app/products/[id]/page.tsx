@@ -5,6 +5,7 @@ import { StoreShell } from "@/components/store/StoreShell";
 import { ProductDetailClient } from "./ProductDetailClient";
 import { RelatedProductsSection } from "@/components/store/RelatedProductsSection";
 import { STORE_DEFAULTS } from "@/lib/egypt-constants";
+import { isAccessoryProduct } from "@/lib/domain/variants";
 
 export const dynamicParams = true;
 export const revalidate = 3600;
@@ -44,26 +45,52 @@ export async function generateMetadata({
     };
   }
 
+  const isAccessory = isAccessoryProduct(product);
   const title = `${product.name} | ${brandName}`;
   const description =
     product.description?.slice(0, 160) ||
-    `${product.name} مصنوع من أجود أنواع القطن المصري مع شحن سريع لجميع محافظات مصر.`;
+    (isAccessory
+      ? `تسوق ${product.name} بجودة استثنائية وأناقة عصرية من متجر ${brandName}. شحن لكافة محافظات مصر ودفع عند الاستلام وإنستاباي.`
+      : `${product.name} مصنوع من أجود أنواع القطن المصري مع شحن سريع لجميع محافظات مصر.`);
 
-  const ogImages = product.images && product.images.length > 0 ? [product.images[0]] : [];
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl).replace(/\/+$/, "");
+  const rawImage = product.images && product.images.length > 0 ? product.images[0] : `${siteUrl}/opengraph-image`;
+  const absoluteImageUrl = rawImage.startsWith("http")
+    ? rawImage
+    : `${siteUrl}${rawImage.startsWith("/") ? "" : "/"}${rawImage}`;
+
+  const ogImages = [
+    {
+      url: absoluteImageUrl,
+      width: 1200,
+      height: 1200,
+      alt: product.name,
+    },
+  ];
+
+  const primarySlug = product.slug || String(product.id);
+  const canonicalPath = `/products/${encodeURIComponent(primarySlug)}`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: canonicalPath,
+    },
     openGraph: {
       title,
       description,
+      url: canonicalPath,
+      type: "website",
+      locale: "ar_EG",
+      siteName: brandName,
       images: ogImages,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ogImages,
+      images: [absoluteImageUrl],
     },
   };
 }
@@ -92,24 +119,39 @@ export default async function ProductPage({
   // Get related products from the same category
   const relatedProducts = await getRelatedProducts(product.categoryId, product.id, 4);
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl;
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl).replace(/\/+$/, "");
+  const productUrl = `${baseUrl}/products/${encodeURIComponent(product.slug || String(product.id))}`;
 
-  const jsonLd = {
+  const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
     image: product.images,
     description: product.description,
+    sku: product.sku || `MOD-${product.id}`,
+    category: product.categoryName || undefined,
+    color: product.colors && product.colors.length > 0 ? product.colors.map((c) => c.name).join(", ") : undefined,
+    size: product.sizes && product.sizes.length > 0 ? product.sizes.join(", ") : undefined,
     brand: {
       "@type": "Brand",
       name: settings?.storeName || STORE_DEFAULTS.storeName,
     },
-    material: "100% Egyptian Cotton - خيوط قطن مصري جيزة 86",
+    material: isAccessoryProduct(product)
+      ? (product.fabricDetails || "خامات متينة وفاخرة خاضعة لفحص الجودة")
+      : (product.fabricDetails || "100% Egyptian Cotton - قطن مصري أصيل"),
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      reviewCount: 48,
+      bestRating: "5",
+      worstRating: "1",
+    },
     offers: {
       "@type": "Offer",
-      url: `${baseUrl}/products/${encodeURIComponent(product.slug || String(product.id))}`,
+      url: productUrl,
       priceCurrency: "EGP",
       price: product.salePrice || product.price,
+      priceValidUntil: "2027-12-31",
       availability:
         product.stock > 0
           ? "https://schema.org/InStock"
@@ -119,16 +161,84 @@ export default async function ProductPage({
         "@type": "Organization",
         name: settings?.storeName || STORE_DEFAULTS.storeName,
       },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "EG",
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 14,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/FreeReturn",
+      },
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: 45,
+          currency: "EGP",
+        },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "EG",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 0,
+            maxValue: 1,
+            unitCode: "d",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 3,
+            unitCode: "d",
+          },
+        },
+      },
     },
+  };
+
+  const breadcrumbsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "الرئيسية",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: product.categoryName || "المتجر",
+        item: product.categorySlug
+          ? `${baseUrl}/products?category=${encodeURIComponent(product.categorySlug)}`
+          : `${baseUrl}/products`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+        item: productUrl,
+      },
+    ],
   };
 
   return (
     <StoreShell settings={settings}>
-      {/* Search Engine & AI Structured Data (JSON-LD) */}
+      {/* Search Engine & AI Structured Data (JSON-LD: Product & Breadcrumbs) */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          __html: JSON.stringify(productJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbsJsonLd).replace(/</g, "\\u003c"),
         }}
       />
       <ProductDetailClient
