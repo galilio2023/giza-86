@@ -45,7 +45,9 @@ export const useCartStore = create<CartStore>()(
           ? undefined
           : product.salePrice;
 
-        const id = `${product.id}-${size}-${color.hex}`;
+        const cleanSize = size.trim().toUpperCase();
+        const cleanColor = color.name.trim().toLowerCase();
+        const id = `${product.id}-${cleanSize}-${cleanColor}-${color.hex}`;
         const currentItems = get().items;
         const existingIndex = currentItems.findIndex((item) => item.id === id);
 
@@ -55,11 +57,15 @@ export const useCartStore = create<CartStore>()(
           if (effectiveVariantId && !updated[existingIndex].variantId) {
             updated[existingIndex].variantId = effectiveVariantId;
           }
+          if (!updated[existingIndex].slug && product.slug) {
+            updated[existingIndex].slug = product.slug;
+          }
           set({ items: updated, isOpen: true });
         } else {
           const newItem: CartItem = {
             id,
             productId: product.id,
+            slug: product.slug,
             variantId: effectiveVariantId,
             name: product.name,
             price: effectivePrice,

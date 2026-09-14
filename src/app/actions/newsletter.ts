@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { subscribeNewsletter } from "@/lib/data-service";
 import { newsletterSchema } from "@/lib/validations";
-import { checkRateLimit, getClientIp } from "@/lib/rate-limiter";
+import { checkRateLimit } from "@/lib/rate-limiter";
 
 
 export interface NewsletterState {

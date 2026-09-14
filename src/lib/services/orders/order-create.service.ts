@@ -27,6 +27,11 @@ export async function createOrder(data: CreateOrderInput): Promise<OrderItem> {
 
   // 2. Settings & Store Status
   const settings = await getSettingsRepository().get();
+  if (settings.isMaintenanceMode) {
+    throw new StoreClosedError(
+      settings.maintenanceMessage || "نعتذر، المتجر في وضع الصيانة والتحديث حالياً ولا يستقبل طلبات جديدة."
+    );
+  }
   if (!settings.isAcceptingOrders) {
     throw new StoreClosedError(
       settings.orderClosedMessage || "نعتذر عن استقبال طلبات جديدة مؤقتاً بسبب الإجازة أو جرد المخزون."

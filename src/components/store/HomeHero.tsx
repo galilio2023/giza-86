@@ -19,12 +19,10 @@ export function HomeHero({
   categories = [],
   heroProducts = [],
 }: HomeHeroProps = {}) {
-  const rawBrand = settings?.storeName || storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName;
-  const currentBrand = (rawBrand && rawBrand !== "GIZA 86") ? rawBrand : "MODANIL";
-  const rawBadge = settings?.heroBadge || STORE_DEFAULTS.heroBadge;
-  const heroBadge = rawBadge.replace(/جيزة 86|GIZA 86/gi, "MODANIL");
+  const currentBrand = settings?.storeName || storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName;
+  const heroBadge = settings?.heroBadge || STORE_DEFAULTS.heroBadge;
   const heroTitle = settings?.heroTitle || STORE_DEFAULTS.heroTitle;
-  const heroSubtitle = (settings?.heroSubtitle || STORE_DEFAULTS.heroSubtitle).replace(/GIZA 86|جيزة 86/gi, "MODANIL");
+  const heroSubtitle = settings?.heroSubtitle || STORE_DEFAULTS.heroSubtitle;
   const heroBgImage = settings?.heroBgImage || STORE_DEFAULTS.heroBgImage;
   const heroPrimaryBtnText = settings?.heroPrimaryBtnText || STORE_DEFAULTS.heroPrimaryBtnText;
   const heroPrimaryBtnLink = settings?.heroPrimaryBtnLink || STORE_DEFAULTS.heroPrimaryBtnLink;

@@ -4,18 +4,14 @@ import {
   memoryOrders,
   memoryProducts,
   memoryCoupons,
-  memorySettings,
 } from "../memory-store";
-import { calculateDiscount, calculateShippingFee, calculateOrderTotal } from "@/lib/domain/pricing";
-import { findMatchingVariant } from "@/lib/domain/variants";
-import { OutOfStockError, StoreClosedError, CouponError, NotFoundError } from "@/lib/domain/errors";
+import { OutOfStockError } from "@/lib/domain/errors";
 import { validateStatusTransition } from "@/lib/domain/orders";
 import {
   IOrderRepository,
   GetOrdersOptions,
   OrdersPageResult,
   TrackOrderResult,
-  CreateOrderInput,
   PersistOrderInput,
   UpdateOrderStatusInput,
 } from "./order.interface";
@@ -230,6 +226,20 @@ export class MemoryOrderRepository implements IOrderRepository {
         }
       }
     } else if (wasCancelledOrReturned && !isNowCancelledOrReturned) {
+      for (const item of prev.items) {
+        const p = memoryProducts.find((mp) => mp.id === item.productId);
+        if (p) {
+          if (p.stock < item.quantity) {
+            throw new OutOfStockError("تعذر إعادة تنشيط الطلب: نفدت كمية أحد المنتجات المطلوبة من المخزن.");
+          }
+          if (item.variantId && p.variants) {
+            const v = p.variants.find((pv) => pv.id === item.variantId);
+            if (v && v.stock < item.quantity) {
+              throw new OutOfStockError(`تعذر إعادة تنشيط الطلب: نفدت كمية المقاس واللون المختارين للمنتج "${item.name}".`);
+            }
+          }
+        }
+      }
       for (const item of prev.items) {
         const p = memoryProducts.find((mp) => mp.id === item.productId);
         if (p) {

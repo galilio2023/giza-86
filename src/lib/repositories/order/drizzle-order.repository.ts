@@ -1,18 +1,15 @@
 import { OrderItem } from "@/types";
 import { db, dbPool } from "@/db";
 import { orders, products, coupons, productVariants, orderItems } from "@/db/schema";
-import { eq, desc, and, sql, or, inArray, ilike } from "drizzle-orm";
+import { eq, desc, and, sql, or, ilike } from "drizzle-orm";
 import { normalizeEgyptianPhone } from "@/lib/egypt-constants";
-import { getSettingsRepository } from "@/lib/repositories/settings.repository";
-import { calculateDiscount, calculateShippingFee, calculateOrderTotal } from "@/lib/domain/pricing";
-import { OutOfStockError, StoreClosedError, CouponError, NotFoundError } from "@/lib/domain/errors";
+import { OutOfStockError, CouponError } from "@/lib/domain/errors";
 import { validateStatusTransition } from "@/lib/domain/orders";
 import {
   IOrderRepository,
   GetOrdersOptions,
   OrdersPageResult,
   TrackOrderResult,
-  CreateOrderInput,
   PersistOrderInput,
   UpdateOrderStatusInput,
 } from "./order.interface";
@@ -377,23 +374,37 @@ export class DrizzleOrderRepository implements IOrderRepository {
       } else if (wasCancelledOrReturned && !isNowCancelledOrReturned) {
         const variantItems = (prevOrder.items as OrderItem["items"]).filter((i) => Boolean(i.variantId));
         for (const vItem of variantItems) {
-          await tx
+          const updatedVar = await tx
             .update(productVariants)
             .set({
-              stock: sql`GREATEST(0, ${productVariants.stock} - ${vItem.quantity})`,
+              stock: sql`${productVariants.stock} - ${vItem.quantity}`,
               updatedAt: new Date(),
             })
-            .where(eq(productVariants.id, vItem.variantId!));
+            .where(and(eq(productVariants.id, vItem.variantId!), sql`${productVariants.stock} >= ${vItem.quantity}`))
+            .returning({ id: productVariants.id });
+
+          if (updatedVar.length === 0) {
+            throw new OutOfStockError(
+              `تعذر إعادة تنشيط الطلب: نفدت كمية المقاس واللون المختارين للمنتج "${vItem.name}" (المطلوب: ${vItem.quantity} قطعة).`
+            );
+          }
         }
 
         for (const [productId, qty] of itemsByProduct.entries()) {
-          await tx
+          const updatedProd = await tx
             .update(products)
             .set({
-              stock: sql`GREATEST(0, ${products.stock} - ${qty})`,
+              stock: sql`${products.stock} - ${qty}`,
               updatedAt: new Date(),
             })
-            .where(eq(products.id, productId));
+            .where(and(eq(products.id, productId), sql`${products.stock} >= ${qty}`))
+            .returning({ id: products.id });
+
+          if (updatedProd.length === 0) {
+            throw new OutOfStockError(
+              "تعذر إعادة تنشيط الطلب: نفدت كمية أحد المنتجات المطلوبة من المخزن."
+            );
+          }
         }
 
         if (prevOrder.couponCode) {

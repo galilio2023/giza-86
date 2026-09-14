@@ -27,10 +27,12 @@ export function AdminShellClient({
   children,
   isDbConfigured = false,
   storeName,
+  isAdminServer,
 }: {
   children: React.ReactNode;
   isDbConfigured?: boolean;
   storeName?: string;
+  isAdminServer?: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -38,6 +40,7 @@ export function AdminShellClient({
   const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
+    if (isAdminServer) return;
     if (!isPending && pathname !== "/admin/login") {
       const role = (session?.user as { role?: string } | undefined)?.role;
       const email = session?.user?.email?.toLowerCase();
@@ -47,7 +50,7 @@ export function AdminShellClient({
         router.push("/admin/login");
       }
     }
-  }, [isPending, session, pathname, router]);
+  }, [isPending, session, pathname, router, isAdminServer]);
 
   // If we are on /admin/login, render login page directly without admin shell
   if (pathname === "/admin/login") {

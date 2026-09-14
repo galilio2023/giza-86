@@ -10,7 +10,7 @@ interface HomeCategoriesProps {
 }
 
 export function HomeCategories({ categories, storeName }: HomeCategoriesProps) {
-  const cleanName = (storeName && storeName !== "GIZA 86") ? storeName : (STORE_DEFAULTS.storeName || "MODANIL");
+  const cleanName = storeName || STORE_DEFAULTS.storeName || "MODANIL";
 
   return (
     <section className="layout-container py-12 sm:py-16">
@@ -34,7 +34,7 @@ export function HomeCategories({ categories, storeName }: HomeCategoriesProps) {
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4">
-        {categories.map((cat, idx) => (
+        {categories.map((cat) => (
           <Link
             key={cat.id}
             href={`/products?category=${cat.slug}`}

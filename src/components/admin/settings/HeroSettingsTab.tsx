@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutTemplate, Sparkles, Image as ImageIcon, Upload, Trash2, Loader2, Layers, ArrowLeft } from "lucide-react";
+import { LayoutTemplate, Sparkles, Image as ImageIcon, Upload, Trash2, Loader2, ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { STORE_DEFAULTS } from "@/lib/egypt-constants";
