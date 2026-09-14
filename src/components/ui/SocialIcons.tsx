@@ -9,3 +9,6 @@ export type { InstagramIconProps } from "./InstagramIcon";
 
 export { TikTokIcon } from "./TikTokIcon";
 export type { TikTokIconProps } from "./TikTokIcon";
+
+export { TelegramIcon } from "./TelegramIcon";
+export type { TelegramIconProps } from "./TelegramIcon";

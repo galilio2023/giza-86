@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { ShieldCheck, Truck, RefreshCw, PhoneCall, Mail, MapPin, Sparkles } from "lucide-react";
+import { ShieldCheck, Truck, RefreshCw, PhoneCall, Mail, MapPin, Sparkles, Clock } from "lucide-react";
 import { StoreSettingsItem } from "@/types";
 import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 import { NewsletterForm } from "@/components/store/NewsletterForm";
 import { BrandLogo } from "@/components/store/BrandLogo";
-import { WhatsAppIcon, FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/ui/SocialIcons";
+import { WhatsAppIcon, FacebookIcon, InstagramIcon, TikTokIcon, TelegramIcon } from "@/components/ui/SocialIcons";
 
 import { CategoryItem } from "@/types";
 
@@ -94,29 +94,105 @@ export function Footer({ settings, categories }: FooterProps = {}) {
               {settings?.storeDescription || STORE_DEFAULTS.storeDescription}
             </p>
 
-            <div className="pt-2 flex flex-col gap-2 text-xs text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                <span>{settings?.physicalAddress || STORE_DEFAULTS.physicalAddress}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <PhoneCall className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                <span>هاتف ومبيعات: {settings?.phone || STORE_DEFAULTS.phone}</span>
-              </div>
-              <a
-                href={`https://wa.me/${(settings?.whatsapp || STORE_DEFAULTS.whatsapp).replace(/[^0-9]/g, "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 hover:text-amber-500 transition-colors group cursor-pointer"
-              >
-                <WhatsAppIcon className="w-4 h-4 flex-shrink-0 transition-transform group-hover:scale-110" />
-                <span>خدمة العملاء واتساب: {settings?.whatsapp || STORE_DEFAULTS.whatsapp}</span>
-              </a>
-              {settings?.supportEmail && (
-                <div className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                  <span>البريد الإلكتروني: {settings.supportEmail}</span>
+            <div className="pt-2 flex flex-col gap-2.5 text-xs text-muted-foreground">
+              {/* Physical Location & Google Maps Link */}
+              <div className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <span>{settings?.physicalAddress || STORE_DEFAULTS.physicalAddress}</span>
+                  {settings?.googleMapsUrl && (
+                    <div>
+                      <a
+                        href={settings.googleMapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <MapPin className="w-3 h-3 text-amber-600" />
+                        <span>فتح الموقع على خرائط Google Maps ↗</span>
+                      </a>
+                    </div>
+                  )}
                 </div>
+              </div>
+
+              {/* Working Hours */}
+              {settings?.workingHours && (
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <span>مواعيد العمل: {settings.workingHours}</span>
+                </div>
+              )}
+
+              {/* Phone Channels */}
+              <div className="space-y-1 pt-1 border-t border-border/40">
+                <div className="flex items-center gap-2">
+                  <PhoneCall className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <a
+                    href={`tel:${(settings?.phone || STORE_DEFAULTS.phone).replace(/\s+/g, "")}`}
+                    className="hover:text-amber-700 transition-colors"
+                  >
+                    هاتف المبيعات: <span dir="ltr" className="font-mono font-medium">{settings?.phone || STORE_DEFAULTS.phone}</span>
+                  </a>
+                </div>
+
+                {settings?.secondaryPhone && (
+                  <div className="flex items-center gap-2 pr-6">
+                    <a
+                      href={`tel:${settings.secondaryPhone.replace(/\s+/g, "")}`}
+                      className="hover:text-amber-700 transition-colors text-[11px]"
+                    >
+                      خط بديل / طوارئ: <span dir="ltr" className="font-mono font-medium">{settings.secondaryPhone}</span>
+                    </a>
+                  </div>
+                )}
+
+                {settings?.landlinePhone && (
+                  <div className="flex items-center gap-2 pr-6">
+                    <a
+                      href={`tel:${settings.landlinePhone.replace(/\s+/g, "")}`}
+                      className="hover:text-amber-700 transition-colors text-[11px]"
+                    >
+                      الخط الأرضي: <span dir="ltr" className="font-mono font-medium">{settings.landlinePhone}</span>
+                    </a>
+                  </div>
+                )}
+              </div>
+
+              {/* WhatsApp Channels */}
+              <div className="space-y-1 pt-1 border-t border-border/40">
+                <a
+                  href={`https://wa.me/${(settings?.whatsapp || STORE_DEFAULTS.whatsapp).replace(/[^0-9]/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 hover:text-amber-700 transition-colors group cursor-pointer"
+                >
+                  <WhatsAppIcon className="w-4 h-4 flex-shrink-0 transition-transform group-hover:scale-110" />
+                  <span>واتساب المبيعات والاستفسار: <strong dir="ltr" className="font-mono font-bold">{settings?.whatsapp || STORE_DEFAULTS.whatsapp}</strong></span>
+                </a>
+
+                {settings?.supportWhatsapp && settings.supportWhatsapp !== settings?.whatsapp && (
+                  <a
+                    href={`https://wa.me/${settings.supportWhatsapp.replace(/[^0-9]/g, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-emerald-700 transition-colors group cursor-pointer text-[11px]"
+                  >
+                    <WhatsAppIcon className="w-3.5 h-3.5 flex-shrink-0 transition-transform group-hover:scale-110" />
+                    <span>واتساب الاستبدال وخدمة ما بعد البيع: <strong dir="ltr" className="font-mono font-bold">{settings.supportWhatsapp}</strong></span>
+                  </a>
+                )}
+              </div>
+
+              {/* Support Email */}
+              {settings?.supportEmail && (
+                <a
+                  href={`mailto:${settings.supportEmail}`}
+                  className="flex items-center gap-2 hover:text-amber-700 transition-colors pt-1 border-t border-border/40"
+                >
+                  <Mail className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <span>البريد الرسمي: {settings.supportEmail}</span>
+                </a>
               )}
 
               {/* Social Media Channels (Vibrant Happy Badges) */}
@@ -124,7 +200,7 @@ export function Footer({ settings, categories }: FooterProps = {}) {
                 <span className="block text-xs font-bold text-muted-foreground mb-3">
                   تواصل وتابعنا على منصات التواصل الاجتماعي:
                 </span>
-                <div className="flex items-center gap-3.5">
+                <div className="flex items-center gap-3.5 flex-wrap">
                   {(settings?.facebookUrl || STORE_DEFAULTS.facebookUrl) && (
                     <a
                       href={settings?.facebookUrl || STORE_DEFAULTS.facebookUrl}
@@ -159,6 +235,18 @@ export function Footer({ settings, categories }: FooterProps = {}) {
                       className="group relative block cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95"
                     >
                       <TikTokIcon className="w-10 h-10 drop-shadow-[0_4px_10px_rgba(0,242,254,0.30)] group-hover:drop-shadow-[0_6px_20px_rgba(254,44,85,0.60)] transition-all duration-300" />
+                    </a>
+                  )}
+                  {settings?.telegramUrl && (
+                    <a
+                      href={settings.telegramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="تيليجرام"
+                      title="قناة تيليجرام الرسمية - أحدث العروض والتشكيلات"
+                      className="group relative block cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-95"
+                    >
+                      <TelegramIcon className="w-10 h-10 drop-shadow-[0_4px_10px_rgba(42,171,238,0.35)] group-hover:drop-shadow-[0_6px_20px_rgba(42,171,238,0.65)] transition-all duration-300" />
                     </a>
                   )}
                 </div>

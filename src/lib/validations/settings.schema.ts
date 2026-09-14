@@ -24,6 +24,12 @@ export const updateSettingsSchema = z.object({
   storeDescription: z.string().trim().max(1000).optional().nullable(),
   // Location & Social
   physicalAddress: z.string().trim().max(300).optional().nullable(),
+  landlinePhone: z.string().trim().max(30).optional().nullable(),
+  secondaryPhone: z.string().trim().max(30).optional().nullable(),
+  supportWhatsapp: z.string().trim().max(30).optional().nullable(),
+  workingHours: z.string().trim().max(150).optional().nullable(),
+  googleMapsUrl: z.string().trim().max(1000).optional().nullable(),
+  telegramUrl: z.string().trim().max(500).optional().nullable(),
   facebookUrl: z.string().trim().max(500).optional().nullable(),
   instagramUrl: z.string().trim().max(500).optional().nullable(),
   tiktokUrl: z.string().trim().max(500).optional().nullable(),

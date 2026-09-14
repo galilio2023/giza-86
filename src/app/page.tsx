@@ -61,17 +61,37 @@ export default async function HomePage() {
       settings?.facebookUrl || STORE_DEFAULTS.facebookUrl,
       settings?.instagramUrl || STORE_DEFAULTS.instagramUrl,
       settings?.tiktokUrl || STORE_DEFAULTS.tiktokUrl,
+      settings?.telegramUrl,
     ].filter(Boolean),
-    areaServed: {
-      "@type": "Country",
-      name: "Egypt",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: settings?.physicalAddress || STORE_DEFAULTS.physicalAddress,
+      addressCountry: "EG",
     },
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: settings?.phone || STORE_DEFAULTS.phone,
-      contactType: "customer service",
-      availableLanguage: ["Arabic", "English"],
-    },
+    contactPoint: [
+      {
+        "@type": "ContactPoint",
+        telephone: settings?.phone || STORE_DEFAULTS.phone,
+        contactType: "sales",
+        availableLanguage: ["Arabic", "English"],
+      },
+      settings?.landlinePhone
+        ? {
+            "@type": "ContactPoint",
+            telephone: settings.landlinePhone,
+            contactType: "headquarters",
+            availableLanguage: ["Arabic", "English"],
+          }
+        : null,
+      settings?.supportWhatsapp
+        ? {
+            "@type": "ContactPoint",
+            telephone: settings.supportWhatsapp,
+            contactType: "customer support",
+            availableLanguage: ["Arabic", "English"],
+          }
+        : null,
+    ].filter(Boolean),
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: "4.9",

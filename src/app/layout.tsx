@@ -91,7 +91,11 @@ export default async function RootLayout({
         </a>
         {children}
         <CartDrawer freeShippingThreshold={settings?.freeShippingThreshold} />
-        <WhatsAppFloat whatsappNumber={settings?.whatsapp} storeName={settings?.storeName} />
+        <WhatsAppFloat
+          whatsappNumber={settings?.whatsapp}
+          supportWhatsapp={settings?.supportWhatsapp}
+          storeName={settings?.storeName}
+        />
         <MobileBottomNav />
         <Toaster position="top-center" richColors />
       </body>
