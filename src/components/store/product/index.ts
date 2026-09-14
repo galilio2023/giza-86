@@ -5,3 +5,4 @@ export * from "./ProductActionButtons";
 export * from "./ProductSizeGuideModal";
 export * from "./ProductDescriptionSection";
 export * from "./ProductMobileStickyBar";
+export * from "./ProductShareButton";

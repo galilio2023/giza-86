@@ -561,6 +561,12 @@ export const INITIAL_SETTINGS: StoreSettingsItem = {
   storeDescription: STORE_DEFAULTS.storeDescription,
   // Location & Social
   physicalAddress: STORE_DEFAULTS.physicalAddress,
+  landlinePhone: STORE_DEFAULTS.landlinePhone,
+  secondaryPhone: STORE_DEFAULTS.secondaryPhone,
+  supportWhatsapp: STORE_DEFAULTS.supportWhatsapp,
+  workingHours: STORE_DEFAULTS.workingHours,
+  googleMapsUrl: STORE_DEFAULTS.googleMapsUrl,
+  telegramUrl: STORE_DEFAULTS.telegramUrl,
   facebookUrl: STORE_DEFAULTS.facebookUrl,
   instagramUrl: STORE_DEFAULTS.instagramUrl,
   tiktokUrl: STORE_DEFAULTS.tiktokUrl,

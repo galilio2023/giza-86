@@ -3,14 +3,14 @@ import { getProducts, getCategories } from "@/lib/data-service";
 import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl;
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl).replace(/\/+$/, "");
 
   const [products, categories] = await Promise.all([
     getProducts().catch(() => []),
     getCategories().catch(() => []),
   ]);
 
-  // Static route entries
+  // Static route entries (Only indexable public pages)
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
@@ -25,22 +25,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/cart`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/checkout`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.5,
-    },
-    {
       url: `${baseUrl}/track`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.6,
+      priority: 0.5,
     },
   ];
 
@@ -52,15 +40,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  // Dynamic product routes
+  // Dynamic product routes with images for Googlebot-Image
   const productRoutes: MetadataRoute.Sitemap = products.map((product) => {
     const rawSlug = product.slug || product.id;
     const slugSegment = encodeURIComponent(rawSlug);
+    const absoluteImages = product.images && product.images.length > 0
+      ? product.images.map((img) =>
+          img.startsWith("http://") || img.startsWith("https://")
+            ? img
+            : `${baseUrl}${img.startsWith("/") ? "" : "/"}${img}`
+        )
+      : undefined;
+
     return {
       url: `${baseUrl}/products/${slugSegment}`,
       lastModified: product.createdAt ? new Date(product.createdAt) : new Date(),
       changeFrequency: "daily",
       priority: 0.85,
+      images: absoluteImages,
     };
   });
 

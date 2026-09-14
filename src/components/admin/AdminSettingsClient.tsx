@@ -52,9 +52,15 @@ interface SettingsFormData {
 
   // Contact & Social
   phone: string;
+  landlinePhone: string;
+  secondaryPhone: string;
   whatsapp: string;
+  supportWhatsapp: string;
   supportEmail: string;
   physicalAddress: string;
+  workingHours: string;
+  googleMapsUrl: string;
+  telegramUrl: string;
   facebookUrl: string;
   instagramUrl: string;
   tiktokUrl: string;
@@ -127,9 +133,15 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
       storeDescription: initialSettings.storeDescription || STORE_DEFAULTS.storeDescription,
 
       phone: initialSettings.phone || STORE_DEFAULTS.phone,
+      landlinePhone: initialSettings.landlinePhone ?? "",
+      secondaryPhone: initialSettings.secondaryPhone ?? "",
       whatsapp: initialSettings.whatsapp || STORE_DEFAULTS.whatsapp,
+      supportWhatsapp: initialSettings.supportWhatsapp ?? "",
       supportEmail: initialSettings.supportEmail || STORE_DEFAULTS.supportEmail,
       physicalAddress: initialSettings.physicalAddress || STORE_DEFAULTS.physicalAddress,
+      workingHours: initialSettings.workingHours || STORE_DEFAULTS.workingHours,
+      googleMapsUrl: initialSettings.googleMapsUrl ?? "",
+      telegramUrl: initialSettings.telegramUrl ?? "",
       facebookUrl: initialSettings.facebookUrl || STORE_DEFAULTS.facebookUrl,
       instagramUrl: initialSettings.instagramUrl || STORE_DEFAULTS.instagramUrl,
       tiktokUrl: initialSettings.tiktokUrl || STORE_DEFAULTS.tiktokUrl,
@@ -235,9 +247,15 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
         storeTagline: formData.storeTagline || null,
         storeDescription: formData.storeDescription || null,
         phone: formData.phone,
+        landlinePhone: formData.landlinePhone || null,
+        secondaryPhone: formData.secondaryPhone || null,
         whatsapp: formData.whatsapp,
+        supportWhatsapp: formData.supportWhatsapp || null,
         supportEmail: formData.supportEmail,
         physicalAddress: formData.physicalAddress || null,
+        workingHours: formData.workingHours || null,
+        googleMapsUrl: formData.googleMapsUrl || null,
+        telegramUrl: formData.telegramUrl || null,
         facebookUrl: formData.facebookUrl || null,
         instagramUrl: formData.instagramUrl || null,
         tiktokUrl: formData.tiktokUrl || null,
@@ -402,18 +420,30 @@ export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProp
         <SocialSettingsTab
           phone={formData.phone}
           setPhone={setField("phone")}
+          landlinePhone={formData.landlinePhone}
+          setLandlinePhone={setField("landlinePhone")}
+          secondaryPhone={formData.secondaryPhone}
+          setSecondaryPhone={setField("secondaryPhone")}
           whatsapp={formData.whatsapp}
           setWhatsapp={setField("whatsapp")}
+          supportWhatsapp={formData.supportWhatsapp}
+          setSupportWhatsapp={setField("supportWhatsapp")}
           supportEmail={formData.supportEmail}
           setSupportEmail={setField("supportEmail")}
           physicalAddress={formData.physicalAddress}
           setPhysicalAddress={setField("physicalAddress")}
+          workingHours={formData.workingHours}
+          setWorkingHours={setField("workingHours")}
+          googleMapsUrl={formData.googleMapsUrl}
+          setGoogleMapsUrl={setField("googleMapsUrl")}
           facebookUrl={formData.facebookUrl}
           setFacebookUrl={setField("facebookUrl")}
           instagramUrl={formData.instagramUrl}
           setInstagramUrl={setField("instagramUrl")}
           tiktokUrl={formData.tiktokUrl}
           setTiktokUrl={setField("tiktokUrl")}
+          telegramUrl={formData.telegramUrl}
+          setTelegramUrl={setField("telegramUrl")}
         />
       )}
 

@@ -26,15 +26,41 @@ import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getStoreSettings().catch(() => null);
   const brandName = settings?.storeName || process.env.NEXT_PUBLIC_STORE_NAME || STORE_DEFAULTS.storeName;
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || STORE_DEFAULTS.siteUrl).replace(/\/+$/, "");
   const title = settings?.seoTitle ? `${brandName} - ${settings.seoTitle}` : `${brandName} - متجر الأزياء والقطن المصري الفاخر`;
   const description = settings?.seoDescription || `تسوق تشكيلة الأزياء الكاجوال والأوفر سايز والهوديز المصنوعة من أفخر قطن مصري في متجر ${brandName}. شحن لكافة المحافظات ودفع عند الاستلام وإنستاباي.`;
   const keywords = settings?.seoKeywords ? settings.seoKeywords.split(",").map((k) => k.trim()) : [brandName, "قطن مصري", "ملابس كاجوال", "أوفر سايز", "هوديز", "إنستاباي", "فودافون كاش", "متجر مصري"];
 
   return {
-    metadataBase: new URL(STORE_DEFAULTS.siteUrl),
+    metadataBase: new URL(siteUrl),
     title,
     description,
     keywords,
+    openGraph: {
+      type: "website",
+      locale: "ar_EG",
+      url: siteUrl,
+      siteName: brandName,
+      title,
+      description,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: `${brandName} | Luxury Egyptian Cotton Apparel`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/opengraph-image"],
+    },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    },
     icons: {
       icon: [
         { url: "/icon.svg", type: "image/svg+xml" },
@@ -65,7 +91,11 @@ export default async function RootLayout({
         </a>
         {children}
         <CartDrawer freeShippingThreshold={settings?.freeShippingThreshold} />
-        <WhatsAppFloat whatsappNumber={settings?.whatsapp} storeName={settings?.storeName} />
+        <WhatsAppFloat
+          whatsappNumber={settings?.whatsapp}
+          supportWhatsapp={settings?.supportWhatsapp}
+          storeName={settings?.storeName}
+        />
         <MobileBottomNav />
         <Toaster position="top-center" richColors />
       </body>

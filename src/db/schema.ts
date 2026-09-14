@@ -246,6 +246,12 @@ export const storeSettings = pgTable("store_settings", {
   storeDescription: text("store_description"),
   // Location & Social
   physicalAddress: text("physical_address"),
+  landlinePhone: varchar("landline_phone", { length: 30 }),
+  secondaryPhone: varchar("secondary_phone", { length: 30 }),
+  supportWhatsapp: varchar("support_whatsapp", { length: 30 }),
+  workingHours: varchar("working_hours", { length: 150 }),
+  googleMapsUrl: text("google_maps_url"),
+  telegramUrl: text("telegram_url"),
   facebookUrl: text("facebook_url"),
   instagramUrl: text("instagram_url"),
   tiktokUrl: text("tiktok_url"),

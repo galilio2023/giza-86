@@ -56,6 +56,12 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
           storeTagline: INITIAL_SETTINGS.storeTagline,
           storeDescription: INITIAL_SETTINGS.storeDescription,
           physicalAddress: INITIAL_SETTINGS.physicalAddress,
+          landlinePhone: INITIAL_SETTINGS.landlinePhone,
+          secondaryPhone: INITIAL_SETTINGS.secondaryPhone,
+          supportWhatsapp: INITIAL_SETTINGS.supportWhatsapp,
+          workingHours: INITIAL_SETTINGS.workingHours,
+          googleMapsUrl: INITIAL_SETTINGS.googleMapsUrl,
+          telegramUrl: INITIAL_SETTINGS.telegramUrl,
           facebookUrl: INITIAL_SETTINGS.facebookUrl,
           instagramUrl: INITIAL_SETTINGS.instagramUrl,
           tiktokUrl: INITIAL_SETTINGS.tiktokUrl,
@@ -163,6 +169,12 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
     if (newSettings.storeTagline !== undefined) updatePayload.storeTagline = newSettings.storeTagline;
     if (newSettings.storeDescription !== undefined) updatePayload.storeDescription = newSettings.storeDescription;
     if (newSettings.physicalAddress !== undefined) updatePayload.physicalAddress = newSettings.physicalAddress;
+    if (newSettings.landlinePhone !== undefined) updatePayload.landlinePhone = newSettings.landlinePhone;
+    if (newSettings.secondaryPhone !== undefined) updatePayload.secondaryPhone = newSettings.secondaryPhone;
+    if (newSettings.supportWhatsapp !== undefined) updatePayload.supportWhatsapp = newSettings.supportWhatsapp;
+    if (newSettings.workingHours !== undefined) updatePayload.workingHours = newSettings.workingHours;
+    if (newSettings.googleMapsUrl !== undefined) updatePayload.googleMapsUrl = newSettings.googleMapsUrl;
+    if (newSettings.telegramUrl !== undefined) updatePayload.telegramUrl = newSettings.telegramUrl;
     if (newSettings.facebookUrl !== undefined) updatePayload.facebookUrl = newSettings.facebookUrl;
     if (newSettings.instagramUrl !== undefined) updatePayload.instagramUrl = newSettings.instagramUrl;
     if (newSettings.tiktokUrl !== undefined) updatePayload.tiktokUrl = newSettings.tiktokUrl;
@@ -261,6 +273,12 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
       storeTagline: effectiveStoreTagline,
       storeDescription: effectiveStoreDescription,
       physicalAddress: s.physicalAddress || STORE_DEFAULTS.physicalAddress,
+      landlinePhone: s.landlinePhone || undefined,
+      secondaryPhone: s.secondaryPhone || undefined,
+      supportWhatsapp: s.supportWhatsapp || undefined,
+      workingHours: s.workingHours || STORE_DEFAULTS.workingHours,
+      googleMapsUrl: s.googleMapsUrl || undefined,
+      telegramUrl: s.telegramUrl || undefined,
       facebookUrl: s.facebookUrl || STORE_DEFAULTS.facebookUrl,
       instagramUrl: s.instagramUrl || STORE_DEFAULTS.instagramUrl,
       tiktokUrl: s.tiktokUrl || STORE_DEFAULTS.tiktokUrl,

@@ -56,7 +56,7 @@ export default async function OrderSuccessPage({
 
   const statusConfig = ORDER_STATUSES[order.orderStatus] || ORDER_STATUSES.new;
   const whatsappInquiryUrl = buildOrderInquiryWhatsAppUrl(
-    settings.whatsapp,
+    settings.supportWhatsapp || settings.whatsapp,
     settings.storeName || STORE_DEFAULTS.storeName,
     order.orderNumber
   );
@@ -73,7 +73,9 @@ export default async function OrderSuccessPage({
             <h1 className="text-2xl font-black text-neutral-950">{settings.storeName || STORE_DEFAULTS.storeName}</h1>
             <p className="text-xs text-neutral-600 font-medium">{settings.storeTagline || STORE_DEFAULTS.storeTagline}</p>
             <p className="text-xs text-neutral-500">
-              هاتف: {settings.phone || STORE_DEFAULTS.phone} • واتساب: {settings.whatsapp || STORE_DEFAULTS.whatsapp}
+              هاتف: {settings.phone || STORE_DEFAULTS.phone}
+              {settings.landlinePhone ? ` • أرضي: ${settings.landlinePhone}` : ""}
+              {" • واتساب: "}{settings.supportWhatsapp || settings.whatsapp || STORE_DEFAULTS.whatsapp}
             </p>
           </div>
           <div className="text-left font-mono text-xs space-y-1">

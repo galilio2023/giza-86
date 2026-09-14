@@ -149,6 +149,12 @@ export interface StoreSettingsItem {
   storeDescription?: string;
   // Location & Social
   physicalAddress?: string;
+  landlinePhone?: string;
+  secondaryPhone?: string;
+  supportWhatsapp?: string;
+  workingHours?: string;
+  googleMapsUrl?: string;
+  telegramUrl?: string;
   facebookUrl?: string;
   instagramUrl?: string;
   tiktokUrl?: string;

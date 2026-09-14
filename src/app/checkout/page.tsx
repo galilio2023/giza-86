@@ -11,6 +11,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `إتمام الطلب وبيانات الشحن | ${brandName}`,
     description: `أدخل عنوان التوصيل في محافظات مصر لطلبك من متجر ${brandName} واختر طريقة الدفع (كاش، إنستاباي، فودافون كاش).`,
+    robots: {
+      index: false,
+      follow: false,
+    },
   };
 }
 

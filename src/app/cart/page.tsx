@@ -11,6 +11,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `سلة المشتريات | ${brandName}`,
     description: `راجع المنتجات والمقاسات المختارة في متجر ${brandName} واستفد من الشحن المجاني للطلبات فوق ${settings?.freeShippingThreshold || STORE_DEFAULTS.freeShippingThreshold} ج.م.`,
+    robots: {
+      index: false,
+      follow: false,
+    },
   };
 }
 

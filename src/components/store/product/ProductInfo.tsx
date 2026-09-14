@@ -1,15 +1,16 @@
 "use client";
 
-import { Share2, Star, Sparkles } from "lucide-react";
+import { Star, Sparkles } from "lucide-react";
 import { ProductItem, ProductColor } from "@/types";
 import { PriceTag } from "@/components/ui/price-tag";
 import { StockBadge } from "@/components/ui/stock-badge";
 import { isAccessoryProduct } from "@/lib/domain/variants";
+import { ProductShareButton } from "./ProductShareButton";
 
 interface ProductInfoProps {
   product: ProductItem;
   brandName: string;
-  onShare: () => void;
+  onShare?: () => void;
   rating?: {
     score: number;
     reviewsCount: number;
@@ -42,15 +43,11 @@ export function ProductInfo({
           <span className="text-xs font-bold text-amber-800 bg-amber-500/10 px-2.5 py-1 rounded-lg">
             {product.categoryName || "تشكيلة قطن مصري"}
           </span>
-          <button
-            type="button"
-            onClick={onShare}
-            className="text-neutral-500 hover:text-neutral-900 text-xs flex items-center gap-1.5 p-1.5 rounded-lg hover:bg-neutral-100 transition cursor-pointer"
-            title="مشاركة المنتج"
-          >
-            <Share2 className="w-4 h-4" />
-            <span>مشاركة</span>
-          </button>
+          <ProductShareButton
+            product={product}
+            brandName={brandName}
+            currentPrice={currentPrice}
+          />
         </div>
 
         <h1 className="text-2xl sm:text-3xl font-black text-neutral-900 leading-snug">
