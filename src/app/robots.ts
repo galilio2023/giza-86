@@ -9,17 +9,17 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/"],
+        disallow: ["/admin/", "/api/", "/cart", "/checkout"],
       },
       {
         userAgent: "Googlebot",
         allow: "/",
-        disallow: ["/admin/", "/api/"],
+        disallow: ["/admin/", "/api/", "/cart", "/checkout"],
       },
       {
         userAgent: "Googlebot-Image",
-        allow: ["/", "/images/", "/uploads/"],
-        disallow: ["/admin/"],
+        allow: ["/images/", "/uploads/", "/opengraph-image"],
+        disallow: ["/admin/", "/api/", "/cart", "/checkout", "/track"],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

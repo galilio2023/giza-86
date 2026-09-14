@@ -44,12 +44,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const productRoutes: MetadataRoute.Sitemap = products.map((product) => {
     const rawSlug = product.slug || product.id;
     const slugSegment = encodeURIComponent(rawSlug);
+    const absoluteImages = product.images && product.images.length > 0
+      ? product.images.map((img) =>
+          img.startsWith("http://") || img.startsWith("https://")
+            ? img
+            : `${baseUrl}${img.startsWith("/") ? "" : "/"}${img}`
+        )
+      : undefined;
+
     return {
       url: `${baseUrl}/products/${slugSegment}`,
       lastModified: product.createdAt ? new Date(product.createdAt) : new Date(),
       changeFrequency: "daily",
       priority: 0.85,
-      images: product.images && product.images.length > 0 ? product.images : undefined,
+      images: absoluteImages,
     };
   });
 

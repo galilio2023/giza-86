@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+const optionalHttpUrl = (maxLen: number) =>
+  z
+    .string()
+    .trim()
+    .max(maxLen)
+    .optional()
+    .nullable()
+    .refine(
+      (val) => !val || /^https?:\/\/.+/i.test(val),
+      { message: "يجب أن يبدأ الرابط بـ http:// أو https://" }
+    );
+
 export const updateSettingsSchema = z.object({
   storeName: z.string().trim().min(1).max(150).optional(),
   phone: z.string().trim().max(20).optional().nullable(),
@@ -28,11 +40,11 @@ export const updateSettingsSchema = z.object({
   secondaryPhone: z.string().trim().max(30).optional().nullable(),
   supportWhatsapp: z.string().trim().max(30).optional().nullable(),
   workingHours: z.string().trim().max(150).optional().nullable(),
-  googleMapsUrl: z.string().trim().max(1000).optional().nullable(),
-  telegramUrl: z.string().trim().max(500).optional().nullable(),
-  facebookUrl: z.string().trim().max(500).optional().nullable(),
-  instagramUrl: z.string().trim().max(500).optional().nullable(),
-  tiktokUrl: z.string().trim().max(500).optional().nullable(),
+  googleMapsUrl: optionalHttpUrl(1000),
+  telegramUrl: optionalHttpUrl(500),
+  facebookUrl: optionalHttpUrl(500),
+  instagramUrl: optionalHttpUrl(500),
+  tiktokUrl: optionalHttpUrl(500),
   // Hero CMS
   heroBadge: z.string().trim().max(150).optional().nullable(),
   heroTitle: z.string().trim().max(200).optional().nullable(),

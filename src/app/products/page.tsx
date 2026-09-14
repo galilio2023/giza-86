@@ -54,6 +54,12 @@ export async function generateMetadata({ searchParams }: ProductsPageProps): Pro
     canonicalPath = `/products?q=${encodeURIComponent(searchQuery)}`;
   }
 
+  const page = Number(sp?.page) > 1 ? Number(sp.page) : 1;
+  if (page > 1) {
+    const separator = canonicalPath.includes("?") ? "&" : "?";
+    canonicalPath = `${canonicalPath}${separator}page=${page}`;
+  }
+
   return {
     title,
     description,

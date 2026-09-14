@@ -139,13 +139,6 @@ export default async function ProductPage({
     material: isAccessoryProduct(product)
       ? (product.fabricDetails || "خامات متينة وفاخرة خاضعة لفحص الجودة")
       : (product.fabricDetails || "100% Egyptian Cotton - قطن مصري أصيل"),
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      reviewCount: 48,
-      bestRating: "5",
-      worstRating: "1",
-    },
     offers: {
       "@type": "Offer",
       url: productUrl,
@@ -160,41 +153,6 @@ export default async function ProductPage({
       seller: {
         "@type": "Organization",
         name: settings?.storeName || STORE_DEFAULTS.storeName,
-      },
-      hasMerchantReturnPolicy: {
-        "@type": "MerchantReturnPolicy",
-        applicableCountry: "EG",
-        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
-        merchantReturnDays: 14,
-        returnMethod: "https://schema.org/ReturnByMail",
-        returnFees: "https://schema.org/FreeReturn",
-      },
-      shippingDetails: {
-        "@type": "OfferShippingDetails",
-        shippingRate: {
-          "@type": "MonetaryAmount",
-          value: 45,
-          currency: "EGP",
-        },
-        shippingDestination: {
-          "@type": "DefinedRegion",
-          addressCountry: "EG",
-        },
-        deliveryTime: {
-          "@type": "ShippingDeliveryTime",
-          handlingTime: {
-            "@type": "QuantitativeValue",
-            minValue: 0,
-            maxValue: 1,
-            unitCode: "d",
-          },
-          transitTime: {
-            "@type": "QuantitativeValue",
-            minValue: 1,
-            maxValue: 3,
-            unitCode: "d",
-          },
-        },
       },
     },
   };
