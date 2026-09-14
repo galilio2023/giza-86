@@ -351,11 +351,23 @@ async function main() {
   }
 
   console.log("Syncing PostgreSQL ID sequences...");
-  try {
-    await sql`SELECT setval('categories_id_seq', COALESCE((SELECT MAX(id) FROM categories), 1), true)`;
-    await sql`SELECT setval('products_id_seq', COALESCE((SELECT MAX(id) FROM products), 1), true)`;
-  } catch (seqErr) {
-    console.warn("Notice: Sequence sync warning (can be normal if tables use custom sequence):", seqErr);
+  const syncQueries = [
+    () => sql`SELECT setval('categories_id_seq', COALESCE((SELECT MAX(id) FROM categories), 1), true)`,
+    () => sql`SELECT setval('products_id_seq', COALESCE((SELECT MAX(id) FROM products), 1), true)`,
+    () => sql`SELECT setval('product_variants_id_seq', COALESCE((SELECT MAX(id) FROM product_variants), 1), true)`,
+    () => sql`SELECT setval('orders_id_seq', COALESCE((SELECT MAX(id) FROM orders), 1), true)`,
+    () => sql`SELECT setval('order_items_id_seq', COALESCE((SELECT MAX(id) FROM order_items), 1), true)`,
+    () => sql`SELECT setval('coupons_id_seq', COALESCE((SELECT MAX(id) FROM coupons), 1), true)`,
+    () => sql`SELECT setval('store_settings_id_seq', COALESCE((SELECT MAX(id) FROM store_settings), 1), true)`,
+    () => sql`SELECT setval('newsletter_subscribers_id_seq', COALESCE((SELECT MAX(id) FROM newsletter_subscribers), 1), true)`,
+  ];
+
+  for (const syncFn of syncQueries) {
+    try {
+      await syncFn();
+    } catch (seqErr) {
+      console.warn("Notice: Sequence sync warning:", seqErr);
+    }
   }
 
   console.log("Database seeded and updated successfully with MODANIL Egyptian clothes catalog!");

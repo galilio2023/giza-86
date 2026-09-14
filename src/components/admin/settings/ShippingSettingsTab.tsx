@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Truck, Clock, Compass } from "lucide-react";
+import { Truck, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { EGYPTIAN_GOVERNORATES, STORE_DEFAULTS } from "@/lib/egypt-constants";
 

@@ -2,6 +2,7 @@ import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { StoreSettingsItem } from "@/types";
 import { getSettingsRepository } from "@/lib/repositories/settings.repository";
+import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 
 /**
  * Service to fetch store CMS settings.
@@ -24,11 +25,11 @@ export const getStoreSettings = cache(async function getStoreSettings(): Promise
   } catch {
     settings = await getSettingsRepository().get();
   }
-  if (settings && (settings.storeName === "GIZA 86" || !settings.storeName)) {
-    settings.storeName = "MODANIL";
+  if (settings && !settings.storeName) {
+    settings.storeName = STORE_DEFAULTS.storeName;
   }
-  if (settings && (!settings.logoUrl || settings.logoUrl.includes("giza"))) {
-    settings.logoUrl = "/images/modanil-logo.svg";
+  if (settings && !settings.logoUrl) {
+    settings.logoUrl = STORE_DEFAULTS.logoUrl;
   }
   return settings;
 });

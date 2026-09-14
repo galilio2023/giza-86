@@ -1,18 +1,15 @@
 import { OrderItem } from "@/types";
 import { db, dbPool } from "@/db";
 import { orders, products, coupons, productVariants, orderItems } from "@/db/schema";
-import { eq, desc, and, sql, or, inArray, ilike } from "drizzle-orm";
+import { eq, desc, and, sql, or, ilike } from "drizzle-orm";
 import { normalizeEgyptianPhone } from "@/lib/egypt-constants";
-import { getSettingsRepository } from "@/lib/repositories/settings.repository";
-import { calculateDiscount, calculateShippingFee, calculateOrderTotal } from "@/lib/domain/pricing";
-import { OutOfStockError, StoreClosedError, CouponError, NotFoundError } from "@/lib/domain/errors";
+import { OutOfStockError, CouponError } from "@/lib/domain/errors";
 import { validateStatusTransition } from "@/lib/domain/orders";
 import {
   IOrderRepository,
   GetOrdersOptions,
   OrdersPageResult,
   TrackOrderResult,
-  CreateOrderInput,
   PersistOrderInput,
   UpdateOrderStatusInput,
 } from "./order.interface";
@@ -338,21 +335,28 @@ export class DrizzleOrderRepository implements IOrderRepository {
     const isNowCancelledOrReturned = targetOrderStatus === "cancelled" || targetOrderStatus === "returned";
 
     const itemsByProduct = new Map<number, number>();
+    const itemsByVariant = new Map<number, { qty: number; name: string }>();
     for (const item of (prevOrder.items as OrderItem["items"])) {
       itemsByProduct.set(item.productId, (itemsByProduct.get(item.productId) || 0) + item.quantity);
+      if (item.variantId) {
+        const existing = itemsByVariant.get(item.variantId);
+        itemsByVariant.set(item.variantId, {
+          qty: (existing?.qty || 0) + item.quantity,
+          name: item.name,
+        });
+      }
     }
 
     return await (dbPool || db).transaction(async (tx) => {
       if (!wasCancelledOrReturned && isNowCancelledOrReturned) {
-        const variantItems = (prevOrder.items as OrderItem["items"]).filter((i) => Boolean(i.variantId));
-        for (const vItem of variantItems) {
+        for (const [variantId, vData] of itemsByVariant.entries()) {
           await tx
             .update(productVariants)
             .set({
-              stock: sql`${productVariants.stock} + ${vItem.quantity}`,
+              stock: sql`${productVariants.stock} + ${vData.qty}`,
               updatedAt: new Date(),
             })
-            .where(eq(productVariants.id, vItem.variantId!));
+            .where(eq(productVariants.id, variantId));
         }
 
         for (const [productId, qty] of itemsByProduct.entries()) {
@@ -375,25 +379,38 @@ export class DrizzleOrderRepository implements IOrderRepository {
             .where(eq(coupons.code, prevOrder.couponCode));
         }
       } else if (wasCancelledOrReturned && !isNowCancelledOrReturned) {
-        const variantItems = (prevOrder.items as OrderItem["items"]).filter((i) => Boolean(i.variantId));
-        for (const vItem of variantItems) {
-          await tx
+        for (const [variantId, vData] of itemsByVariant.entries()) {
+          const updatedVar = await tx
             .update(productVariants)
             .set({
-              stock: sql`GREATEST(0, ${productVariants.stock} - ${vItem.quantity})`,
+              stock: sql`${productVariants.stock} - ${vData.qty}`,
               updatedAt: new Date(),
             })
-            .where(eq(productVariants.id, vItem.variantId!));
+            .where(and(eq(productVariants.id, variantId), sql`${productVariants.stock} >= ${vData.qty}`))
+            .returning({ id: productVariants.id });
+
+          if (updatedVar.length === 0) {
+            throw new OutOfStockError(
+              `تعذر إعادة تنشيط الطلب: نفدت كمية المقاس واللون المختارين للمنتج "${vData.name}" (المطلوب: ${vData.qty} قطعة).`
+            );
+          }
         }
 
         for (const [productId, qty] of itemsByProduct.entries()) {
-          await tx
+          const updatedProd = await tx
             .update(products)
             .set({
-              stock: sql`GREATEST(0, ${products.stock} - ${qty})`,
+              stock: sql`${products.stock} - ${qty}`,
               updatedAt: new Date(),
             })
-            .where(eq(products.id, productId));
+            .where(and(eq(products.id, productId), sql`${products.stock} >= ${qty}`))
+            .returning({ id: products.id });
+
+          if (updatedProd.length === 0) {
+            throw new OutOfStockError(
+              "تعذر إعادة تنشيط الطلب: نفدت كمية أحد المنتجات المطلوبة من المخزن."
+            );
+          }
         }
 
         if (prevOrder.couponCode) {

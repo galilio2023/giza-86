@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { getProducts, getProductsWithCount, createProduct } from "@/lib/data-service";
+import { getProductRepository } from "@/lib/repositories/product.repository";
 import { createProductSchema } from "@/lib/validations";
 import { withAdminAuth, withErrorHandler } from "@/lib/api-handler";
 import { slugify } from "@/lib/utils";
@@ -14,6 +15,20 @@ import {
 
 export const GET = withErrorHandler(async (request: Request) => {
   const { searchParams } = new URL(request.url);
+
+  const idsParam = searchParams.get("ids");
+  if (idsParam) {
+    const ids = idsParam
+      .split(",")
+      .map(Number)
+      .filter((n) => !isNaN(n) && n > 0);
+    if (ids.length > 0) {
+      const items = await getProductRepository().findByIds(ids);
+      return NextResponse.json(items);
+    }
+    return NextResponse.json([]);
+  }
+
   const { limit, offset, withCount } = parsePaginationParams(searchParams, 20);
 
   const categorySlug = parseStringParam(searchParams, "category");

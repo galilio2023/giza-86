@@ -41,7 +41,6 @@ interface SectionItem {
 }
 
 export function AdminGuideClient({ storeName = "MODANIL" }: { storeName?: string }) {
-  const currentStore = (storeName && storeName !== "GIZA 86") ? storeName : "MODANIL";
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState<string>("all");
   const [expandedSection, setExpandedSection] = useState<string>("daily-routine");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { SlidersHorizontal, ArrowUpDown, Loader2 } from "lucide-react";
@@ -52,15 +52,85 @@ export function ProductsCatalogClient({
   const [quickViewProduct, setQuickViewProduct] = useState<ProductItem | null>(null);
 
   const wishlist = useWishlistStore((state) => state.wishlist);
+  const isWishlistMode = wishlistParam === "true";
 
-  // Filter Logic: Server already filters category, onSale, size, and search.
-  // We only filter wishlist client-side if requested (wishlist is stored in browser localStorage).
-  const filteredProducts = wishlistParam === "true"
-    ? initialProducts.filter((p) => wishlist.includes(p.id))
-    : initialProducts;
+  const [extraProducts, setExtraProducts] = useState<ProductItem[]>([]);
 
-  const total = totalCount ?? initialProducts.length;
+  const wishlistProducts = useMemo(() => {
+    if (!isWishlistMode) return [];
+    const map = new Map<number, ProductItem>();
+    for (const p of initialProducts) map.set(p.id, p);
+    for (const p of extraProducts) map.set(p.id, p);
+    return wishlist.map((id) => map.get(id)).filter((p): p is ProductItem => Boolean(p));
+  }, [isWishlistMode, initialProducts, extraProducts, wishlist]);
+
+  useEffect(() => {
+    if (!isWishlistMode || wishlist.length === 0) return;
+
+    const knownIds = new Set([
+      ...initialProducts.map((p) => p.id),
+      ...extraProducts.map((p) => p.id),
+    ]);
+    const missingIds = wishlist.filter((id) => !knownIds.has(id));
+    if (missingIds.length === 0) return;
+
+    let isMounted = true;
+    fetch(`/api/products?ids=${missingIds.join(",")}`)
+      .then((res) => res.json())
+      .then((fetched: ProductItem[]) => {
+        if (isMounted && Array.isArray(fetched) && fetched.length > 0) {
+          setExtraProducts((prev) => {
+            const existingIds = new Set(prev.map((p) => p.id));
+            const newItems = fetched.filter((p) => !existingIds.has(p.id));
+            return newItems.length > 0 ? [...prev, ...newItems] : prev;
+          });
+        }
+      })
+      .catch((err) => console.error("Failed to load wishlist items:", err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, [wishlist, isWishlistMode, initialProducts, extraProducts]);
+
+  // Process wishlist items with active filters and sorting
+  const processedWishlistProducts = useMemo(() => {
+    if (!isWishlistMode) return [];
+    let list = [...wishlistProducts];
+
+    if (categoryParam && categoryParam !== "all") {
+      list = list.filter((p) => p.categorySlug === categoryParam);
+    }
+    if (sizeParam && sizeParam !== "all") {
+      list = list.filter((p) => p.sizes?.includes(sizeParam));
+    }
+    if (onSaleParam === "true") {
+      list = list.filter((p) => p.salePrice !== undefined && p.salePrice !== null);
+    }
+    const searchParam = searchParams.get("search");
+    if (searchParam) {
+      const q = searchParam.toLowerCase();
+      list = list.filter((p) => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q));
+    }
+    if (sortParam === "price-asc") {
+      list.sort((a, b) => Number(a.salePrice ?? a.price) - Number(b.salePrice ?? b.price));
+    } else if (sortParam === "price-desc") {
+      list.sort((a, b) => Number(b.salePrice ?? b.price) - Number(a.salePrice ?? a.price));
+    } else if (sortParam === "newest") {
+      list.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+    }
+
+    return list;
+  }, [isWishlistMode, wishlistProducts, categoryParam, sizeParam, onSaleParam, searchParams, sortParam]);
+
+  const total = isWishlistMode ? processedWishlistProducts.length : (totalCount ?? initialProducts.length);
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+  const filteredProducts = useMemo(() => {
+    if (!isWishlistMode) return initialProducts;
+    const startIndex = (currentPage - 1) * pageSize;
+    return processedWishlistProducts.slice(startIndex, startIndex + pageSize);
+  }, [isWishlistMode, initialProducts, processedWishlistProducts, currentPage, pageSize]);
 
   const updateUrlFilters = (updates: {
     category?: string;

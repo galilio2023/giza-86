@@ -58,6 +58,7 @@ export interface CategoryItem {
 export interface CartItem {
   id: string; // unique key combining productId, size, color
   productId: number;
+  slug?: string;
   variantId?: number;
   name: string;
   price: number;
