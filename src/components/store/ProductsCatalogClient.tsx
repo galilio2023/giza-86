@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect, useMemo } from "react";
+import { useState, useTransition, useEffect, useMemo, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { SlidersHorizontal, ArrowUpDown, Loader2 } from "lucide-react";
@@ -132,13 +132,16 @@ export function ProductsCatalogClient({
     return processedWishlistProducts.slice(startIndex, startIndex + pageSize);
   }, [isWishlistMode, initialProducts, processedWishlistProducts, currentPage, pageSize]);
 
-  const updateUrlFilters = (updates: {
-    category?: string;
-    size?: string;
-    onSale?: boolean;
-    sort?: string;
-    page?: number;
-  }) => {
+  const updateUrlFilters = (
+    updates: {
+      category?: string;
+      size?: string;
+      onSale?: boolean;
+      sort?: string;
+      page?: number;
+    },
+    options?: { scroll?: boolean }
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (updates.category !== undefined) {
@@ -170,6 +173,24 @@ export function ProductsCatalogClient({
     });
   };
 
+  const prevPageRef = useRef(currentPage);
+
+  useEffect(() => {
+    if (prevPageRef.current !== currentPage) {
+      prevPageRef.current = currentPage;
+      if (typeof window !== "undefined") {
+        const topEl = document.getElementById("catalog-top") || document.getElementById("main-content");
+        if (topEl) {
+          const yOffset = -20;
+          const y = topEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+    }
+  }, [currentPage]);
+
   const resetFilters = () => {
     startTransition(() => {
       router.push("/products", { scroll: false });
@@ -193,11 +214,20 @@ export function ProductsCatalogClient({
   };
 
   const handlePageChange = (newPage: number) => {
+    if (newPage === currentPage) {
+      const topEl = document.getElementById("catalog-top") || document.getElementById("main-content");
+      if (topEl) {
+        topEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      return;
+    }
     updateUrlFilters({ page: newPage });
   };
 
   return (
-    <div>
+    <div id="catalog-top" className="scroll-mt-6">
       {/* Header Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-neutral-200">
         <div>
