@@ -1,13 +1,20 @@
 import { products, categories } from "@/db/schema";
-import { eq, and, ilike, or, sql, isNotNull, lt, gt, gte, lte, inArray } from "drizzle-orm";
+import { eq, and, ilike, or, sql, isNotNull, lt, gt, gte, lte, inArray, aliasedTable } from "drizzle-orm";
 import { sanitizeSearchQuery } from "@/lib/utils";
 import { GetProductsOptions } from "./product.interface";
+
+export const parentCategories = aliasedTable(categories, "parent_categories");
 
 export function buildProductConditions(options?: GetProductsOptions) {
   const conditions = [];
 
   if (options?.categoryId !== undefined) {
-    conditions.push(eq(products.categoryId, options.categoryId));
+    conditions.push(
+      or(
+        eq(products.categoryId, options.categoryId),
+        eq(categories.parentId, options.categoryId)
+      )
+    );
   } else if (options?.categorySlug) {
     const rawCat = options.categorySlug.trim();
     let decodedCat = rawCat;
@@ -18,9 +25,20 @@ export function buildProductConditions(options?: GetProductsOptions) {
     }
     const catCandidates = Array.from(new Set([rawCat, decodedCat])).filter(Boolean);
     if (catCandidates.length > 1) {
-      conditions.push(inArray(categories.slug, catCandidates));
+      conditions.push(
+        or(
+          inArray(categories.slug, catCandidates),
+          inArray(parentCategories.slug, catCandidates)
+        )
+      );
     } else {
-      conditions.push(eq(categories.slug, catCandidates[0] || rawCat));
+      const targetSlug = catCandidates[0] || rawCat;
+      conditions.push(
+        or(
+          eq(categories.slug, targetSlug),
+          eq(parentCategories.slug, targetSlug)
+        )
+      );
     }
   }
 

@@ -7,7 +7,11 @@ export class MemoryProductRepository implements IProductRepository {
   async findMany(options?: GetProductsOptions): Promise<ProductItem[]> {
     let list = [...memoryProducts];
     if (options?.categoryId !== undefined) {
-      list = list.filter((p) => p.categoryId === options.categoryId);
+      const childIds = memoryCategories
+        .filter((c) => c.parentId === options.categoryId)
+        .map((c) => c.id);
+      const targetIds = [options.categoryId, ...childIds];
+      list = list.filter((p) => p.categoryId && targetIds.includes(p.categoryId));
     }
     if (options?.categorySlug) {
       const rawCat = options.categorySlug.trim();
@@ -18,7 +22,13 @@ export class MemoryProductRepository implements IProductRepository {
         // ignore
       }
       const cat = memoryCategories.find((c) => c.slug === rawCat || c.slug === decodedCat);
-      if (cat) list = list.filter((p) => p.categoryId === cat.id);
+      if (cat) {
+        const childIds = memoryCategories
+          .filter((c) => c.parentId === cat.id)
+          .map((c) => c.id);
+        const targetIds = [cat.id, ...childIds];
+        list = list.filter((p) => p.categoryId && targetIds.includes(p.categoryId));
+      }
     }
     if (options?.featured) {
       list = list.filter((p) => p.isFeatured);

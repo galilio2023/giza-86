@@ -27,6 +27,7 @@ export const POST = withAdminAuth(async (request: Request) => {
     image: validated.image,
     description: validated.description || undefined,
     displayOrder: validated.displayOrder,
+    parentId: validated.parentId ?? null,
   });
 
   revalidateTag("categories", { expire: 0 });

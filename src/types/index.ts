@@ -50,6 +50,9 @@ export interface CategoryItem {
   image: string;
   description?: string;
   displayOrder?: number;
+  parentId?: number | null;
+  parentName?: string | null;
+  children?: CategoryItem[];
   productsCount?: number;
   createdAt?: string;
   updatedAt?: string;

@@ -18,12 +18,14 @@
 ## ✨ Key Platform Highlights
 
 - ⚡ **Next.js 16 App Router & Turbopack:** Full streaming with Server Components (`loading.tsx`), static rendering (`SSG`), and resilient error boundaries (`global-error.tsx`, `error.tsx`).
+- 📁 **2-Tier Hierarchical Taxonomy:** Parent-child category architecture with database self-referencing foreign keys (`parentId`), rolled-up product count aggregation, circular reference guards, and safe orphan promotion.
+- 🧭 **Multi-Surface Navigation:** Desktop 2-tier dropdown menus, mobile expandable accordion drawer, and hierarchical catalog filter sidebars with instant search jumps.
 - 🇪🇬 **Egyptian Market Native:** Pre-configured with all 27 Egyptian governorates, dynamic shipping tariffs, Egyptian mobile phone validation (11-digit regex), and instant WhatsApp direct ordering.
 - 💳 **Local Payment Ecosystem:** Cash on Delivery (COD), InstaPay with 1-click handle copying, Vodafone Cash mobile wallet, and online card readiness.
 - 🛡️ **Distributed Rate Limiting:** Powered by **Upstash Redis REST API** pipeline for serverless multi-instance protection against brute-force and DDoS, with in-memory sliding window fallback.
 - 📸 **Cloudinary CDN Integration:** High-speed cloud image delivery and upload pipeline with local filesystem fallback.
 - 🔐 **Better Auth & Drizzle ORM:** Secure credential-based session management, role-based route handlers, and type-safe database access with Neon Serverless PostgreSQL.
-- 🎛️ **Full Admin CMS:** Dashboard metrics, product variant matrix (sizes, colors, custom pricing & stock), coupon rules engine, category hierarchy, and live store settings.
+- 🎛️ **Full Admin CMS:** Dashboard metrics, product variant matrix (sizes, colors, custom pricing & stock), coupon rules engine, category taxonomy management with parent-child linkage, and live store settings.
 
 ---
 
@@ -116,8 +118,54 @@ stateDiagram-v2
     delivered --> returned : Return / Exchange requested
     delivered --> [*]
     returned --> [*]
-    cancelled --> [*]
 ```
+
+---
+
+### 3. Hierarchical Category Taxonomy & Navigation Engine
+
+The catalog uses a relational 2-tier parent-child hierarchy to organize clothing lines, collections, and accessories:
+
+```mermaid
+graph TD
+    subgraph Parents ["Top-Level Parent Categories (parentId = null)"]
+        P1["ملابس كاجوال ورجالي<br/>(men-streetwear)"]
+        P2["ملابس وتشكيلات نسائية<br/>(women-collection)"]
+        P3["إكسسوارات وحقائب<br/>(accessories-bags)"]
+    end
+
+    subgraph Children ["Subcategories (parentId references parent.id)"]
+        C1["تيشيرتات أوفر سايز"]
+        C2["هوديز وسويت شيرت"]
+        C3["قمصان كاجوال"]
+        C4["بناطيل وسراويل"]
+        C5["ملابس رياضية وترنجات"]
+        C6["فساتين وتشكيلات صيفية"]
+        C7["حقائب يد ومحافظ"]
+        C8["توك شعر وإكسسوارات كورية"]
+    end
+
+    P1 --> C1
+    P1 --> C2
+    P1 --> C3
+    P1 --> C4
+    P1 --> C5
+    P2 --> C6
+    P3 --> C7
+    P3 --> C8
+```
+
+- **Database Foreign Key Integrity:** `parentId: integer("parent_id").references((): any => categories.id, { onDelete: "set null" })` with indexed lookup (`categories_parent_id_idx`).
+- **Rolled-Up Product Counts:** Parent category metrics compute `productsCount = directCount + sum(childCounts)`.
+- **Inherited Query Conditions:** Filtering the catalog by a parent category (`/products?category=men-streetwear`) automatically retrieves all products linked to that parent or any of its subcategories via SQL joins.
+- **Fail-Safe Deletion Protocol:**
+  - Deleting a subcategory automatically reassigns its products to a safe fallback category.
+  - Deleting a parent category unlinks and promotes all child subcategories to top-level categories (`parentId = null`), preventing loss of catalog routes.
+- **Multi-Surface Storefront UX:**
+  - **Desktop Navbar:** 2-tier dropdown with parent headers and indented subcategories.
+  - **Mobile Menu Drawer:** Expandable accordion menu with quick search and category shortcuts.
+  - **Catalog Filters:** Hierarchical sidebar and bottom sheets with parent groupings.
+  - **Admin CMS:** Dedicated tabs (`All`, `Parents`, `Children`), drag-and-order swap, parent assignment selector, and delete confirmations.
 
 ---
 

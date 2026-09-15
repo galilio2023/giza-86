@@ -71,8 +71,8 @@ export function CatalogMobileFilterSheet({
 
           {/* Categories */}
           <div className="space-y-2">
-            <h4 className="text-xs font-black text-neutral-900">الأقسام</h4>
-            <div className="space-y-1">
+            <h4 className="text-xs font-black text-neutral-900">الأقسام والتصنيفات</h4>
+            <div className="space-y-1.5">
               <button
                 type="button"
                 onClick={() => onSelectCategory("all")}
@@ -85,21 +85,59 @@ export function CatalogMobileFilterSheet({
                 <span>كافة الأقسام</span>
                 {selectedCategory === "all" && <Check className="w-3.5 h-3.5 text-amber-400" />}
               </button>
-              {categories.map((c) => (
-                <button
-                  type="button"
-                  key={c.id}
-                  onClick={() => onSelectCategory(c.slug)}
-                  className={`w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
-                    selectedCategory === c.slug
-                      ? "bg-neutral-900 text-white"
-                      : "bg-neutral-50 hover:bg-neutral-100 text-neutral-800"
-                  }`}
-                >
-                  <span>{c.name}</span>
-                  {selectedCategory === c.slug && <Check className="w-3.5 h-3.5 text-amber-400" />}
-                </button>
-              ))}
+
+              {categories
+                .filter((c) => !c.parentId || c.parentId === null)
+                .map((parent) => {
+                  const isParentSelected = selectedCategory === parent.slug;
+                  const hasChildren = Boolean(parent.children && parent.children.length > 0);
+
+                  return (
+                    <div key={parent.id} className="space-y-1">
+                      <button
+                        type="button"
+                        onClick={() => onSelectCategory(parent.slug)}
+                        className={`w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-black transition flex items-center justify-between cursor-pointer ${
+                          isParentSelected
+                            ? "bg-neutral-900 text-white"
+                            : "bg-neutral-100/80 hover:bg-neutral-200/80 text-neutral-900"
+                        }`}
+                      >
+                        <span>{parent.name}</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] opacity-70">({parent.productsCount ?? 0})</span>
+                          {isParentSelected && <Check className="w-3.5 h-3.5 text-amber-400" />}
+                        </div>
+                      </button>
+
+                      {hasChildren && (
+                        <div className="mr-3 pr-2 border-r-2 border-neutral-200 space-y-1">
+                          {parent.children?.map((child) => {
+                            const isChildSelected = selectedCategory === child.slug;
+                            return (
+                              <button
+                                type="button"
+                                key={child.id}
+                                onClick={() => onSelectCategory(child.slug)}
+                                className={`w-full text-right px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center justify-between cursor-pointer ${
+                                  isChildSelected
+                                    ? "bg-amber-100 text-amber-950 font-bold"
+                                    : "bg-neutral-50 hover:bg-neutral-100 text-neutral-700"
+                                }`}
+                              >
+                                <span>↳ {child.name}</span>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-[10px] opacity-60">({child.productsCount ?? 0})</span>
+                                  {isChildSelected && <Check className="w-3 h-3 text-amber-600" />}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
             </div>
           </div>
 

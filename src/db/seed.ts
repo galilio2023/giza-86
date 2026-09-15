@@ -36,6 +36,7 @@ async function main() {
         image: cat.image,
         description: cat.description,
         displayOrder: cat.displayOrder,
+        parentId: cat.parentId ?? null,
       })
       .onConflictDoUpdate({
         target: schema.categories.id,
@@ -45,6 +46,7 @@ async function main() {
           image: cat.image,
           description: cat.description,
           displayOrder: cat.displayOrder,
+          parentId: cat.parentId ?? null,
         },
       });
   }

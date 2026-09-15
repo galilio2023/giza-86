@@ -117,13 +117,41 @@ export function ProductGeneralInfo({
           <select
             value={categoryId}
             onChange={(e) => onCategoryChange(Number(e.target.value))}
-            className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-base lg:text-sm font-bold"
+            className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-base lg:text-sm font-bold text-neutral-800"
           >
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
+            {/* Top-level categories with subcategories grouped underneath */}
+            {categories
+              .filter((c) => !c.parentId && c.children && c.children.length > 0)
+              .map((parent) => (
+                <optgroup key={parent.id} label={`📁 ${parent.name}`}>
+                  <option value={parent.id}>
+                    {parent.name} (القسم بالكامل)
+                  </option>
+                  {parent.children?.map((child) => (
+                    <option key={child.id} value={child.id}>
+                      ↳ {child.name}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+
+            {/* Top-level standalone categories */}
+            {categories
+              .filter((c) => !c.parentId && (!c.children || c.children.length === 0))
+              .map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+
+            {/* Any standalone subcategories */}
+            {categories
+              .filter((c) => c.parentId && !categories.some((p) => p.children?.some((ch) => ch.id === c.id)))
+              .map((c) => (
+                <option key={c.id} value={c.id}>
+                  ↳ {c.name}
+                </option>
+              ))}
           </select>
         </div>
       </div>
