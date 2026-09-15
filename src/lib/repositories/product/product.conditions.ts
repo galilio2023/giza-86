@@ -5,6 +5,7 @@ import { GetProductsOptions } from "./product.interface";
 
 export const parentCategories = aliasedTable(categories, "parent_categories");
 
+/** Builds database predicates for the supplied product catalog and stock filters. */
 export function buildProductConditions(options?: GetProductsOptions) {
   const conditions = [];
 

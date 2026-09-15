@@ -5,6 +5,7 @@ export interface StockBadgeProps {
   showInStock?: boolean;
 }
 
+/** Displays the sold-out, low-stock, or optional in-stock status for a quantity. */
 export function StockBadge({
   stock,
   lowStockThreshold = 5,

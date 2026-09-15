@@ -15,6 +15,7 @@ interface ProductActionButtonsProps {
   onWhatsAppOrder: () => void;
 }
 
+/** Renders product purchase actions, including restock inquiries for sold-out variants. */
 export function ProductActionButtons({
   currentPrice,
   quantity,

@@ -15,6 +15,7 @@ interface ProductVariantSelectorProps {
   isOutOfStock: boolean;
 }
 
+/** Renders color, size, and quantity controls while enforcing variant availability. */
 export function ProductVariantSelector({
   product,
   selectedColor,

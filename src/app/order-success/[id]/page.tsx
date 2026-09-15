@@ -39,6 +39,7 @@ export async function generateMetadata({
   };
 }
 
+/** Renders an order confirmation with shipping details and customer follow-up actions. */
 export default async function OrderSuccessPage({
   params,
 }: {

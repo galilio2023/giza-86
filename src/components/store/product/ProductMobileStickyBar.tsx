@@ -15,6 +15,7 @@ interface ProductMobileStickyBarProps {
   onWhatsAppOrder: () => void;
 }
 
+/** Renders persistent mobile purchase or restock actions for the selected product. */
 export function ProductMobileStickyBar({
   currentPrice,
   quantity,

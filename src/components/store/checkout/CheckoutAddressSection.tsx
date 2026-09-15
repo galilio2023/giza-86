@@ -36,6 +36,7 @@ interface CheckoutAddressSectionProps {
   clearError: (field: keyof CheckoutFormErrors) => void;
 }
 
+/** Renders and validates the customer contact and delivery address fields at checkout. */
 export function CheckoutAddressSection({
   fullName,
   setFullName,

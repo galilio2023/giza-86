@@ -4,6 +4,7 @@ import { INITIAL_PRODUCTS, buildProductVariants } from "@/db/seed-data";
 import { IProductRepository, GetProductsOptions, ProductsPageResult } from "./product.interface";
 
 export class MemoryProductRepository implements IProductRepository {
+  /** Returns in-memory products matching the supplied catalog and stock filters. */
   async findMany(options?: GetProductsOptions): Promise<ProductItem[]> {
     let list = [...memoryProducts];
     if (options?.categoryId !== undefined) {

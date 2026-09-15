@@ -20,6 +20,7 @@ interface AdminProductsClientProps {
   pageSize?: number;
 }
 
+/** Coordinates URL-backed product filters, pagination, and the admin CRUD interface. */
 export function AdminProductsClient({
   initialProducts,
   categories,

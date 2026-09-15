@@ -43,6 +43,7 @@ export interface UseProductVariantSelectionReturn {
 
 const DEFAULT_COLOR: ProductColor = { name: "أسود", hex: "#000000" };
 
+/** Manages product variant selection, stock-aware cart actions, and WhatsApp URLs. */
 export function useProductVariantSelection({
   product,
   initialSize,

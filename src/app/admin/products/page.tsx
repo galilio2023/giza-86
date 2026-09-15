@@ -16,6 +16,7 @@ interface AdminProductsPageProps {
   }>;
 }
 
+/** Loads the paginated admin product list using URL-backed category, stock, and search filters. */
 export default async function AdminProductsPage({ searchParams }: AdminProductsPageProps) {
   await requireAdminServer();
 
@@ -51,4 +52,3 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
     />
   );
 }
-

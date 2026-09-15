@@ -9,6 +9,7 @@ import { useWishlistStore } from "@/lib/wishlist-store";
 import { formatEGP } from "@/lib/utils";
 import { useMounted } from "@/hooks/useMounted";
 
+/** Renders storefront search, wishlist, and cart actions with their live counts. */
 export function NavbarActions() {
   const router = useRouter();
   const mounted = useMounted();

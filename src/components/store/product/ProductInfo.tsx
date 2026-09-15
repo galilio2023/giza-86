@@ -19,6 +19,7 @@ interface ProductInfoProps {
   selectedColor?: ProductColor;
 }
 
+/** Displays product identity, pricing, rating, and stock for the selected variant. */
 export function ProductInfo({
   product,
   brandName,

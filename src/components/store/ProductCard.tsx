@@ -18,6 +18,7 @@ interface ProductCardProps {
   onQuickView?: (product: ProductItem) => void;
 }
 
+/** Renders a product summary card with variant, wishlist, and quick-add interactions. */
 export function ProductCard({ product, onQuickView }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 

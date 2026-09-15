@@ -15,6 +15,7 @@ interface ProductFilterBarProps {
   onAddNew: () => void;
 }
 
+/** Renders product search, category, and stock controls for the admin catalog. */
 export function ProductFilterBar({
   searchQuery,
   onSearchChange,
