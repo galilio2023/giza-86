@@ -101,10 +101,11 @@ export function BrandLogo({
           <Image
             src={resolvedLogoUrl}
             alt={brandName}
-            width={180}
-            height={48}
+            width={280}
+            height={56}
             priority
-            className={`${logoHeightClasses} object-contain w-auto`}
+            className={`${logoHeightClasses} object-contain`}
+            style={{ width: "auto", height: "auto" }}
             unoptimized={!resolvedLogoUrl.startsWith("/") && !resolvedLogoUrl.includes("res.cloudinary.com")}
           />
         </div>

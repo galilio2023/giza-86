@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect, useMemo } from "react";
+import { useState, useTransition, useMemo, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { SlidersHorizontal, ArrowUpDown, Loader2 } from "lucide-react";
@@ -12,6 +12,7 @@ import {
   CatalogFilterSidebar,
   CatalogMobileFilterSheet,
   CatalogProductsGrid,
+  CatalogScrollRestoration,
 } from "./catalog";
 
 interface Props {
@@ -132,13 +133,16 @@ export function ProductsCatalogClient({
     return processedWishlistProducts.slice(startIndex, startIndex + pageSize);
   }, [isWishlistMode, initialProducts, processedWishlistProducts, currentPage, pageSize]);
 
-  const updateUrlFilters = (updates: {
-    category?: string;
-    size?: string;
-    onSale?: boolean;
-    sort?: string;
-    page?: number;
-  }) => {
+  const updateUrlFilters = (
+    updates: {
+      category?: string;
+      size?: string;
+      onSale?: boolean;
+      sort?: string;
+      page?: number;
+    },
+    options?: { scroll?: boolean }
+  ) => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (updates.category !== undefined) {
@@ -193,11 +197,21 @@ export function ProductsCatalogClient({
   };
 
   const handlePageChange = (newPage: number) => {
+    if (newPage === currentPage) {
+      const topEl = document.getElementById("catalog-top") || document.getElementById("main-content");
+      if (topEl) {
+        topEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      return;
+    }
     updateUrlFilters({ page: newPage });
   };
 
   return (
-    <div>
+    <div id="catalog-top" className="scroll-mt-6">
+      <CatalogScrollRestoration currentPage={currentPage} />
       {/* Header Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-neutral-200">
         <div>

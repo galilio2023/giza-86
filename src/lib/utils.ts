@@ -58,4 +58,32 @@ export function sanitizeSearchQuery(query: string): string {
   return query.replace(/[%_\\]/g, "\\$&");
 }
 
+/**
+ * Optimizes a Cloudinary image URL by injecting auto format and quality parameters (f_auto,q_auto)
+ * if not already present. This dramatically reduces payload size (~85-90%) and prevents
+ * upstream fetch timeouts during Next.js image optimization.
+ */
+export function optimizeCloudinaryUrl(url: string | null | undefined): string {
+  if (!url) return "/placeholder.jpg";
+  if (!url.includes("res.cloudinary.com") || !url.includes("/image/upload/")) {
+    return url;
+  }
+
+  const uploadIndex = url.indexOf("/image/upload/");
+  const afterUpload = url.slice(uploadIndex + "/image/upload/".length);
+
+  const hasFAuto = /\bf_auto\b/.test(afterUpload);
+  const hasQAuto = /\bq_auto\b/.test(afterUpload);
+
+  if (hasFAuto && hasQAuto) {
+    return url;
+  }
+
+  const missing: string[] = [];
+  if (!hasFAuto) missing.push("f_auto");
+  if (!hasQAuto) missing.push("q_auto");
+
+  return url.replace("/image/upload/", `/image/upload/${missing.join(",")}/`);
+}
+
 

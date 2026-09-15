@@ -81,7 +81,7 @@ export default async function RootLayout({
   const settings = await getStoreSettings().catch(() => null);
 
   return (
-    <html lang="ar" dir="rtl" className={cairo.variable}>
+    <html lang="ar" dir="rtl" className={cairo.variable} data-scroll-behavior="smooth">
       <body className="min-h-screen flex flex-col antialiased bg-background text-foreground pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0 overflow-x-hidden w-full max-w-full">
         <a
           href="#main-content"

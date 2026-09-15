@@ -5,6 +5,12 @@ import { eq, ne, desc, asc, and, or, sql, lte, inArray } from "drizzle-orm";
 import { buildProductVariants } from "@/db/seed-data";
 import { IProductRepository, GetProductsOptions, ProductsPageResult } from "./product.interface";
 import { buildProductConditions } from "./product.conditions";
+import { optimizeCloudinaryUrl } from "@/lib/utils";
+
+function mapImages(images: unknown): string[] {
+  if (!Array.isArray(images)) return [];
+  return (images as string[]).map(optimizeCloudinaryUrl);
+}
 
 export class DrizzleProductRepository implements IProductRepository {
   async findMany(options?: GetProductsOptions): Promise<ProductItem[]> {
@@ -75,7 +81,7 @@ export class DrizzleProductRepository implements IProductRepository {
       categorySlug: r.categorySlug ?? undefined,
       sizes: (r.sizes as string[]) || ["S", "M", "L", "XL", "2XL"],
       colors: (r.colors as { name: string; hex: string }[]) || [],
-      images: (r.images as string[]) || [],
+      images: mapImages(r.images),
       isFeatured: r.isFeatured ?? false,
       isNew: r.isNew ?? false,
       sku: r.sku ?? undefined,
@@ -183,7 +189,7 @@ export class DrizzleProductRepository implements IProductRepository {
         sku: v.sku,
         stock: v.stock,
         price: v.price ? Number(v.price) : undefined,
-        imageUrl: v.imageUrl ?? undefined,
+        imageUrl: v.imageUrl ? optimizeCloudinaryUrl(v.imageUrl) : undefined,
         createdAt: v.createdAt?.toISOString(),
         updatedAt: v.updatedAt?.toISOString(),
       }));
@@ -215,7 +221,7 @@ export class DrizzleProductRepository implements IProductRepository {
       categorySlug: r.categorySlug ?? undefined,
       sizes: (r.sizes as string[]) || ["S", "M", "L", "XL", "2XL"],
       colors: (r.colors as { name: string; hex: string }[]) || [],
-      images: (r.images as string[]) || [],
+      images: mapImages(r.images),
       isFeatured: r.isFeatured ?? false,
       isNew: r.isNew ?? false,
       sku: r.sku ?? undefined,
@@ -320,7 +326,7 @@ export class DrizzleProductRepository implements IProductRepository {
         categorySlug: r.categorySlug ?? undefined,
         sizes: (r.sizes as string[]) || ["S", "M", "L", "XL", "2XL"],
         colors: (r.colors as { name: string; hex: string }[]) || [],
-        images: (r.images as string[]) || [],
+        images: mapImages(r.images),
         isFeatured: r.isFeatured ?? false,
         isNew: r.isNew ?? false,
         sku: r.sku ?? undefined,
@@ -378,7 +384,7 @@ export class DrizzleProductRepository implements IProductRepository {
       categorySlug: r.categorySlug ?? undefined,
       sizes: (r.sizes as string[]) || ["S", "M", "L", "XL", "2XL"],
       colors: (r.colors as { name: string; hex: string }[]) || [],
-      images: (r.images as string[]) || [],
+      images: mapImages(r.images),
       isFeatured: r.isFeatured ?? false,
       isNew: r.isNew ?? false,
       sku: r.sku ?? undefined,
@@ -436,7 +442,7 @@ export class DrizzleProductRepository implements IProductRepository {
       categorySlug: r.categorySlug ?? undefined,
       sizes: (r.sizes as string[]) || ["S", "M", "L", "XL", "2XL"],
       colors: (r.colors as { name: string; hex: string }[]) || [],
-      images: (r.images as string[]) || [],
+      images: mapImages(r.images),
       isFeatured: r.isFeatured ?? false,
       isNew: r.isNew ?? false,
       sku: r.sku ?? undefined,
@@ -681,7 +687,7 @@ export class DrizzleProductRepository implements IProductRepository {
         categoryId: updated.categoryId ?? 1,
         sizes: (updated.sizes as string[]) || [],
         colors: (updated.colors as { name: string; hex: string }[]) || [],
-        images: (updated.images as string[]) || [],
+        images: mapImages(updated.images),
         isFeatured: updated.isFeatured ?? false,
         isNew: updated.isNew ?? false,
         sku: updated.sku ?? undefined,
