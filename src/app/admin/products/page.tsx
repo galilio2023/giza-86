@@ -10,6 +10,7 @@ export const metadata = {
 interface AdminProductsPageProps {
   searchParams: Promise<{
     category?: string;
+    stock?: string;
     q?: string;
     page?: string;
   }>;
@@ -23,6 +24,10 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   const limit = 20;
   const offset = (page - 1) * limit;
   const categoryId = sp?.category && sp.category !== "all" ? Number(sp.category) : undefined;
+  const stockStatus =
+    sp?.stock === "out_of_stock" || sp?.stock === "low_stock" || sp?.stock === "in_stock"
+      ? sp.stock
+      : undefined;
   const search = sp?.q?.trim() || undefined;
 
   const [productsResult, categories] = await Promise.all([
@@ -30,6 +35,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
       limit,
       offset,
       categoryId,
+      stockStatus,
       search,
     }),
     getCategories(),

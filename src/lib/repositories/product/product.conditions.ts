@@ -50,7 +50,11 @@ export function buildProductConditions(options?: GetProductsOptions) {
     conditions.push(and(isNotNull(products.salePrice), lt(products.salePrice, products.price)));
   }
 
-  if (options?.inStock) {
+  if (options?.stockStatus === "out_of_stock") {
+    conditions.push(lte(products.stock, 0));
+  } else if (options?.stockStatus === "low_stock") {
+    conditions.push(and(gt(products.stock, 0), lte(products.stock, 5)));
+  } else if (options?.stockStatus === "in_stock" || options?.inStock) {
     conditions.push(gt(products.stock, 0));
   }
 

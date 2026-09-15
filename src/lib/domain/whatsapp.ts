@@ -11,6 +11,15 @@ export interface ProductWhatsAppOrderParams {
   origin?: string;
 }
 
+export interface ProductWhatsAppRestockParams {
+  whatsappPhone?: string | null;
+  productName: string;
+  productSlugOrId: string | number;
+  size?: string;
+  colorName?: string;
+  origin?: string;
+}
+
 /**
  * Constructs a standardized, pre-filled WhatsApp click-to-chat URL for ordering a product.
  */
@@ -31,6 +40,35 @@ export function buildProductWhatsAppOrderUrl(params: ProductWhatsAppOrderParams)
   ].join("\n");
 
   return `https://wa.me/${targetNumber}?text=${encodeURIComponent(message)}`;
+}
+
+/**
+ * Constructs a pre-filled WhatsApp click-to-chat URL for customer inquiring about a restock / reserving out-of-stock item.
+ */
+export function buildProductWhatsAppRestockUrl(params: ProductWhatsAppRestockParams): string {
+  const targetNumber = formatWhatsAppNumber(params.whatsappPhone);
+  const baseUrl = params.origin ? params.origin.replace(/\/$/, "") : "";
+  const productUrl = baseUrl ? `${baseUrl}/products/${params.productSlugOrId}` : `/products/${params.productSlugOrId}`;
+
+  const lines = [
+    "مرحباً فريق خدمة العملاء،",
+    "أود الاستفسار عن موعد توفر الشحنة القادمة وحجز مقاسي لهذا المنتج:",
+    "",
+    `- المنتج: ${params.productName}`,
+  ];
+
+  if (params.size) {
+    lines.push(`- المقاس المطلوب: ${params.size}`);
+  }
+  if (params.colorName) {
+    lines.push(`- اللون المطلوب: ${params.colorName}`);
+  }
+
+  lines.push(`رابط المنتج: ${productUrl}`);
+  lines.push("");
+  lines.push("يرجى إبلاغي فور توفر الدفعة الجديدة بالمخزن. شكراً لكم!");
+
+  return `https://wa.me/${targetNumber}?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
 /**

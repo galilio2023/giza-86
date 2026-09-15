@@ -80,18 +80,25 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             alt={product.name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            className={`object-cover transition-transform duration-700 ease-out group-hover:scale-105 ${
+              isOutOfStock ? "opacity-90 grayscale-[20%] group-hover:grayscale-0" : ""
+            }`}
           />
         </Link>
 
         {/* Badges Overlay */}
         <div className="absolute top-2 right-2 sm:top-3 sm:right-3 flex flex-col gap-1 sm:gap-1.5 z-10">
-          {hasDiscount && (
+          {isOutOfStock && (
+            <span className="bg-neutral-950/90 backdrop-blur-md text-amber-300 border border-amber-400/40 text-[10px] sm:text-xs font-black px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-md flex items-center gap-1">
+              <span>نفد بالكامل ✨</span>
+            </span>
+          )}
+          {hasDiscount && !isOutOfStock && (
             <span className="bg-rose-600 text-white text-[10px] sm:text-xs font-black px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-xs">
               خصم {discountPercentage}%
             </span>
           )}
-          {product.isNew && (
+          {product.isNew && !isOutOfStock && (
             <span className="bg-neutral-950 text-white text-[10px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-xs">
               وصل حديثاً ✨
             </span>
@@ -244,29 +251,40 @@ export function ProductCard({ product, onQuickView }: ProductCardProps) {
             />
           </div>
 
-          <Button
-            variant={isAdded ? "secondary" : "amber"}
-            size="sm"
-            onClick={handleQuickAdd}
-            disabled={isOutOfStock}
-            className={`text-xs py-1.5 px-2 sm:px-3 min-h-[32px] sm:min-h-[38px] flex-shrink-0 transition-all duration-300 ${
-              isAdded ? "bg-emerald-100 text-emerald-950 border-emerald-300 scale-102" : ""
-            } ${isOutOfStock ? "opacity-50 cursor-not-allowed" : ""}`}
-            title={isOutOfStock ? "نفد من المخزون" : "أضف للسلة سريعاً"}
-            aria-label={isOutOfStock ? `${product.name} غير متوفر` : `إضافة ${product.name} إلى السلة`}
-          >
-            {isAdded ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-700" />
-                <span className="hidden sm:inline font-black text-emerald-800">تمت الإضافة</span>
-              </>
-            ) : (
-              <>
-                <ShoppingBag className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{isOutOfStock ? "نفد المخزون" : "أضف للسلة"}</span>
-              </>
-            )}
-          </Button>
+          {isOutOfStock ? (
+            <Link
+              href={`/products/${product.slug || product.id}`}
+              className="text-xs py-1.5 px-2 sm:px-3 min-h-[32px] sm:min-h-[38px] flex-shrink-0 transition-all duration-300 rounded-xl font-bold border border-neutral-300 bg-white hover:bg-neutral-950 hover:text-white hover:border-neutral-950 text-neutral-700 flex items-center gap-1.5 shadow-2xs cursor-pointer group/notify"
+              title="طلب إشعار عند التوفر عبر واتساب"
+              aria-label={`طلب إشعار عند توفر ${product.name}`}
+            >
+              <Eye className="w-3.5 h-3.5 text-neutral-500 group-hover/notify:text-white transition-colors" />
+              <span className="hidden sm:inline">طلب إشعار</span>
+            </Link>
+          ) : (
+            <Button
+              variant={isAdded ? "secondary" : "amber"}
+              size="sm"
+              onClick={handleQuickAdd}
+              className={`text-xs py-1.5 px-2 sm:px-3 min-h-[32px] sm:min-h-[38px] flex-shrink-0 transition-all duration-300 ${
+                isAdded ? "bg-emerald-100 text-emerald-950 border-emerald-300 scale-102" : ""
+              }`}
+              title="أضف للسلة سريعاً"
+              aria-label={`إضافة ${product.name} إلى السلة`}
+            >
+              {isAdded ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-700" />
+                  <span className="hidden sm:inline font-black text-emerald-800">تمت الإضافة</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">أضف للسلة</span>
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </div>

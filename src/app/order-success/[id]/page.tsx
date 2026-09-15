@@ -113,6 +113,19 @@ export default async function OrderSuccessPage({
               الحالة: {statusConfig.label}
             </div>
           </div>
+
+          {/* Quick 1-Click WhatsApp Instant Confirmation */}
+          <div className="pt-3 flex justify-center">
+            <a
+              href={whatsappInquiryUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-black shadow-lg shadow-emerald-600/20 transition-all duration-300 active:scale-98"
+            >
+              <WhatsAppIcon className="w-5 h-5 flex-shrink-0" />
+              <span>تأكيد موعد الشحن سريعاً عبر واتساب 💬</span>
+            </a>
+          </div>
         </div>
 
         {/* Order Details & Shipping Info */}

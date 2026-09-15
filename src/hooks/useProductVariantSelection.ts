@@ -5,7 +5,7 @@ import { ProductItem, ProductColor, ProductVariantItem } from "@/types";
 import { useCartStore } from "@/lib/store";
 import { findMatchingVariant, getEffectivePrice, getEffectiveStock } from "@/lib/domain/variants";
 import { getDiscountPercentage } from "@/lib/domain/pricing";
-import { buildProductWhatsAppOrderUrl } from "@/lib/domain/whatsapp";
+import { buildProductWhatsAppOrderUrl, buildProductWhatsAppRestockUrl } from "@/lib/domain/whatsapp";
 import { toast } from "sonner";
 
 export interface UseProductVariantSelectionOptions {
@@ -38,6 +38,7 @@ export interface UseProductVariantSelectionReturn {
   isAdded: boolean;
   addToCart: (overrideQty?: number) => boolean;
   getWhatsAppUrl: (whatsappPhone?: string, origin?: string) => string;
+  getWhatsAppRestockUrl: (whatsappPhone?: string, origin?: string) => string;
 }
 
 const DEFAULT_COLOR: ProductColor = { name: "أسود", hex: "#000000" };
@@ -162,9 +163,29 @@ export function useProductVariantSelection({
     ]
   );
 
+  const getWhatsAppRestockUrl = useCallback(
+    (whatsappPhone?: string, origin?: string): string => {
+      if (!product) return "";
+      const baseOrigin =
+        origin || (typeof window !== "undefined" ? window.location.origin : "");
+      return buildProductWhatsAppRestockUrl({
+        whatsappPhone,
+        productName: product.name,
+        productSlugOrId: product.slug || product.id,
+        size: selectedSize,
+        colorName: selectedColor.name,
+        origin: baseOrigin,
+      });
+    },
+    [product, selectedSize, selectedColor.name]
+  );
+
   const getWhatsAppUrl = useCallback(
     (whatsappPhone?: string, origin?: string): string => {
       if (!product) return "";
+      if (isOutOfStock) {
+        return getWhatsAppRestockUrl(whatsappPhone, origin);
+      }
       const baseOrigin =
         origin || (typeof window !== "undefined" ? window.location.origin : "");
       return buildProductWhatsAppOrderUrl({
@@ -178,7 +199,7 @@ export function useProductVariantSelection({
         origin: baseOrigin,
       });
     },
-    [product, selectedSize, selectedColor.name, quantity, currentPrice]
+    [product, isOutOfStock, getWhatsAppRestockUrl, selectedSize, selectedColor.name, quantity, currentPrice]
   );
 
   return {
@@ -202,5 +223,6 @@ export function useProductVariantSelection({
     isAdded,
     addToCart,
     getWhatsAppUrl,
+    getWhatsAppRestockUrl,
   };
 }

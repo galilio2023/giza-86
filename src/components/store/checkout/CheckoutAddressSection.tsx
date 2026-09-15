@@ -62,12 +62,17 @@ export function CheckoutAddressSection({
     <>
       {/* 1. Customer Information */}
       <Card variant="modern" padding="lg" className="space-y-6">
-        <h3 className="text-base sm:text-lg font-black text-neutral-900 flex items-center gap-2 border-b border-neutral-100 pb-3">
-          <span className="w-6 h-6 rounded-full bg-amber-500 text-neutral-950 text-xs flex items-center justify-center font-bold">
-            1
+        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-neutral-100 pb-3">
+          <h3 className="text-base sm:text-lg font-black text-neutral-900 flex items-center gap-2">
+            <span className="w-6 h-6 rounded-full bg-amber-500 text-neutral-950 text-xs flex items-center justify-center font-bold">
+              1
+            </span>
+            <span>بيانات المستلم والتواصل</span>
+          </h3>
+          <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full">
+            حق المعاينة والتأكد من المقاس قبل الدفع ✓
           </span>
-          <span>بيانات المستلم والتواصل</span>
-        </h3>
+        </div>
 
         <div className="space-y-4 text-sm">
           <div>
@@ -129,12 +134,16 @@ export function CheckoutAddressSection({
                 <span className="text-xs text-rose-600 font-medium block mt-1">
                   يجب أن يبدأ بـ 010 أو 011 أو 012 أو 015 ويتكون من 11 رقماً
                 </span>
-              ) : null}
+              ) : (
+                <span className="text-[11px] text-neutral-500 block mt-1">
+                  💬 سيتواصل معك المندوب هاتفياً أو واتساب لتنسيق ميعاد ومكان التسليم
+                </span>
+              )}
             </div>
 
             <div>
               <label className="block font-bold text-neutral-800 mb-1.5">
-                رقم هاتف إضافي / واتساب (اختياري)
+                رقم هاتف بديل للمندوب (اختياري)
               </label>
               <input
                 type="tel"
@@ -144,6 +153,9 @@ export function CheckoutAddressSection({
                 placeholder="01298765432"
                 className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-base lg:text-sm text-left focus:ring-2 focus:ring-amber-500 focus:outline-none"
               />
+              <span className="text-[11px] text-neutral-500 block mt-1">
+                📞 للمندوب في حال كان هاتفك الأساسي مغلقاً أو خارج التغطية
+              </span>
             </div>
           </div>
         </div>

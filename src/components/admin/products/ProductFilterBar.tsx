@@ -9,6 +9,8 @@ interface ProductFilterBarProps {
   onSearchChange: (value: string) => void;
   categoryFilter: string;
   onCategoryChange: (value: string) => void;
+  stockFilter: string;
+  onStockChange: (value: string) => void;
   categories: CategoryItem[];
   onAddNew: () => void;
 }
@@ -18,9 +20,16 @@ export function ProductFilterBar({
   onSearchChange,
   categoryFilter,
   onCategoryChange,
+  stockFilter,
+  onStockChange,
   categories,
   onAddNew,
 }: ProductFilterBarProps) {
+  // Separate top-level parent departments and sub-categories
+  const parentCats = categories.filter((c) => !c.parentId);
+  const getSubcategories = (parentId: number) =>
+    categories.filter((c) => c.parentId === parentId);
+
   return (
     <div className="space-y-4">
       {/* Top Header */}
@@ -30,7 +39,7 @@ export function ProductFilterBar({
             إدارة المنتجات والمخزون
           </h1>
           <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-            إضافة وتعديل الموديلات، معرض الصور، أسعار الجنيه المصري، المقاسات والألوان
+            متابعة المخزون اللحظي، إضافة وتعديل الموديلات، الألوان، المقاسات، والأسعار
           </p>
         </div>
 
@@ -46,27 +55,70 @@ export function ProductFilterBar({
       </div>
 
       {/* Filter Row */}
-      <Card variant="modern" padding="md" className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <AdminSearchInput
-          value={searchQuery}
-          onChange={onSearchChange}
-          placeholder="ابحث باسم المنتج أو كود الـ SKU..."
-        />
+      <Card variant="modern" padding="md" className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        <div className="flex-1 max-w-md">
+          <AdminSearchInput
+            value={searchQuery}
+            onChange={onSearchChange}
+            placeholder="ابحث باسم المنتج أو كود الـ SKU..."
+          />
+        </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs text-neutral-500 whitespace-nowrap">القسم:</span>
-          <select
-            value={categoryFilter}
-            onChange={(e) => onCategoryChange(e.target.value)}
-            className="w-full sm:w-auto bg-neutral-50 border border-neutral-200 text-xs font-bold px-3 py-2 rounded-xl focus:outline-none cursor-pointer"
-          >
-            <option value="all">كافة الأقسام</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Stock Filter Dropdown */}
+          <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+            <span className="text-xs text-neutral-500 font-bold whitespace-nowrap">المخزون:</span>
+            <select
+              value={stockFilter}
+              onChange={(e) => onStockChange(e.target.value)}
+              className="w-full sm:w-auto bg-neutral-50 hover:bg-neutral-100/80 border border-neutral-200 text-xs font-bold px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer transition shadow-2xs"
+            >
+              <option value="all">كافة حالات المخزون</option>
+              <option value="out_of_stock">🔴 نفد بالكامل (0 قطع)</option>
+              <option value="low_stock">🟡 مخزون منخفض (1 - 5 قطع)</option>
+              <option value="in_stock">🟢 متوفر بالمخزن</option>
+            </select>
+          </div>
+
+          {/* Category Filter Dropdown with Structured optgroups */}
+          <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+            <span className="text-xs text-neutral-500 font-bold whitespace-nowrap">القسم:</span>
+            <select
+              value={categoryFilter}
+              onChange={(e) => onCategoryChange(e.target.value)}
+              className="w-full sm:w-auto bg-neutral-50 hover:bg-neutral-100/80 border border-neutral-200 text-xs font-bold px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer transition shadow-2xs"
+            >
+              <option value="all">كافة الأقسام</option>
+              {parentCats.map((parent) => {
+                const subs = getSubcategories(parent.id);
+                if (subs.length > 0) {
+                  return (
+                    <optgroup key={parent.id} label={`📁 ${parent.name}`}>
+                      <option value={parent.id}>الكل في {parent.name}</option>
+                      {subs.map((sub) => (
+                        <option key={sub.id} value={sub.id}>
+                          ↳ {sub.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  );
+                }
+                return (
+                  <option key={parent.id} value={parent.id}>
+                    {parent.name}
+                  </option>
+                );
+              })}
+              {/* Standalone subcategories without mapped parent */}
+              {categories
+                .filter((c) => c.parentId && !parentCats.some((p) => p.id === c.parentId))
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    ↳ {c.name}
+                  </option>
+                ))}
+            </select>
+          </div>
         </div>
       </Card>
     </div>
