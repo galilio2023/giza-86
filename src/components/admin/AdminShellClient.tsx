@@ -23,6 +23,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { toast } from "sonner";
 import { BrandLogo } from "@/components/store/BrandLogo";
 
+/** Renders responsive admin navigation shell with session checks, database status indicator, and mobile menu. */
 export function AdminShellClient({
   children,
   isDbConfigured = false,

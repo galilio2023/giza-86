@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
+import { useTransition, useCallback } from "react";
 import { useAdminTableParams } from "@/hooks/useAdminTableParams";
 import { useAdminCrud } from "@/hooks/useAdminCrud";
 import { ProductItem, CategoryItem } from "@/types";
@@ -18,6 +20,7 @@ interface AdminProductsClientProps {
   pageSize?: number;
 }
 
+/** Coordinates URL-backed product filters, pagination, and the admin CRUD interface. */
 export function AdminProductsClient({
   initialProducts,
   categories,
@@ -25,6 +28,10 @@ export function AdminProductsClient({
   currentPage = 1,
   pageSize = 20,
 }: AdminProductsClientProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [, startTransition] = useTransition();
+
   const {
     items: products,
     modalOpen,
@@ -56,6 +63,21 @@ export function AdminProductsClient({
     filterParamName: "category",
   });
 
+  const stockFilter = searchParams.get("stock") || "all";
+
+  const handleStockChange = useCallback((newVal: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (newVal && newVal !== "all") {
+      params.set("stock", newVal);
+    } else {
+      params.delete("stock");
+    }
+    params.set("page", "1");
+    startTransition(() => {
+      router.push(`/admin/products?${params.toString()}`);
+    });
+  }, [searchParams, router]);
+
   const total = totalCount ?? products.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
@@ -66,6 +88,8 @@ export function AdminProductsClient({
         onSearchChange={setSearchQuery}
         categoryFilter={categoryFilter}
         onCategoryChange={handleCategoryChange}
+        stockFilter={stockFilter}
+        onStockChange={handleStockChange}
         categories={categories}
         onAddNew={openCreateModal}
       />

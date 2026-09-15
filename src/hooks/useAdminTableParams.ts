@@ -10,6 +10,7 @@ export interface UseAdminTableParamsOptions {
   debounceMs?: number;
 }
 
+/** Manages debounced search, filtering, and pagination synchronized with Next.js URL query parameters. */
 export function useAdminTableParams({
   baseUrl,
   defaultFilter = "all",

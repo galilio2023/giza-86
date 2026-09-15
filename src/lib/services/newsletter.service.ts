@@ -5,6 +5,7 @@ import { desc, eq } from "drizzle-orm";
 import { memoryNewsletter } from "@/lib/repositories/memory-store";
 import { STORE_DEFAULTS } from "@/lib/egypt-constants";
 
+/** Subscribes an email or phone contact to the store VIP newsletter and deals list. */
 export async function subscribeNewsletter(
   contact: string,
   type: "email" | "phone"
@@ -72,6 +73,7 @@ export async function subscribeNewsletter(
   }
 }
 
+/** Retrieves all registered newsletter subscriber contacts for admin marketing exports. */
 export async function getNewsletterSubscribers(): Promise<NewsletterSubscriberItem[]> {
   if (!isDatabaseConfigured || !db) {
     return memoryNewsletter;

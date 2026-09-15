@@ -15,6 +15,7 @@ interface AdminCouponsClientProps {
   initialCoupons: CouponItem[];
 }
 
+/** Renders promotional coupon management interface with status toggling and creation modals. */
 export function AdminCouponsClient({ initialCoupons }: AdminCouponsClientProps) {
   const [loading, setLoading] = useState(false);
 

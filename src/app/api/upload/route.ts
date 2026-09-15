@@ -5,6 +5,7 @@ import { uploadToCloudinary, isCloudinaryConfigured } from "@/lib/cloudinary";
 import { requireAdminApi } from "@/lib/auth-guard";
 import { handleApiError } from "@/lib/api-handler";
 
+/** Handles admin image uploads with Cloudinary CDN integration and local dev fallback. */
 export async function POST(req: NextRequest) {
   const authError = await requireAdminApi(req);
   if (authError) return authError;

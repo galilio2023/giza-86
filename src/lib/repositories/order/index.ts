@@ -10,6 +10,7 @@ export * from "./drizzle-order.repository";
 
 let orderRepositoryInstance: IOrderRepository | null = null;
 
+/** Returns the singleton order repository instance (Drizzle PostgreSQL or in-memory fallback). */
 export function getOrderRepository(): IOrderRepository {
   if (!orderRepositoryInstance) {
     orderRepositoryInstance =

@@ -16,6 +16,7 @@ interface CheckoutClientProps {
   settings?: Partial<StoreSettingsItem>;
 }
 
+/** Coordinates the checkout experience including shipping address, payment selection, and order submission. */
 export function CheckoutClient({ settings }: CheckoutClientProps = {}) {
   const router = useRouter();
   const mounted = useMounted();

@@ -13,6 +13,7 @@ interface NavbarProps {
   categories?: CategoryItem[];
 }
 
+/** Renders the main storefront header with top announcement strip, brand logo, navigation links, and action buttons. */
 export function Navbar({ settings, categories }: NavbarProps = {}) {
   const isBannerActive =
     settings?.isBannerActive !== undefined

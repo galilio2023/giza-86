@@ -15,6 +15,7 @@ interface ProductVariantSelectorProps {
   isOutOfStock: boolean;
 }
 
+/** Renders color, size, and quantity controls while enforcing variant availability. */
 export function ProductVariantSelector({
   product,
   selectedColor,
@@ -131,6 +132,16 @@ export function ProductVariantSelector({
                     </button>
                   );
                 })}
+              </div>
+            )}
+
+            {/* Out of Stock Contextual Notice */}
+            {!isSizeAvailableInColor(selectedSize) && (
+              <div className="text-[11px] font-semibold text-amber-900 bg-amber-50/90 border border-amber-200/80 px-3 py-2 rounded-xl flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse flex-shrink-0" />
+                <span>
+                  مقاس ({selectedSize}) بلون ({selectedColor.name}) نفد حالياً — يمكنك حجز مقاسك عبر واتساب للدفعة القادمة.
+                </span>
               </div>
             )}
           </div>

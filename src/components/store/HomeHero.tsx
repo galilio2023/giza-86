@@ -13,6 +13,7 @@ interface HomeHeroProps {
   heroProducts?: ProductItem[];
 }
 
+/** Renders the homepage hero banner with brand studio visuals, CMS copy, and shopping call-to-action. */
 export function HomeHero({
   storeName,
   settings,

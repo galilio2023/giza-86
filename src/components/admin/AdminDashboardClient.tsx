@@ -28,6 +28,7 @@ interface AdminDashboardClientProps {
   lowStockItems?: ProductItem[];
 }
 
+/** Renders the admin overview dashboard with financial KPI cards, inventory warnings, and regional breakdown. */
 export function AdminDashboardClient({
   initialOrders,
   initialProducts,

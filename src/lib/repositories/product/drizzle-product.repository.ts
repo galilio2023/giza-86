@@ -13,6 +13,7 @@ function mapImages(images: unknown): string[] {
 }
 
 export class DrizzleProductRepository implements IProductRepository {
+  /** Queries PostgreSQL products with category joins, variant consolidation, and stock filters. */
   async findMany(options?: GetProductsOptions): Promise<ProductItem[]> {
     const conditions = buildProductConditions(options);
 

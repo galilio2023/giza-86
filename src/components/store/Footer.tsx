@@ -13,6 +13,7 @@ interface FooterProps {
   categories?: CategoryItem[];
 }
 
+/** Renders the comprehensive store footer with trust guarantees, newsletter subscription, contact links, and social channels. */
 export function Footer({ settings, categories }: FooterProps = {}) {
   return (
     <footer className="store-footer pt-16 pb-8">

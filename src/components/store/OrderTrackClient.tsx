@@ -45,6 +45,7 @@ interface OrderTrackClientProps {
   settings?: Partial<StoreSettingsItem> | null;
 }
 
+/** Renders the order tracking lookup interface with Egyptian phone validation and live timeline details. */
 export function OrderTrackClient({ settings }: OrderTrackClientProps = {}) {
   const [orderNumber, setOrderNumber] = useState("");
   const [phone, setPhone] = useState("");

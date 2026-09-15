@@ -15,6 +15,7 @@ const FALLBACK_STATUS = {
   bg: "bg-neutral-100 border-neutral-200",
 };
 
+/** Displays colored status pill with indicator dot for order fulfillment milestones. */
 export function OrderStatusBadge({
   status,
   className,
@@ -72,6 +73,7 @@ const PAYMENT_STATUS_MAP: Record<string, { label: string; className: string }> =
   },
 };
 
+/** Displays payment status badge for pending, paid, and failed order settlements. */
 export function PaymentStatusBadge({
   status,
   className,

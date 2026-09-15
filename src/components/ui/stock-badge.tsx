@@ -5,6 +5,7 @@ export interface StockBadgeProps {
   showInStock?: boolean;
 }
 
+/** Displays the sold-out, low-stock, or optional in-stock status for a quantity. */
 export function StockBadge({
   stock,
   lowStockThreshold = 5,
@@ -14,9 +15,10 @@ export function StockBadge({
   if (stock <= 0) {
     return (
       <span
-        className={`inline-flex items-center text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 ${className}`}
+        className={`inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-bold px-2.5 py-0.5 rounded-full bg-neutral-950 text-amber-300 border border-amber-400/30 shadow-2xs ${className}`}
       >
-        نفد المخزون
+        <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+        <span>نفد بالكامل ✨</span>
       </span>
     );
   }

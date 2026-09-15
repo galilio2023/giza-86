@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getDashboardStats } from "@/lib/data-service";
 import { requireAdminApi } from "@/lib/auth-guard";
 
+/** Handles GET requests to retrieve admin sales, order, and governorate analytics. */
 export async function GET(request: Request) {
   const authError = await requireAdminApi(request);
   if (authError) return authError;

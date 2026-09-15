@@ -5,6 +5,7 @@ import { VALID_STATUS_TRANSITIONS, validateStatusTransition } from "@/lib/domain
 export { VALID_STATUS_TRANSITIONS, validateStatusTransition };
 export type { UpdateOrderStatusInput };
 
+/** Updates the fulfillment, payment, or courier tracking status for an order. */
 export async function updateOrderStatus(
   idOrOrderNumber: number | string,
   orderStatus?: OrderItem["orderStatus"],

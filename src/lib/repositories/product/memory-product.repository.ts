@@ -4,6 +4,7 @@ import { INITIAL_PRODUCTS, buildProductVariants } from "@/db/seed-data";
 import { IProductRepository, GetProductsOptions, ProductsPageResult } from "./product.interface";
 
 export class MemoryProductRepository implements IProductRepository {
+  /** Returns in-memory products matching the supplied catalog and stock filters. */
   async findMany(options?: GetProductsOptions): Promise<ProductItem[]> {
     let list = [...memoryProducts];
     if (options?.categoryId !== undefined) {
@@ -36,7 +37,11 @@ export class MemoryProductRepository implements IProductRepository {
     if (options?.onSale) {
       list = list.filter((p) => Boolean(p.salePrice && p.salePrice < p.price));
     }
-    if (options?.inStock) {
+    if (options?.stockStatus === "out_of_stock") {
+      list = list.filter((p) => p.stock <= 0);
+    } else if (options?.stockStatus === "low_stock") {
+      list = list.filter((p) => p.stock > 0 && p.stock <= 5);
+    } else if (options?.stockStatus === "in_stock" || options?.inStock) {
       list = list.filter((p) => p.stock > 0);
     }
     if (options?.size && options.size !== "all") {

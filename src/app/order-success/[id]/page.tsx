@@ -39,6 +39,7 @@ export async function generateMetadata({
   };
 }
 
+/** Renders an order confirmation with shipping details and customer follow-up actions. */
 export default async function OrderSuccessPage({
   params,
 }: {
@@ -112,6 +113,19 @@ export default async function OrderSuccessPage({
             <div className={`px-4 py-2 rounded-xl text-xs font-bold border ${statusConfig.bg} ${statusConfig.color}`}>
               الحالة: {statusConfig.label}
             </div>
+          </div>
+
+          {/* Quick 1-Click WhatsApp Instant Confirmation */}
+          <div className="pt-3 flex justify-center">
+            <a
+              href={whatsappInquiryUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-2xl text-xs sm:text-sm font-black shadow-lg shadow-emerald-600/20 transition-all duration-300 active:scale-98"
+            >
+              <WhatsAppIcon className="w-5 h-5 flex-shrink-0" />
+              <span>تأكيد موعد الشحن سريعاً عبر واتساب 💬</span>
+            </a>
           </div>
         </div>
 

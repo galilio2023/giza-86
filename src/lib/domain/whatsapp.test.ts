@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   buildProductWhatsAppOrderUrl,
+  buildProductWhatsAppRestockUrl,
   buildOrderInquiryWhatsAppUrl,
   buildCustomerContactWhatsAppUrl,
 } from "./whatsapp";
@@ -58,5 +59,24 @@ describe("Domain WhatsApp URL Builder", () => {
     const decoded = decodeURIComponent(url);
     assert.ok(decoded.includes("أحمد محمود"));
     assert.ok(decoded.includes("ORD-999"));
+  });
+
+  it("should generate a valid restock inquiry WhatsApp URL with size and color", () => {
+    const url = buildProductWhatsAppRestockUrl({
+      whatsappPhone: "01012345678",
+      productName: "سويت شيرت أوفر سايز",
+      productSlugOrId: "sweatshirt-oversized",
+      size: "XL",
+      colorName: "كحلي",
+      origin: "https://giza86.com",
+    });
+
+    assert.ok(url.startsWith("https://wa.me/201012345678?text="));
+    const decoded = decodeURIComponent(url);
+    assert.ok(decoded.includes("سويت شيرت أوفر سايز"));
+    assert.ok(decoded.includes("المقاس المطلوب: XL"));
+    assert.ok(decoded.includes("اللون المطلوب: كحلي"));
+    assert.ok(decoded.includes("https://giza86.com/products/sweatshirt-oversized"));
+    assert.ok(decoded.includes("حجز مقاسي"));
   });
 });

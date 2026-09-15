@@ -98,6 +98,7 @@ interface SettingsFormData {
   seoKeywords: string;
 }
 
+/** Coordinates store settings management across branding, shipping, payments, emergency switches, and SEO. */
 export function AdminSettingsClient({ initialSettings }: AdminSettingsClientProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<

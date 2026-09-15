@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { validateCoupon } from "@/lib/data-service";
 import { rateLimitGuard } from "@/lib/rate-limiter";
 
+/** Validates promotional coupon codes against subtotal with rate limiting. */
 export async function POST(request: Request) {
   const rateLimitError = await rateLimitGuard(request, "coupon-validate", { maxRequests: 15, windowSeconds: 60 });
   if (rateLimitError) return rateLimitError;

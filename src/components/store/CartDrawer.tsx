@@ -13,6 +13,7 @@ interface CartDrawerProps {
   freeShippingThreshold?: number;
 }
 
+/** Renders slide-over shopping cart drawer with free shipping progress and checkout shortcut. */
 export function CartDrawer({ freeShippingThreshold }: CartDrawerProps = {}) {
   const mounted = useMounted();
   const isOpen = useCartStore((state) => state.isOpen);

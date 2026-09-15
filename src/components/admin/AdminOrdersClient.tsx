@@ -27,6 +27,7 @@ interface AdminOrdersClientProps {
   storeName?: string;
 }
 
+/** Coordinates admin order management with status tabs, customer details modal, and courier tracking updates. */
 export function AdminOrdersClient({
   initialOrders,
   totalCount,

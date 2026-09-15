@@ -4,6 +4,7 @@ import { normalizeEgyptianPhone } from "@/lib/egypt-constants";
 import { sanitizeSearchQuery } from "@/lib/utils";
 import { GetOrdersOptions } from "./order.interface";
 
+/** Builds database SQL query predicates for filtering orders by status, payment, governorate, and customer search. */
 export function buildOrderConditions(options?: GetOrdersOptions) {
   const conditions = [];
 

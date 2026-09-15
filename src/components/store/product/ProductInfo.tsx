@@ -19,6 +19,7 @@ interface ProductInfoProps {
   selectedColor?: ProductColor;
 }
 
+/** Displays product identity, pricing, rating, and stock for the selected variant. */
 export function ProductInfo({
   product,
   brandName,
@@ -135,11 +136,18 @@ export function ProductInfo({
               )}
             </div>
 
-            {/* Fast Dispatch Banner */}
-            <div className="pt-2 border-t border-neutral-200/60 flex items-center gap-2 text-[11px] font-bold text-emerald-800">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-              <span>جاهز للشحن الفوري: توصيل خلال 24-48 ساعة مع المعاينة قبل الدفع</span>
-            </div>
+            {/* Fast Dispatch / Restock Status Banner */}
+            {activeStock <= 0 ? (
+              <div className="pt-2 border-t border-neutral-200/60 flex items-center gap-2 text-[11px] font-bold text-amber-900 bg-amber-50/70 px-2.5 py-1.5 rounded-lg border border-amber-200/60">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse flex-shrink-0" />
+                <span>الدفعة الحالية نفدت بالكامل ✨ الشحنة الجديدة قيد التجهيز بالمصنع — احجز مقاسك المفضل عبر واتساب</span>
+              </div>
+            ) : (
+              <div className="pt-2 border-t border-neutral-200/60 flex items-center gap-2 text-[11px] font-bold text-emerald-800">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                <span>جاهز للشحن الفوري: توصيل خلال 24-48 ساعة مع المعاينة قبل الدفع</span>
+              </div>
+            )}
           </div>
         );
       })()}

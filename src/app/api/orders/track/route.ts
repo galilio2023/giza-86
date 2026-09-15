@@ -13,6 +13,7 @@ const trackOrderSchema = z.object({
     .refine((val) => isValidEgyptianPhone(val), "يرجى إدخال رقم هاتف مصري صحيح (11 رقماً يبدأ بـ 010 أو 011 أو 012 أو 015)"),
 });
 
+/** Public customer endpoint to look up order status and shipping history by order reference and phone number. */
 export async function POST(request: Request) {
   const rateLimitError = await rateLimitGuard(request, "track-order", { maxRequests: 20, windowSeconds: 60 });
   if (rateLimitError) return rateLimitError;

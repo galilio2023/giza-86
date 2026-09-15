@@ -20,6 +20,7 @@ interface QuickViewModalProps {
   whatsappNumber?: string;
 }
 
+/** Renders interactive quick-view modal dialog for inspecting variants and adding to cart without navigating away. */
 export function QuickViewModal({ product, onClose, whatsappNumber }: QuickViewModalProps) {
   const [selectedImage, setSelectedImage] = useState<number>(0);
 

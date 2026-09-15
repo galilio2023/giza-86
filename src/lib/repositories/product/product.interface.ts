@@ -6,6 +6,7 @@ export interface GetProductsOptions {
   featured?: boolean;
   onSale?: boolean;
   inStock?: boolean;
+  stockStatus?: "all" | "out_of_stock" | "low_stock" | "in_stock";
   size?: string;
   minPrice?: number;
   maxPrice?: number;

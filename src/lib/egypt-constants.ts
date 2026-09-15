@@ -84,6 +84,7 @@ export const PAYMENT_METHOD_SHORT_NAMES: Record<string, string> = {
   card: "بطاقة بنكية",
 };
 
+/** Returns localized Arabic name or abbreviated label for a payment method identifier. */
 export function getPaymentMethodName(method: string, short = false): string {
   if (short) {
     return PAYMENT_METHOD_SHORT_NAMES[method] || method;
@@ -184,14 +185,14 @@ export function normalizeEgyptianPhone(phone: string): string {
   return cleaned;
 }
 
-// Egyptian Phone Validation: 010, 011, 012, 015 followed by 8 digits (total 11 digits)
+/** Validates whether a phone number matches standard Egyptian mobile prefixes (010, 011, 012, 015) and contains exactly 11 digits. */
 export function isValidEgyptianPhone(phone: string): boolean {
   const normalized = normalizeEgyptianPhone(phone);
   const egPhoneRegex = /^(010|011|012|015)\d{8}$/;
   return egPhoneRegex.test(normalized);
 }
 
-// Normalize any Egyptian phone number for WhatsApp links (wa.me/20...)
+/** Formats an Egyptian phone number into international format for WhatsApp wa.me links (e.g. 2010XXXXXXXX). */
 export function formatWhatsAppNumber(phone?: string | null): string {
   const rawNumber = phone || STORE_DEFAULTS.whatsapp;
   const cleaned = rawNumber.replace(/\D/g, "");
