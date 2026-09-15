@@ -22,6 +22,7 @@ export interface UseCheckoutFormOptions {
   onOrderSuccess: (order: OrderItem) => void;
 }
 
+/** Manages checkout customer inputs, shipping fee resolution, validation, coupon application, and order submission. */
 export function useCheckoutForm({
   items,
   subtotal,

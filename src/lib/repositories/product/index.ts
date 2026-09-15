@@ -10,6 +10,7 @@ export * from "./drizzle-product.repository";
 
 let repositoryInstance: IProductRepository | null = null;
 
+/** Returns the singleton product repository instance (Drizzle PostgreSQL or in-memory fallback). */
 export function getProductRepository(): IProductRepository {
   if (!repositoryInstance) {
     repositoryInstance =

@@ -13,6 +13,7 @@ export interface UsePaymentTransferReturn {
   handleCopy: (text: string, type: "instapay" | "vodafone") => void;
 }
 
+/** Manages transfer references, wallet sender numbers, and clipboard copy states for InstaPay and Vodafone Cash. */
 export function usePaymentTransfer(): UsePaymentTransferReturn {
   const [transferRef, setTransferRef] = useState("");
   const [vodafoneSenderPhone, setVodafoneSenderPhone] = useState("");

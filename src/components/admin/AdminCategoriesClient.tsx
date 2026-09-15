@@ -15,6 +15,7 @@ interface AdminCategoriesClientProps {
   initialCategories: CategoryItem[];
 }
 
+/** Renders category management interface with hierarchical nesting and CRUD modal workflows. */
 export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClientProps) {
   const [loading, setLoading] = useState(false);
   const [moving, setMoving] = useState(false);

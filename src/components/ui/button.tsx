@@ -9,6 +9,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   isLoading?: boolean;
 }
 
+/** Primary interactive button primitive supporting variants, sizes, loading spinners, and active states. */
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {

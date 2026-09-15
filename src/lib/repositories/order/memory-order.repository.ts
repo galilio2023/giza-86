@@ -17,6 +17,7 @@ import {
 } from "./order.interface";
 
 export class MemoryOrderRepository implements IOrderRepository {
+  /** Returns in-memory orders matching status, payment, and search criteria. */
   async findMany(options?: GetOrdersOptions): Promise<OrderItem[]> {
     let list = [...memoryOrders];
     if (options?.status && options.status !== "all") {

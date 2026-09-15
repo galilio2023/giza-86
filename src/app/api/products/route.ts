@@ -13,6 +13,7 @@ import {
   parseBooleanParam,
 } from "@/lib/query-parser";
 
+/** Public catalog endpoint to query products with filters, sorting, search, and caching. */
 export const GET = withErrorHandler(async (request: Request) => {
   const { searchParams } = new URL(request.url);
 
@@ -92,6 +93,7 @@ export const GET = withErrorHandler(async (request: Request) => {
   });
 }, "فشل في جلب المنتجات");
 
+/** Admin endpoint to create a new product and invalidate catalog caches. */
 export const POST = withAdminAuth(async (request: Request) => {
   const rawBody = await request.json();
   const validated = createProductSchema.parse(rawBody);

@@ -178,6 +178,7 @@ export class DrizzleCouponRepository implements ICouponRepository {
 
 let couponRepositoryInstance: ICouponRepository | null = null;
 
+/** Returns the singleton coupon repository instance (Drizzle or Memory fallback). */
 export function getCouponRepository(): ICouponRepository {
   if (!couponRepositoryInstance) {
     couponRepositoryInstance =

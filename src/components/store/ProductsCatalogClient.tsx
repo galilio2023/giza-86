@@ -25,6 +25,7 @@ interface Props {
 
 const ALL_SIZES = ["مقاس موحد", "One Size", "S", "M", "L", "XL", "2XL", "3XL", "30", "32", "34", "36", "38", "50", "52"];
 
+/** Renders the storefront catalog with URL-synchronized filters, sorting, search, pagination, and quick view. */
 export function ProductsCatalogClient({
   initialProducts,
   categories,

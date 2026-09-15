@@ -20,6 +20,7 @@ export interface UseCouponApplyReturn {
   resetCoupon: () => void;
 }
 
+/** Handles promotional coupon code validation, discount state, and toast feedback. */
 export function useCouponApply(options: UseCouponApplyOptions = {}): UseCouponApplyReturn {
   const [couponCode, setCouponCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);

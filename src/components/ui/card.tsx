@@ -6,6 +6,7 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   padding?: "none" | "sm" | "md" | "lg";
 }
 
+/** Surface container card primitive supporting modern, glow, and subtle border stylings. */
 export const Card: React.FC<CardProps> = ({
   className,
   variant = "modern",

@@ -22,6 +22,7 @@ interface CartClientProps {
   };
 }
 
+/** Renders the full standalone shopping cart page with order summary and free shipping tracker. */
 export function CartClient({ settings }: CartClientProps = {}) {
   const mounted = useMounted();
   const items = useCartStore((state) => state.items);

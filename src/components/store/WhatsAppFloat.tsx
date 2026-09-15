@@ -13,6 +13,7 @@ interface WhatsAppFloatProps {
   storeName?: string;
 }
 
+/** Renders persistent floating WhatsApp customer support widget with direct quick-chat channels. */
 export function WhatsAppFloat({
   whatsappNumber: propNumber,
   supportWhatsapp: propSupportNumber,

@@ -1,10 +1,12 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+/** Merges Tailwind classes and conditional class names safely. */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** Formats a numeric price into localized Egyptian Pound string (e.g. "850 ج.م"). */
 export function formatEGP(amount: number | string | undefined | null): string {
   if (amount === undefined || amount === null) return "0 ج.م";
   const num = typeof amount === "string" ? parseFloat(amount) : amount;
@@ -15,6 +17,7 @@ export function formatEGP(amount: number | string | undefined | null): string {
   }).format(num)} ج.م`;
 }
 
+/** Formats a Date or ISO string into a localized Arabic date and time string. */
 export function formatArabicDate(date: Date | string | null | undefined): string {
   if (!date) return "";
   const d = typeof date === "string" ? new Date(date) : date;
@@ -27,6 +30,7 @@ export function formatArabicDate(date: Date | string | null | undefined): string
   }).format(d);
 }
 
+/** Generates a human-readable, unique Egyptian order tracking reference (e.g. "EG-2026-XXXX-XXXX"). */
 export function generateOrderNumber(): string {
   const year = new Date().getFullYear();
   const timeHex = Date.now().toString(36).toUpperCase();
@@ -34,6 +38,7 @@ export function generateOrderNumber(): string {
   return `EG-${year}-${timeHex}-${randomHex}`;
 }
 
+/** Extracts a readable error string from unknown exceptions with an Arabic fallback message. */
 export function getErrorMessage(error: unknown, fallback = "حدث خطأ غير متوقع"): string {
   if (error instanceof Error) return error.message;
   if (typeof error === "string") return error;
@@ -43,6 +48,7 @@ export function getErrorMessage(error: unknown, fallback = "حدث خطأ غير
   return fallback;
 }
 
+/** Generates a URL-safe slug supporting both English and Arabic characters. */
 export function slugify(text: string): string {
   return text
     .trim()

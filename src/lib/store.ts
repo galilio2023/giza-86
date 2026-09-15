@@ -20,6 +20,7 @@ interface CartStore {
   getSubtotal: () => number;
 }
 
+/** Persistent shopping cart store managing items, quantities, variant pricing, and drawer visibility. */
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({

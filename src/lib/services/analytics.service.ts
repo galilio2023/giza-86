@@ -40,6 +40,7 @@ const REGION_MAPPING: Record<string, string> = {
   "السويس": "محافظات الدلتا والقناة",
 };
 
+/** Groups and aggregates customer orders across Egyptian geographical regions. */
 export function calculateGovernorateDistribution(
   orderList: Array<{ governorate: string; count?: number }>
 ): GovernorateStat[] {
@@ -74,6 +75,7 @@ export function calculateGovernorateDistribution(
   }));
 }
 
+/** Computes live admin dashboard metrics including gross revenue, AOV, order volume, and low stock counts. */
 export async function getDashboardStats(): Promise<DashboardStats> {
   if (!isDatabaseConfigured || !db) {
     const validOrders = memoryOrders.filter(

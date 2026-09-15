@@ -8,6 +8,7 @@ interface WishlistStore {
   clearWishlist: () => void;
 }
 
+/** Persistent wishlist store tracking saved product IDs across user sessions. */
 export const useWishlistStore = create<WishlistStore>()(
   persist(
     (set, get) => ({

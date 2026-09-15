@@ -12,6 +12,7 @@ export interface NewsletterState {
   error?: string;
 }
 
+/** Server Action to process newsletter subscriptions with rate limiting and Zod contact validation. */
 export async function subscribeToNewsletter(
   _prevState: NewsletterState,
   formData: FormData

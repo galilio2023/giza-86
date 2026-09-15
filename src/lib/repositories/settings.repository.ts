@@ -304,6 +304,7 @@ export class DrizzleSettingsRepository implements ISettingsRepository {
 
 let settingsRepositoryInstance: ISettingsRepository | null = null;
 
+/** Returns the singleton store CMS settings repository instance. */
 export function getSettingsRepository(): ISettingsRepository {
   if (!settingsRepositoryInstance) {
     settingsRepositoryInstance =

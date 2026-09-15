@@ -10,6 +10,7 @@ export const ACCESSORY_SIZES = ["مقاس موحد", "One Size"];
 export const AVAILABLE_SIZES = ["مقاس موحد", "One Size", ...APPAREL_SIZES, ...PANTS_SIZES];
 export const DEFAULT_VARIANT_STOCK = 10;
 
+/** Generates product variant combinations across sizes and colors with SKUs and stock counts. */
 export function generateDefaultVariants(
   baseSku: string,
   sizes: string[],
@@ -48,6 +49,7 @@ export function generateDefaultVariants(
   return result;
 }
 
+/** Coordinates color, size, and SKU variant matrix generation for the admin product editor. */
 export function useProductVariantsForm() {
   const [selectedSizes, setSelectedSizes] = useState<string[]>(["S", "M", "L", "XL", "2XL"]);
   const [customSizes, setCustomSizes] = useState<string[]>([]);

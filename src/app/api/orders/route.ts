@@ -8,6 +8,7 @@ import { rateLimitGuard } from "@/lib/rate-limiter";
 
 import { parsePaginationParams, parseStringParam } from "@/lib/query-parser";
 
+/** Admin endpoint to query paginated and filtered customer orders. */
 export const GET = withAdminAuth(async (request: Request) => {
   const { searchParams } = new URL(request.url);
   const { limit, offset, withCount } = parsePaginationParams(searchParams, 20);
@@ -47,6 +48,7 @@ export const GET = withAdminAuth(async (request: Request) => {
   return NextResponse.json(orders);
 }, "فشل في جلب الطلبات");
 
+/** Public customer checkout endpoint to submit and process orders with rate limiting. */
 export const POST = withErrorHandler(async (request: Request) => {
   const rateLimitError = await rateLimitGuard(request, "checkout", { maxRequests: 5, windowSeconds: 60 });
   if (rateLimitError) return rateLimitError;

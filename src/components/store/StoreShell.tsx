@@ -16,6 +16,7 @@ export interface StoreShellProps {
   printHiddenShell?: boolean;
 }
 
+/** Master layout wrapper rendering Navbar, Footer, maintenance mode enforcement, and theme containers. */
 export async function StoreShell({
   children,
   settings: propSettings,
