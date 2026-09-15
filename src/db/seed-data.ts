@@ -100,7 +100,7 @@ export const INITIAL_CATEGORIES: CategoryItem[] = [
     image: "https://res.cloudinary.com/dnhydbrvc/image/upload/f_auto,q_auto/modanil_hairclips/modanil_hairclips_01.jpg",
     description: "مساكات وتوك شعر ستان حريري كورية وإكسسوارات شعر ناعمة لتسريحات يومية جذابة",
     displayOrder: 8,
-    productsCount: 16,
+    productsCount: 25,
   },
 ];
 

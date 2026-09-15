@@ -65,15 +65,25 @@ export function sanitizeSearchQuery(query: string): string {
  */
 export function optimizeCloudinaryUrl(url: string | null | undefined): string {
   if (!url) return "/placeholder.jpg";
-  if (
-    url.includes("res.cloudinary.com") &&
-    url.includes("/image/upload/") &&
-    !url.includes("/image/upload/f_") &&
-    !url.includes("/image/upload/q_")
-  ) {
-    return url.replace("/image/upload/", "/image/upload/f_auto,q_auto/");
+  if (!url.includes("res.cloudinary.com") || !url.includes("/image/upload/")) {
+    return url;
   }
-  return url;
+
+  const uploadIndex = url.indexOf("/image/upload/");
+  const afterUpload = url.slice(uploadIndex + "/image/upload/".length);
+
+  const hasFAuto = /\bf_auto\b/.test(afterUpload);
+  const hasQAuto = /\bq_auto\b/.test(afterUpload);
+
+  if (hasFAuto && hasQAuto) {
+    return url;
+  }
+
+  const missing: string[] = [];
+  if (!hasFAuto) missing.push("f_auto");
+  if (!hasQAuto) missing.push("q_auto");
+
+  return url.replace("/image/upload/", `/image/upload/${missing.join(",")}/`);
 }
 
 
