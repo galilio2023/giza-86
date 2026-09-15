@@ -42,6 +42,7 @@ function CategoryFormContent({
   );
 
   // Available parent categories: top-level categories, excluding current editing category
+  const hasChildren = Boolean(editingCategory?.children && editingCategory.children.length > 0);
   const availableParents = allCategories.filter(
     (c) => (!c.parentId || c.parentId === null) && (!editingCategory || c.id !== editingCategory.id)
   );
@@ -56,7 +57,7 @@ function CategoryFormContent({
       description: description.trim() || undefined,
       image: imageUrl.trim() || "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800",
       displayOrder: Number(displayOrder) || 0,
-      parentId,
+      parentId: hasChildren ? null : parentId,
     });
   };
 
@@ -77,20 +78,28 @@ function CategoryFormContent({
       <div>
         <label className="block font-bold text-neutral-800 mb-1">القسم الرئيسي (Parent Category)</label>
         <select
-          value={parentId === null ? "" : String(parentId)}
+          value={hasChildren || parentId === null ? "" : String(parentId)}
           onChange={(e) => setParentId(e.target.value === "" ? null : Number(e.target.value))}
-          className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-base lg:text-sm font-bold text-neutral-800"
+          disabled={hasChildren}
+          className="w-full p-2.5 rounded-xl border border-neutral-200 bg-white text-base lg:text-sm font-bold text-neutral-800 disabled:bg-neutral-100 disabled:text-neutral-400 disabled:cursor-not-allowed"
         >
           <option value="">قسم رئيسي (بدون قسم أب - Top Level)</option>
-          {availableParents.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
+          {!hasChildren &&
+            availableParents.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
         </select>
-        <p className="text-[11px] text-neutral-500 mt-1">
-          اختر قسماً رئيسياً لربط هذا القسم كقسم فرعي تحته، أو اتركه كقسم رئيسي مستقل.
-        </p>
+        {hasChildren ? (
+          <p className="text-[11px] text-amber-600 font-bold mt-1">
+            لا يمكن تحويل هذا القسم إلى قسم فرعي لأنه يحتوي بالفعل على أقسام فرعية تابعة له ({editingCategory?.children?.length} أقسام). للحفاظ على هيكل التصنيف الثنائي، يجب أولاً نقل أو فك ارتباط الأقسام التابعة له.
+          </p>
+        ) : (
+          <p className="text-[11px] text-neutral-500 mt-1">
+            اختر قسماً رئيسياً لربط هذا القسم كقسم فرعي تحته، أو اتركه كقسم رئيسي مستقل.
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

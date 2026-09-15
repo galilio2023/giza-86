@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Menu, X, Search, ChevronDown, Sparkles, Tag, Shirt, Home } from "lucide-react";
 import { CategoryItem } from "@/types";
 
@@ -10,12 +10,16 @@ interface NavbarMobileMenuProps {
   categories?: CategoryItem[];
 }
 
-export function NavbarMobileMenu({ categories = [] }: NavbarMobileMenuProps) {
+function NavbarMobileMenuInner({ categories = [] }: NavbarMobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedParents, setExpandedParents] = useState<Record<number, boolean>>({});
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const currentCategory = searchParams.get("category");
+  const onSale = searchParams.get("onSale") === "true";
+  const isAllProductsActive = pathname === "/products" && !currentCategory && !onSale;
   const [prevPathname, setPrevPathname] = useState(pathname);
 
   if (prevPathname !== pathname) {
@@ -115,7 +119,7 @@ export function NavbarMobileMenu({ categories = [] }: NavbarMobileMenuProps) {
                 href="/products"
                 onClick={() => setIsOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition ${
-                  pathname === "/products" ? "bg-neutral-950 text-white" : "text-neutral-800 hover:bg-neutral-100"
+                  isAllProductsActive ? "bg-neutral-950 text-white" : "text-neutral-800 hover:bg-neutral-100"
                 }`}
               >
                 <Shirt className="w-4 h-4 text-amber-500" />
@@ -188,6 +192,7 @@ export function NavbarMobileMenu({ categories = [] }: NavbarMobileMenuProps) {
                           onClick={() => toggleParent(parent.id)}
                           className="p-1.5 rounded-lg text-neutral-500 hover:bg-neutral-200/60 transition cursor-pointer"
                           aria-label={`تبديل عرض ${parent.name}`}
+                          aria-expanded={isExpanded}
                         >
                           <ChevronDown
                             className={`w-4 h-4 transition-transform duration-200 ${
@@ -237,3 +242,12 @@ export function NavbarMobileMenu({ categories = [] }: NavbarMobileMenuProps) {
     </>
   );
 }
+
+export function NavbarMobileMenu({ categories = [] }: NavbarMobileMenuProps) {
+  return (
+    <Suspense fallback={<div className="lg:hidden min-h-[44px] min-w-[44px]" />}>
+      <NavbarMobileMenuInner categories={categories} />
+    </Suspense>
+  );
+}
+

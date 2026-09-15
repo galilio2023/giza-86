@@ -264,8 +264,8 @@ const RAW_INITIAL_PRODUCTS: ProductItem[] = [
     price: 950,
     salePrice: 750,
     stock: 12,
-    categoryId: 5,
-    categoryName: "ملابس نسائية وكاجوال",
+    categoryId: 20,
+    categoryName: "دريسات وأطقم كاجوال",
     sizes: ["S", "M", "L", "XL", "2XL"],
     colors: [
       { name: "أخضر زمردي", hex: "#065f46" },

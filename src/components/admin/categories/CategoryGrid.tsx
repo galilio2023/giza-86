@@ -9,7 +9,7 @@ interface CategoryGridProps {
   categories: CategoryItem[];
   onEdit: (category: CategoryItem) => void;
   onDelete: (category: CategoryItem) => void;
-  onMove?: (category: CategoryItem, direction: "up" | "down") => void;
+  onMove?: (category: CategoryItem, direction: "up" | "down", currentList?: CategoryItem[]) => void;
   isMoving?: boolean;
 }
 
@@ -20,6 +20,8 @@ export function CategoryGrid({
   onMove,
   isMoving = false,
 }: CategoryGridProps) {
+  const [filterType, setFilterType] = useState<"all" | "parents" | "children">("all");
+
   if (categories.length === 0) {
     return (
       <div className="text-center py-16 bg-white rounded-3xl border border-neutral-200 p-8">
@@ -29,8 +31,6 @@ export function CategoryGrid({
       </div>
     );
   }
-
-  const [filterType, setFilterType] = useState<"all" | "parents" | "children">("all");
 
   const sortedCategories = [...categories].sort(
     (a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0) || a.id - b.id
@@ -162,7 +162,7 @@ export function CategoryGrid({
                     <div className="flex items-center gap-1 bg-neutral-50 p-0.5 rounded-xl border border-neutral-200">
                       <button
                         type="button"
-                        onClick={() => onMove(cat, "up")}
+                        onClick={() => onMove(cat, "up", displayedCategories)}
                         disabled={isFirst || isMoving}
                         className="min-h-[32px] min-w-[32px] flex items-center justify-center p-1.5 text-neutral-600 hover:text-amber-700 hover:bg-white rounded-lg transition disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
                         title="تحريك للأعلى (تقديم الترتيب)"
@@ -171,7 +171,7 @@ export function CategoryGrid({
                       </button>
                       <button
                         type="button"
-                        onClick={() => onMove(cat, "down")}
+                        onClick={() => onMove(cat, "down", displayedCategories)}
                         disabled={isLast || isMoving}
                         className="min-h-[32px] min-w-[32px] flex items-center justify-center p-1.5 text-neutral-600 hover:text-amber-700 hover:bg-white rounded-lg transition disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer"
                         title="تحريك للأسفل (تأخير الترتيب)"

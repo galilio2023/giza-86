@@ -12,7 +12,36 @@ export interface ICategoryRepository {
   delete(id: number): Promise<boolean>;
 }
 
+/**
+ * Checks whether a proposed parent ID is a descendant of the target category to prevent cycles.
+ * @param proposedParentId Candidate parent category ID.
+ * @param targetId Target category ID being updated.
+ * @param allCategories Flat list of all categories with parent relationships.
+ * @returns True if proposedParentId is a descendant of targetId, otherwise false.
+ */
+function isDescendant(
+  proposedParentId: number,
+  targetId: number,
+  allCategories: { id: number; parentId?: number | null }[]
+): boolean {
+  if (proposedParentId === targetId) return true;
+  let currentParentId: number | null | undefined = proposedParentId;
+  const visited = new Set<number>();
+
+  while (currentParentId) {
+    if (visited.has(currentParentId)) break;
+    visited.add(currentParentId);
+    if (currentParentId === targetId) return true;
+    const parentCat = allCategories.find((c) => c.id === currentParentId);
+    currentParentId = parentCat?.parentId;
+  }
+  return false;
+}
+
 export class MemoryCategoryRepository implements ICategoryRepository {
+  /**
+   * Retrieves all categories sorted by displayOrder with parentName, children arrays, and rolled-up product counts.
+   */
   async findMany(): Promise<CategoryItem[]> {
     const sorted = [...memoryCategories].sort((a, b) => {
       const orderA = a.displayOrder ?? 0;
@@ -71,6 +100,10 @@ export class MemoryCategoryRepository implements ICategoryRepository {
     return sorted.map((c) => catMap.get(c.id)!);
   }
 
+  /**
+   * Finds a category by numeric ID or slug.
+   * @param identifier Numeric category ID or string slug.
+   */
   async findById(identifier: number | string): Promise<CategoryItem | null> {
     const idNum = Number(identifier);
     const cat = !isNaN(idNum)
@@ -93,6 +126,10 @@ export class MemoryCategoryRepository implements ICategoryRepository {
     };
   }
 
+  /**
+   * Creates a new category in memory store.
+   * @param data Category creation attributes.
+   */
   async create(data: Omit<CategoryItem, "id" | "createdAt" | "updatedAt">): Promise<CategoryItem> {
     const now = new Date().toISOString();
     const newCat: CategoryItem = {
@@ -107,6 +144,11 @@ export class MemoryCategoryRepository implements ICategoryRepository {
     return newCat;
   }
 
+  /**
+   * Updates an existing category with cycle prevention and 2-tier hierarchy guards.
+   * @param id Category ID to update.
+   * @param data Partial category fields.
+   */
   async update(id: number, data: Partial<CategoryItem>): Promise<CategoryItem | null> {
     const idx = memoryCategories.findIndex((c) => c.id === id);
     if (idx === -1) return null;
@@ -121,8 +163,17 @@ export class MemoryCategoryRepository implements ICategoryRepository {
       }
     }
 
-    // Prevent circular parenting
-    const safeParentId = data.parentId === id ? null : data.parentId;
+    // Prevent direct/indirect circular parenting and multi-tier nesting
+    let safeParentId = data.parentId;
+    if (data.parentId !== undefined && data.parentId !== null) {
+      if (isDescendant(data.parentId, id, memoryCategories)) {
+        safeParentId = null;
+      }
+      const hasChildren = memoryCategories.some((c) => c.parentId === id);
+      if (hasChildren) {
+        safeParentId = null;
+      }
+    }
 
     memoryCategories[idx] = {
       ...memoryCategories[idx],
@@ -133,6 +184,10 @@ export class MemoryCategoryRepository implements ICategoryRepository {
     return memoryCategories[idx];
   }
 
+  /**
+   * Deletes a category, reassigning orphan children to top-level and products to fallback category.
+   * @param id Category ID to delete.
+   */
   async delete(id: number): Promise<boolean> {
     const idx = memoryCategories.findIndex((c) => c.id === id);
     if (idx === -1) return false;
@@ -156,6 +211,9 @@ export class MemoryCategoryRepository implements ICategoryRepository {
 }
 
 export class DrizzleCategoryRepository implements ICategoryRepository {
+  /**
+   * Retrieves all categories from Neon PostgreSQL with parentName, children arrays, and rolled-up product counts.
+   */
   async findMany(): Promise<CategoryItem[]> {
     const parentCat = sql.raw('"parent_cat"');
     const rows = await db
@@ -232,6 +290,10 @@ export class DrizzleCategoryRepository implements ICategoryRepository {
     return rows.map((r) => catMap.get(r.id)!);
   }
 
+  /**
+   * Finds a category by numeric ID or slug in Neon PostgreSQL.
+   * @param identifier Numeric category ID or string slug.
+   */
   async findById(identifier: number | string): Promise<CategoryItem | null> {
     const idNum = Number(identifier);
     const condition = !isNaN(idNum) ? eq(categories.id, idNum) : eq(categories.slug, String(identifier));
@@ -263,6 +325,10 @@ export class DrizzleCategoryRepository implements ICategoryRepository {
     };
   }
 
+  /**
+   * Creates a new category in Neon PostgreSQL.
+   * @param data Category attributes.
+   */
   async create(data: Omit<CategoryItem, "id" | "createdAt" | "updatedAt">): Promise<CategoryItem> {
     const [inserted] = await db
       .insert(categories)
@@ -289,11 +355,32 @@ export class DrizzleCategoryRepository implements ICategoryRepository {
     };
   }
 
+  /**
+   * Updates an existing category in a PostgreSQL transaction with cycle prevention and order swapping.
+   * @param id Category ID to update.
+   * @param data Category updates.
+   */
   async update(id: number, data: Partial<CategoryItem>): Promise<CategoryItem | null> {
     const client = dbPool || db;
     return await client.transaction(async (tx) => {
-      // Prevent setting a category as its own parent
-      const safeParentId = data.parentId === id ? null : data.parentId;
+      // Prevent direct/indirect circular parenting and multi-tier nesting
+      let safeParentId = data.parentId;
+      if (data.parentId !== undefined && data.parentId !== null) {
+        if (data.parentId === id) {
+          safeParentId = null;
+        } else {
+          const allCats = await tx
+            .select({ id: categories.id, parentId: categories.parentId })
+            .from(categories);
+
+          const isCycle = isDescendant(data.parentId, id, allCats);
+          const hasChildren = allCats.some((c) => c.parentId === id);
+
+          if (isCycle || hasChildren) {
+            safeParentId = null;
+          }
+        }
+      }
 
       // If displayOrder is updated and conflicts with another category, swap them
       if (data.displayOrder !== undefined) {
@@ -356,6 +443,10 @@ export class DrizzleCategoryRepository implements ICategoryRepository {
     });
   }
 
+  /**
+   * Deletes a category safely by unlinking children (setting parentId = null) and reassigning products.
+   * @param id Category ID to delete.
+   */
   async delete(id: number): Promise<boolean> {
     // Reset child categories parentId to null
     await db.update(categories).set({ parentId: null }).where(eq(categories.parentId, id));
@@ -375,6 +466,9 @@ export class DrizzleCategoryRepository implements ICategoryRepository {
 
 let repositoryInstance: ICategoryRepository | null = null;
 
+/**
+ * Returns the singleton category repository instance (Drizzle or Memory store fallback).
+ */
 export function getCategoryRepository(): ICategoryRepository {
   if (!repositoryInstance) {
     repositoryInstance =

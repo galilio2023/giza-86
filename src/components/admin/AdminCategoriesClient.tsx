@@ -18,6 +18,7 @@ interface AdminCategoriesClientProps {
 export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClientProps) {
   const [loading, setLoading] = useState(false);
   const [moving, setMoving] = useState(false);
+  const [isCustomDeleting, setIsCustomDeleting] = useState(false);
 
   const {
     items: categories,
@@ -78,7 +79,8 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
   };
 
   const handleDeleteCategory = async () => {
-    if (!deletingCategory) return;
+    if (!deletingCategory || isCustomDeleting) return;
+    setIsCustomDeleting(true);
     try {
       await api.categories.delete(deletingCategory.id);
       toast.success(`تم حذف القسم "${deletingCategory.name}" بنجاح`);
@@ -90,11 +92,18 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
       router.refresh();
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, "فشل في حذف القسم"));
+    } finally {
+      setIsCustomDeleting(false);
     }
   };
 
-  const handleMoveCategory = async (category: CategoryItem, direction: "up" | "down") => {
-    const sorted = [...categories].sort(
+  const handleMoveCategory = async (
+    category: CategoryItem,
+    direction: "up" | "down",
+    currentList?: CategoryItem[]
+  ) => {
+    const listToUse = currentList && currentList.length > 0 ? currentList : categories;
+    const sorted = [...listToUse].sort(
       (a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0) || a.id - b.id
     );
     const currentIndex = sorted.findIndex((c) => c.id === category.id);
@@ -188,7 +197,7 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
         confirmText="نعم، احذف القسم"
         cancelText="إلغاء"
         variant="danger"
-        isLoading={isDeleting}
+        isLoading={isDeleting || isCustomDeleting}
       />
     </div>
   );
