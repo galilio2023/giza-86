@@ -46,34 +46,66 @@ export function CatalogFilterSidebar({
 
         {/* Categories */}
         <div className="space-y-2">
-          <h4 className="text-xs font-bold text-neutral-900">الأقسام</h4>
+          <h4 className="text-xs font-bold text-neutral-900">الأقسام والتصنيفات</h4>
           <div className="space-y-1">
             <button
               type="button"
               onClick={() => onSelectCategory("all")}
-              className={`w-full text-right px-3 py-2 rounded-lg text-xs font-semibold transition cursor-pointer ${
+              className={`w-full text-right px-3 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
                 selectedCategory === "all"
-                  ? "bg-neutral-900 text-white"
+                  ? "bg-neutral-900 text-white shadow-xs"
                   : "text-neutral-700 hover:bg-neutral-100"
               }`}
             >
               كافة الأقسام
             </button>
-            {categories.map((c) => (
-              <button
-                type="button"
-                key={c.id}
-                onClick={() => onSelectCategory(c.slug)}
-                className={`w-full text-right px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center justify-between cursor-pointer ${
-                  selectedCategory === c.slug
-                    ? "bg-neutral-900 text-white"
-                    : "text-neutral-700 hover:bg-neutral-100"
-                }`}
-              >
-                <span>{c.name}</span>
-                <span className="text-[10px] opacity-70">({c.productsCount ?? 0})</span>
-              </button>
-            ))}
+
+            {categories
+              .filter((c) => !c.parentId || c.parentId === null)
+              .map((parent) => {
+                const isParentSelected = selectedCategory === parent.slug;
+                const hasChildren = Boolean(parent.children && parent.children.length > 0);
+
+                return (
+                  <div key={parent.id} className="space-y-0.5 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => onSelectCategory(parent.slug)}
+                      className={`w-full text-right px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer ${
+                        isParentSelected
+                          ? "bg-neutral-900 text-white shadow-xs"
+                          : "text-neutral-900 hover:bg-neutral-100"
+                      }`}
+                    >
+                      <span>{parent.name}</span>
+                      <span className="text-[10px] opacity-70">({parent.productsCount ?? 0})</span>
+                    </button>
+
+                    {hasChildren && (
+                      <div className="mr-3 pr-2 border-r border-neutral-200/80 space-y-0.5">
+                        {parent.children?.map((child) => {
+                          const isChildSelected = selectedCategory === child.slug;
+                          return (
+                            <button
+                              type="button"
+                              key={child.id}
+                              onClick={() => onSelectCategory(child.slug)}
+                              className={`w-full text-right px-2.5 py-1.5 rounded-lg text-xs font-medium transition flex items-center justify-between cursor-pointer ${
+                                isChildSelected
+                                  ? "bg-amber-100 text-amber-950 font-bold"
+                                  : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950"
+                              }`}
+                            >
+                              <span>↳ {child.name}</span>
+                              <span className="text-[10px] opacity-60">({child.productsCount ?? 0})</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
           </div>
         </div>
 

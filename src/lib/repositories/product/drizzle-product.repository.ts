@@ -4,7 +4,7 @@ import { products, categories, productVariants } from "@/db/schema";
 import { eq, ne, desc, asc, and, or, sql, lte, inArray } from "drizzle-orm";
 import { buildProductVariants } from "@/db/seed-data";
 import { IProductRepository, GetProductsOptions, ProductsPageResult } from "./product.interface";
-import { buildProductConditions } from "./product.conditions";
+import { buildProductConditions, parentCategories } from "./product.conditions";
 import { optimizeCloudinaryUrl } from "@/lib/utils";
 
 function mapImages(images: unknown): string[] {
@@ -42,6 +42,7 @@ export class DrizzleProductRepository implements IProductRepository {
       })
       .from(products)
       .leftJoin(categories, eq(products.categoryId, categories.id))
+      .leftJoin(parentCategories, eq(categories.parentId, parentCategories.id))
       .$dynamic();
 
     if (conditions.length > 0) {
@@ -103,6 +104,7 @@ export class DrizzleProductRepository implements IProductRepository {
       .select({ count: sql<number>`count(*)::int` })
       .from(products)
       .leftJoin(categories, eq(products.categoryId, categories.id))
+      .leftJoin(parentCategories, eq(categories.parentId, parentCategories.id))
       .$dynamic();
 
     if (conditions.length > 0) {

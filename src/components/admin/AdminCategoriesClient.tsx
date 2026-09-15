@@ -18,6 +18,7 @@ interface AdminCategoriesClientProps {
 export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClientProps) {
   const [loading, setLoading] = useState(false);
   const [moving, setMoving] = useState(false);
+  const [isCustomDeleting, setIsCustomDeleting] = useState(false);
 
   const {
     items: categories,
@@ -46,6 +47,7 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
     description?: string;
     image: string;
     displayOrder: number;
+    parentId?: number | null;
   }) => {
     setLoading(true);
     try {
@@ -60,9 +62,14 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
         setModalOpen(false);
         router.refresh();
       } else {
-        const newCat = await api.categories.create(payload);
+        await api.categories.create(payload);
         toast.success("تمت إضافة القسم الجديد بنجاح في قاعدة البيانات");
-        handleItemSaved(newCat, false);
+        const updatedList = await api.categories.getAll();
+        if (Array.isArray(updatedList)) {
+          setCategories(updatedList);
+        }
+        setModalOpen(false);
+        router.refresh();
       }
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, "حدث خطأ أثناء حفظ القسم"));
@@ -71,8 +78,32 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
     }
   };
 
-  const handleMoveCategory = async (category: CategoryItem, direction: "up" | "down") => {
-    const sorted = [...categories].sort(
+  const handleDeleteCategory = async () => {
+    if (!deletingCategory || isCustomDeleting) return;
+    setIsCustomDeleting(true);
+    try {
+      await api.categories.delete(deletingCategory.id);
+      toast.success(`تم حذف القسم "${deletingCategory.name}" بنجاح`);
+      const updatedList = await api.categories.getAll();
+      if (Array.isArray(updatedList)) {
+        setCategories(updatedList);
+      }
+      setDeletingCategory(null);
+      router.refresh();
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "فشل في حذف القسم"));
+    } finally {
+      setIsCustomDeleting(false);
+    }
+  };
+
+  const handleMoveCategory = async (
+    category: CategoryItem,
+    direction: "up" | "down",
+    currentList?: CategoryItem[]
+  ) => {
+    const listToUse = currentList && currentList.length > 0 ? currentList : categories;
+    const sorted = [...listToUse].sort(
       (a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0) || a.id - b.id
     );
     const currentIndex = sorted.findIndex((c) => c.id === category.id);
@@ -108,6 +139,10 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
     }
   };
 
+  const isParentWithChildren = Boolean(
+    deletingCategory?.children && deletingCategory.children.length > 0
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -116,7 +151,7 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
             أقسام وتصنيفات المتجر
           </h1>
           <p className="text-xs sm:text-sm text-neutral-500 mt-1">
-            إدارة وتعديل وترتيب الأقسام (تظهر أول 3 أقسام تلقائياً في شبكة اللوك بوك بالصفحة الرئيسية)
+            إدارة وتعديل وترتيب الأقسام الرئيسية والفرعية مع ربط وتصنيف المنتجات بسهولة
           </p>
         </div>
 
@@ -144,6 +179,7 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
         onClose={() => setModalOpen(false)}
         editingCategory={editingCategory}
         totalCategories={categories.length}
+        allCategories={categories}
         onSave={handleSaveCategory}
         loading={loading}
       />
@@ -151,13 +187,17 @@ export function AdminCategoriesClient({ initialCategories }: AdminCategoriesClie
       <ConfirmDialog
         isOpen={Boolean(deletingCategory)}
         onClose={() => setDeletingCategory(null)}
-        onConfirm={handleConfirmDelete}
-        title="حذف القسم"
-        description={`هل أنت متأكد من رغبتك في حذف قسم "${deletingCategory?.name}"؟ سيتم إلغاء تصنيف المنتجات التابعة له.`}
+        onConfirm={handleDeleteCategory}
+        title={isParentWithChildren ? "حذف قسم رئيسي" : "حذف القسم"}
+        description={
+          isParentWithChildren
+            ? `هل أنت متأكد من رغبتك في حذف قسم "${deletingCategory?.name}"؟ تنبيه: سيتم فك ارتباط الأقسام الفرعية التابعة له (${deletingCategory?.children?.length} أقسام) لتصبح أقساماً رئيسية مستقلة.`
+            : `هل أنت متأكد من رغبتك في حذف قسم "${deletingCategory?.name}"؟ سيتم إعادة توجيه المنتجات التابعة له لقسم بديل.`
+        }
         confirmText="نعم، احذف القسم"
         cancelText="إلغاء"
         variant="danger"
-        isLoading={isDeleting}
+        isLoading={isDeleting || isCustomDeleting}
       />
     </div>
   );

@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ChevronDown, ArrowLeft } from "lucide-react";
+import { ChevronDown, ArrowLeft, Sparkles } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +26,7 @@ interface NavbarLinksProps {
 }
 
 const FALLBACK_CATEGORIES: CategoryItem[] = [
-  { id: 1, name: "أوفر سايز", slug: "oversized-tshirts", image: "" },
+  { id: 1, name: "أوفر سايز وتي شيرتات", slug: "oversized-tshirts", image: "" },
   { id: 2, name: "هوديز وسويت شيرت", slug: "hoodies-sweatshirts", image: "" },
   { id: 3, name: "قمصان كاجوال", slug: "casual-shirts", image: "" },
   { id: 4, name: "ملابس نسائية", slug: "women-collection", image: "" },
@@ -41,8 +41,10 @@ function NavbarLinksInner({ categories }: { categories?: CategoryItem[] }) {
   const allCategories = categories && categories.length > 0 ? categories : FALLBACK_CATEGORIES;
   const isCategoriesActive = pathname === "/products" && !!currentCategory;
 
-  // On extra-wide screens (xl+), show up to 2 popular categories directly in the bar
-  const quickCategories = allCategories.slice(0, 2);
+  // Filter top-level parent categories
+  const parentCategories = allCategories.filter((c) => !c.parentId || c.parentId === null);
+  // Show up to 2 popular top-level categories directly on wide screens
+  const quickCategories = parentCategories.slice(0, 2);
 
   return (
     <nav className="flex items-center gap-1 xl:gap-1.5 text-xs font-bold text-neutral-700 select-none">
@@ -72,12 +74,9 @@ function NavbarLinksInner({ categories }: { categories?: CategoryItem[] }) {
         جميع الموديلات
       </Link>
 
-      {/* 3. Quick categories (shown only on xl+ to preserve clean breathing room on standard desktops) */}
+      {/* 3. Quick parent categories (shown on xl+ screens) */}
       {quickCategories.map((c) => {
         const isCatActive = pathname === "/products" && currentCategory === c.slug;
-        const shortName = c.name.split(" ")[0] === "تيشيرتات" ? "أوفر سايز" : c.name.split(" ")[0];
-        const displayLabel = c.name.length > 15 ? shortName : c.name;
-
         return (
           <Link
             key={c.slug}
@@ -88,12 +87,12 @@ function NavbarLinksInner({ categories }: { categories?: CategoryItem[] }) {
                 : "text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100"
             }`}
           >
-            {displayLabel}
+            {c.name}
           </Link>
         );
       })}
 
-      {/* 4. الأقسام Dropdown Menu */}
+      {/* 4. الأقسام Dropdown Menu with Nested Hierarchy */}
       <DropdownMenu>
         <DropdownMenuTrigger
           className={`flex items-center gap-1 px-2.5 xl:px-3 py-1.5 rounded-xl transition-all whitespace-nowrap text-xs font-bold outline-none cursor-pointer group ${
@@ -106,40 +105,80 @@ function NavbarLinksInner({ categories }: { categories?: CategoryItem[] }) {
           <ChevronDown className="w-3.5 h-3.5 opacity-70 group-data-[state=open]:rotate-180 transition-transform duration-200" />
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="center" sideOffset={8} className="w-60 p-1.5 rounded-2xl shadow-xl border border-neutral-200/90 bg-white z-50">
-          <DropdownMenuLabel className="px-3 py-1.5 text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+        <DropdownMenuContent
+          align="center"
+          sideOffset={8}
+          className="w-72 sm:w-80 p-2 rounded-2xl shadow-2xl border border-neutral-200/90 bg-white z-50 max-h-[82vh] overflow-y-auto"
+        >
+          <DropdownMenuLabel className="px-2.5 py-1 text-[11px] font-black text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             أقسام وتصنيفات المتجر
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
 
-          {allCategories.map((cat) => {
-            const isSelected = currentCategory === cat.slug;
+          {parentCategories.map((parent, pIdx) => {
+            const hasChildren = Boolean(parent.children && parent.children.length > 0);
+            const isParentSelected = currentCategory === parent.slug;
+
             return (
-              <DropdownMenuItem key={cat.slug} asChild>
-                <Link
-                  href={`/products?category=${cat.slug}`}
-                  className={`flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
-                    isSelected
-                      ? "bg-amber-50 text-amber-900 font-bold"
-                      : "text-neutral-800 hover:bg-neutral-100 hover:text-neutral-950"
-                  }`}
-                >
-                  <span className="truncate">{cat.name}</span>
-                  {typeof cat.productsCount === "number" && cat.productsCount > 0 ? (
-                    <span className="text-[10px] text-neutral-400 font-bold bg-neutral-100 px-1.5 py-0.5 rounded-full">
-                      {cat.productsCount}
-                    </span>
-                  ) : null}
-                </Link>
-              </DropdownMenuItem>
+              <div key={parent.slug} className="py-1">
+                {/* Parent Category Header Link */}
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/products?category=${parent.slug}`}
+                    className={`flex items-center justify-between w-full px-2.5 py-1.5 rounded-xl text-xs font-black cursor-pointer transition-colors ${
+                      isParentSelected
+                        ? "bg-amber-50 text-amber-950"
+                        : "text-neutral-950 hover:bg-neutral-100 hover:text-amber-700"
+                    }`}
+                  >
+                    <span>{parent.name}</span>
+                    {typeof parent.productsCount === "number" && parent.productsCount > 0 ? (
+                      <span className="text-[10px] text-neutral-500 font-bold bg-neutral-100 px-1.5 py-0.5 rounded-full">
+                        {parent.productsCount}
+                      </span>
+                    ) : null}
+                  </Link>
+                </DropdownMenuItem>
+
+                {/* Subcategories (Indented) */}
+                {hasChildren && (
+                  <div className="mr-3 pr-2 border-r border-neutral-200/70 space-y-0.5 mt-0.5 mb-1">
+                    {parent.children?.map((child) => {
+                      const isChildSelected = currentCategory === child.slug;
+                      return (
+                        <DropdownMenuItem key={child.slug} asChild>
+                          <Link
+                            href={`/products?category=${child.slug}`}
+                            className={`flex items-center justify-between w-full px-2 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
+                              isChildSelected
+                                ? "bg-amber-100/70 text-amber-950 font-bold"
+                                : "text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950"
+                            }`}
+                          >
+                            <span className="truncate">↳ {child.name}</span>
+                            {typeof child.productsCount === "number" && child.productsCount > 0 ? (
+                              <span className="text-[10px] text-neutral-400 font-medium">
+                                ({child.productsCount})
+                              </span>
+                            ) : null}
+                          </Link>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {pIdx < parentCategories.length - 1 && <DropdownMenuSeparator className="my-1" />}
+              </div>
             );
           })}
 
-          <DropdownMenuSeparator />
+          <DropdownMenuSeparator className="my-1.5" />
           <DropdownMenuItem asChild>
             <Link
               href="/products"
-              className="flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs font-bold text-amber-700 hover:bg-amber-50 cursor-pointer"
+              className="flex items-center justify-between w-full px-3 py-2 rounded-xl text-xs font-black text-amber-700 hover:bg-amber-50 cursor-pointer transition-colors"
             >
               <span>تصفح الكتالوج بالكامل</span>
               <ArrowLeft className="w-3.5 h-3.5" />
@@ -171,4 +210,3 @@ export function NavbarLinks({ categories }: NavbarLinksProps) {
     </Suspense>
   );
 }
-

@@ -24,23 +24,6 @@ export function Navbar({ settings, categories }: NavbarProps = {}) {
     rawNotice === "" ? "" : customNotice || STORE_DEFAULTS.bannerNotice;
   const showBanner = Boolean(isBannerActive && bannerNotice);
 
-  const navLinks = [
-    { label: "الرئيسية", href: "/" },
-    { label: "جميع الموديلات", href: "/products" },
-    ...(categories && categories.length > 0
-      ? categories.slice(0, 5).map((c) => ({
-          label: c.name,
-          href: `/products?category=${c.slug}`,
-        }))
-      : [
-          { label: "أوفر سايز", href: "/products?category=oversized-tshirts" },
-          { label: "هوديز", href: "/products?category=hoodies-sweatshirts" },
-          { label: "قمصان", href: "/products?category=casual-shirts" },
-          { label: "نسائي", href: "/products?category=women-collection" },
-        ]),
-    { label: "العروض 🔥", href: "/products?onSale=true", highlight: true },
-  ];
-
   return (
     <header className="sticky top-0 z-40 w-full transition-all duration-200">
       {/* Top Announcement Strip (Controlled via Dashboard) */}
@@ -58,7 +41,7 @@ export function Navbar({ settings, categories }: NavbarProps = {}) {
           <div className="flex items-center justify-between h-14 sm:h-16 gap-3 sm:gap-4 xl:gap-6">
             {/* Right (Start in RTL): Mobile Menu (Mobile only) + Brand Logo */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-max">
-              <NavbarMobileMenu navLinks={navLinks} />
+              <NavbarMobileMenu categories={categories} />
 
               <BrandLogo name={settings?.storeName} logoUrl={settings?.logoUrl} showSubtext={false} />
             </div>

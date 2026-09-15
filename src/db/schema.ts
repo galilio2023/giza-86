@@ -75,11 +75,14 @@ export const categories = pgTable("categories", {
   image: text("image").notNull(),
   description: text("description"),
   displayOrder: integer("display_order").default(0),
+  parentId: integer("parent_id").references((): any => categories.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => [
   // B-Tree index for sorting categories by display order
   index("categories_display_order_idx").on(table.displayOrder),
+  // B-Tree index for parent-child relationship lookups
+  index("categories_parent_id_idx").on(table.parentId),
   // Database-level integrity check constraint
   check("categories_display_order_non_negative", sql`${table.displayOrder} >= 0`),
 ]);
